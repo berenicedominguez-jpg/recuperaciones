@@ -1263,6 +1263,7 @@ async function enviarWhatsApp() {
     const tipoEvento  = document.getElementById('f-tipo-evento')?.value  || '—';
     const plataforma  = document.getElementById('f-plataforma')?.value   || '—';
     const esn         = document.getElementById('f-esn')?.value          || '—';
+    const nick        = document.getElementById('f-nick')?.value         || '—';
 
     const mensaje = [
       `🚨 *${tipoEvento} — ${cliente} — ${plataforma}*`,
