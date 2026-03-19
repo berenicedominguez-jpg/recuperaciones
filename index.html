@@ -1259,15 +1259,31 @@ async function enviarWhatsApp() {
   status.textContent = '';
 
   try {
+    // Campos adicionales paso 3
+    const tipoEvento  = document.getElementById('f-tipo-evento')?.value  || '—';
+    const plataforma  = document.getElementById('f-plataforma')?.value   || '—';
+    const esn         = document.getElementById('f-esn')?.value          || '—';
+
+    const mensaje = [
+      `🚨 *${tipoEvento} — ${cliente} — ${plataforma}*`,
+      `━━━━━━━━━━━━━━━━━━━`,
+      `🚛 *Unidad:* ${[marca, modelo].filter(Boolean).join(' ')} | Placas: ${placas}`,
+      `🔢 *ESN:* ${esn}`,
+      ``,
+      `📍 *Lugar del robo:* ${lugar}`,
+      `📅 *Fecha del robo:* ${fechaRobo} ${horaRobo}`,
+      ``,
+      `⚡ *Alertas recibidas:* ${tipoAlerta}`,
+      `🔑 *Paro de motor:* ${paroMotor}`,
+      ``,
+      `👮 *Monitorista:* ${monitorista}`,
+      `━━━━━━━━━━━━━━━━━━━`,
+    ].join('\n');
+
     const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/alerta-robo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        cliente, placas,
-        modelo: [marca, modelo].filter(Boolean).join(' '),
-        operador, lugar, coords, fechaRobo, horaRobo,
-        folio911, modus, monitorista, tipoAlerta, paroMotor
-      })
+      body: JSON.stringify({ mensaje })
     });
 
     if (!res.ok) throw new Error('Error ' + res.status);
