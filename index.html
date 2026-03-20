@@ -1254,6 +1254,47 @@ async function enviarWhatsApp() {
   const tipoAlerta  = getTiposAlerta().join(' + ') || 'N/A';
   const paroMotor   = getParoMotor();
 
+  // ── Validar campos obligatorios antes de enviar ──
+  const camposReq = [
+    { id: 'f-monitorista',   label: 'Monitorista responsable' },
+    { id: 'f-cliente',       label: 'Razón social / Cliente' },
+    { id: 'f-placas',        label: 'Placa' },
+    { id: 'f-lugar',         label: 'Lugar del robo' },
+    { id: 'f-fecha-robo',    label: 'Fecha del robo' },
+    { id: 'f-hora-robo',     label: 'Hora del robo' },
+    { id: 'f-folio911-step1',label: 'Folio 911' },
+    { id: 'f-tipo-evento',   label: 'Tipo de evento' },
+    { id: 'f-plataforma',    label: 'Plataforma' },
+    { id: 'f-esn',           label: 'ESN' },
+    { id: 'f-nick',          label: 'Nick / Alias' },
+  ];
+
+  for (const campo of camposReq) {
+    const el = document.getElementById(campo.id);
+    if (!el || !el.value.trim()) {
+      notify('Campo obligatorio faltante: ' + campo.label, 'warning');
+      if (el) {
+        el.focus();
+        el.style.borderColor = 'var(--danger)';
+        setTimeout(() => el.style.borderColor = '', 3000);
+      }
+      return;
+    }
+  }
+
+  // Validar tipo de alerta si se marcó que hubo alerta
+  const alertaActiva = document.getElementById('toggle-alerta')?.checked;
+  if (alertaActiva && getTiposAlerta().length === 0) {
+    notify('Selecciona al menos un tipo de alerta', 'warning');
+    return;
+  }
+
+  // Validar paro de motor
+  if (!document.querySelector('input[name="paro-motor"]:checked')) {
+    notify('Indica el estado del paro de motor', 'warning');
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Enviando...';
   status.textContent = '';
