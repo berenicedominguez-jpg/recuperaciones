@@ -1325,7 +1325,7 @@ async function enviarWhatsApp() {
     const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/alerta-robo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mensaje })
+      body: JSON.stringify({ mensaje, tipoEvento })
     });
 
     if (!res.ok) throw new Error('Error ' + res.status);
