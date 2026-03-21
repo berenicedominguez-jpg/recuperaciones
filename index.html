@@ -441,7 +441,7 @@
           <div class="card-body">
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;">
               <div class="form-group">
-                <label>Fecha y hora de atención</label>
+                <label>Fecha y hora de reporte</label>
                 <input type="datetime-local" id="f-fecha" />
               </div>
               <div class="form-group">
@@ -809,6 +809,371 @@
                 <input type="text" id="f-nombre-reportante" placeholder="Nombre completo" />
               </div>
               <div class="form-group">
+                <label>Medio de contacto</label>
+                <select id="f-medio-contacto">
+                  <option value="">Seleccionar...</option>
+                  <option>WHATSAPP</option>
+                  <option>LLAMADA</option>
+                  <option>CORREO</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Teléfono del reportante</label>
+                <input type="tel" id="f-tel-reportante" placeholder="Ej. 555 123 4567" />
+              </div>
+              <div class="form-group">
+                <label>Correo del reportante</label>
+                <input type="email" id="f-correo-reportante" placeholder="correo@ejemplo.com" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Card 2 — Unidad, plataforma y equipo GPS ── -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><div class="card-title">Unidad, plataforma y equipo GPS</div></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label>Tipo de unidad</label>
+                <select id="f-tipo-unidad">
+                  <option value="">Seleccionar...</option>
+                  <option>PARTICULAR</option>
+                  <option>SERVICIOS</option>
+                  <option>CARGA</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Costo estimado de la unidad</label>
+                <input type="text" id="f-costo" placeholder="Ej. $1,500,000 MXN" />
+              </div>
+              <div class="form-group">
+                <label>Plataforma</label>
+                <select id="f-plataforma" onchange="autoDetectEmpresa(this.value)">
+                  <option value="">Seleccionar...</option>
+                  <option>TECNOMETRICS</option>
+                  <option>UTRAX</option>
+                  <option>FT VISION</option>
+                  <option>RECUPERAMOVIL</option>
+                  <option>EASYTRACK</option>
+                  <option>SFLEET</option>
+                  <option>TRAFFILOG</option>
+                  <option>INBURSA</option>
+                  <option>OTRO PROVEEDOR</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+              <div class="form-group">
+                <label>Empresa que atiende</label>
+                <input type="text" id="f-empresa-atiende" readonly placeholder="Se detecta por plataforma" style="background:#f0f5fc;color:var(--muted2);cursor:not-allowed;" />
+              </div>
+              <div class="form-group">
+                <label>ESN (equipo GPS)</label>
+                <input type="text" id="f-esn" placeholder="No. de serie del equipo" />
+              </div>
+              <div class="form-group">
+                <label>Nick / Alias en plataforma</label>
+                <input type="text" id="f-nick" placeholder="Nombre del activo en sistema" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Card 3 — Datos extras del robo ── -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><div class="card-title">Datos extras del robo</div></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label>Estado de la República</label>
+                <select id="f-estado-rep">
+                  <option value="">Seleccionar...</option>
+                  <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
+                  <option>Campeche</option><option>Chiapas</option><option>Chihuahua</option>
+                  <option>Ciudad de México</option><option>Coahuila</option><option>Colima</option>
+                  <option>Durango</option><option>Estado de México</option><option>Guanajuato</option>
+                  <option>Guerrero</option><option>Hidalgo</option><option>Jalisco</option>
+                  <option>Michoacán</option><option>Morelos</option><option>Nayarit</option>
+                  <option>Nuevo León</option><option>Oaxaca</option><option>Puebla</option>
+                  <option>Querétaro</option><option>Quintana Roo</option><option>San Luis Potosí</option>
+                  <option>Sinaloa</option><option>Sonora</option><option>Tabasco</option>
+                  <option>Tamaulipas</option><option>Tlaxcala</option><option>Veracruz</option>
+                  <option>Yucatán</option><option>Zacatecas</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Tiempo en reportar el robo</label>
+                <select id="f-tiempo-reporte">
+                  <option value="">Seleccionar...</option>
+                  <option>- 30 minutos</option>
+                  <option>30 minutos - 1 hr</option>
+                  <option>1 - 3 hrs.</option>
+                  <option>3 - 12 hrs.</option>
+                  <option>12 hrs. - 1 día</option>
+                  <option>&gt; 1 día</option>
+                  <option>&gt; 2 días</option>
+                  <option>1 semana o más</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Tiempo en dar predenuncia</label>
+                <select id="f-tiempo-predenuncia">
+                  <option value="">Seleccionar...</option>
+                  <option>- 30 minutos</option>
+                  <option>30 minutos - 1 hr</option>
+                  <option>1 - 3 hrs.</option>
+                  <option>3 - 12 hrs.</option>
+                  <option>12 hrs. - 1 día</option>
+                  <option>&gt; 1 día</option>
+                  <option>&gt; 2 días</option>
+                  <option>1 semana o más</option>
+                  <option>Sin pre-denuncia</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label style="margin-bottom:8px;display:block;">Autoridades contactadas</label>
+              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-municipales" style="accent-color:var(--accent);width:13px;height:13px;"> Municipales
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-estatales" style="accent-color:var(--accent);width:13px;height:13px;"> Estatales
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-federales" style="accent-color:var(--accent);width:13px;height:13px;"> Federales
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-gn" style="accent-color:var(--accent);width:13px;height:13px;"> Guardia Nacional
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-marina" style="accent-color:var(--accent);width:13px;height:13px;"> Marina
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-anerpv" style="accent-color:var(--accent);width:13px;height:13px;"> ANERPV
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-fuerza" style="accent-color:var(--accent);width:13px;height:13px;"> Fuerza Civil
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-emergencias" style="accent-color:var(--accent);width:13px;height:13px;"> Emergencias
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-ssp" style="accent-color:var(--accent);width:13px;height:13px;"> SSP
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-recuperadores" style="accent-color:var(--accent);width:13px;height:13px;"> Recuperadores
+                </label>
+              </div>
+            </div>
+
+            <!-- Campos INBURSA — visibles solo si plataforma = INBURSA -->
+            <div id="campos-inbursa" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+              <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:10px;">Datos INBURSA</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="form-group">
+                  <label>No. Póliza</label>
+                  <input type="text" id="f-inbursa-poliza" placeholder="Número de póliza" />
+                </div>
+                <div class="form-group">
+                  <label>No. CIS</label>
+                  <input type="text" id="f-inbursa-cis" placeholder="Número CIS" />
+                </div>
+                <div class="form-group">
+                  <label>No. Siniestro</label>
+                  <input type="text" id="f-inbursa-siniestro" placeholder="Número de siniestro" />
+                </div>
+                <div class="form-group">
+                  <label>Alarmado por</label>
+                  <input type="text" id="f-inbursa-alarmado" placeholder="Nombre o área" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- ── Resultado ── -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><div class="card-title">Resultado</div></div>
+          <div class="card-body">
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+              <div id="rec-si" onclick="selectRecuperacion('si')" style="border:2px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;">
+                <div style="font-size:24px;margin-bottom:6px;">✅</div>
+                <div style="font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--success);">Unidad recuperada</div>
+              </div>
+              <div id="rec-no" onclick="selectRecuperacion('no')" style="border:2px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;">
+                <div style="font-size:24px;margin-bottom:6px;">🔎</div>
+                <div style="font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--warning);">No recuperada</div>
+              </div>
+              <div id="rec-cancel" onclick="selectRecuperacion('cancel')" style="border:2px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;">
+                <div style="font-size:24px;margin-bottom:6px;">🚫</div>
+                <div style="font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--muted2);">Cancelado</div>
+              </div>
+            </div>
+
+            <!-- ══ Panel: RECUPERADA ══ -->
+            <div id="panel-si" style="display:none;">
+              <div class="form-group" style="margin-bottom:10px;">
+                <label>Escenario de cierre</label>
+                <select id="f-escenario" onchange="onEscenarioChange(this.value)">
+                  <option value="">Seleccionar...</option>
+                  <option value="corrralon">1. Remitida a corralón / depósito</option>
+                  <option value="cliente">2. Cliente recoge directamente</option>
+                  <option value="mp">3. Puesta a disposición del Ministerio Público</option>
+                  <option value="no-fisica">4. Localizada pero no recuperada físicamente</option>
+                  <option value="extranjero">5. Localizada en el extranjero</option>
+                </select>
+              </div>
+              <div id="campos-escenario" style="display:none;margin-bottom:14px;padding:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);">
+
+                <div id="campos-corrralon" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label>Lugar de recuperación</label><input type="text" id="f-lugar-rec-corrralon" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label>Fecha de recuperación</label><input type="date" id="f-fecha-rec-corrralon" /></div>
+                  <div class="form-group"><label>Nombre del corralón / depósito</label><input type="text" id="f-nombre-corrralon" placeholder="Ej. Corralón Municipal" /></div>
+                  <div class="form-group"><label>Dirección</label><input type="text" id="f-dir-corrralon" placeholder="Calle, número" /></div>
+                  <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-corrralon" placeholder="Municipio" /></div>
+                  <div class="form-group"><label>Estado</label><input type="text" id="f-edo-corrralon" placeholder="Estado" /></div>
+                </div></div>
+
+                <div id="campos-cliente" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label>Lugar de recuperación</label><input type="text" id="f-lugar-rec-cliente" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label>Fecha de recuperación</label><input type="date" id="f-fecha-rec-cliente" /></div>
+                  <div class="form-group"><label>Nombre del representante legal</label><input type="text" id="f-rep-cliente" placeholder="Nombre completo" /></div>
+                  <div class="form-group"><label>Municipio, Estado</label><input type="text" id="f-mun-cliente" placeholder="Ej. Monterrey, Nuevo León" /></div>
+                  <div class="form-group full"><label>¿Dónde recoge?</label>
+                    <select id="f-donde-cliente" onchange="toggleDependenciaCliente(this.value)">
+                      <option value="lugar">En el lugar donde fue encontrada</option>
+                      <option value="instalaciones">En instalaciones de la autoridad</option>
+                    </select>
+                  </div>
+                  <div id="campo-dependencia-cliente" class="form-group full" style="display:none;">
+                    <label>Nombre de la dependencia</label>
+                    <input type="text" id="f-dep-cliente" placeholder="Ej. Fiscalía General del Estado" />
+                  </div>
+                </div></div>
+
+                <div id="campos-mp" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label>Lugar de recuperación</label><input type="text" id="f-lugar-rec-mp" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label>Fecha de recuperación</label><input type="date" id="f-fecha-rec-mp" /></div>
+                  <div class="form-group"><label>Fiscalía / Agencia del MP</label><input type="text" id="f-fiscalia" placeholder="Ej. Fiscalía General del Estado de NL" /></div>
+                  <div class="form-group"><label>Dirección</label><input type="text" id="f-dir-mp" placeholder="Calle, número" /></div>
+                  <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-mp" placeholder="Municipio" /></div>
+                  <div class="form-group"><label>Estado</label><input type="text" id="f-edo-mp" placeholder="Estado" /></div>
+                </div></div>
+
+                <div id="campos-no-fisica" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label>Lugar de localización GPS</label><input type="text" id="f-lugar-rec-nofisica" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label>Fecha de localización</label><input type="date" id="f-fecha-rec-nofisica" /></div>
+                  <div class="form-group"><label>Motivo</label>
+                    <select id="f-motivo-nofisica">
+                      <option value="">Seleccionar...</option>
+                      <option>propiedad privada</option>
+                      <option>área restringida</option>
+                      <option>zona de difícil acceso</option>
+                      <option>otro estado</option>
+                    </select>
+                  </div>
+                  <div class="form-group"><label>Municipio, Estado</label><input type="text" id="f-mun-nofisica" placeholder="Ej. Monterrey, Nuevo León" /></div>
+                </div></div>
+
+                <div id="campos-extranjero" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label>País</label><input type="text" id="f-pais-extranjero" placeholder="Ej. Estados Unidos" /></div>
+                  <div class="form-group"><label>Fecha de localización</label><input type="date" id="f-fecha-rec-extranjero" /></div>
+                </div></div>
+
+              </div>
+              <div style="padding:10px 14px;background:#f0fdf9;border:1px solid #99f6e4;border-radius:var(--radius-sm);">
+                <div style="font-size:11px;color:var(--success);font-weight:600;margin-bottom:3px;">Al finalizar se ejecutará automáticamente:</div>
+                <div style="font-size:11px;color:#0f766e;">✓ Folio UR generado desde Sheets &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo &nbsp;·&nbsp; ✓ Registro en Sheets &nbsp;·&nbsp; ✓ Drive</div>
+              </div>
+            </div>
+
+            <!-- ══ Panel: NO RECUPERADA ══ -->
+            <div id="panel-no" style="display:none;">
+              <div style="padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);">
+                <div style="font-size:11px;color:var(--warning);font-weight:600;margin-bottom:3px;">Al finalizar se ejecutará automáticamente:</div>
+                <div style="font-size:11px;color:#92400e;">✓ Folio UNR generado desde Sheets &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo &nbsp;·&nbsp; ✓ Seguimiento 48 hrs &nbsp;·&nbsp; ✓ Sheets &nbsp;·&nbsp; ✓ Drive</div>
+              </div>
+            </div>
+
+            <!-- ══ Panel: CANCELADO ══ -->
+            <div id="panel-cancel" style="display:none;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;">
+                <div class="form-group">
+                  <label>Quién recibe el reporte</label>
+                  <input type="text" id="f-cancel-recibe" readonly style="background:#f0f5fc;color:var(--muted2);cursor:not-allowed;" />
+                </div>
+                <div class="form-group">
+                  <label>Quién autoriza</label>
+                  <select id="f-cancel-autoriza">
+                    <option value="">Seleccionar...</option>
+                    <option>JOSELYNE CONTRERAS</option>
+                    <option>OSCAR ALDAY</option>
+                    <option>RAFAEL MARTINEZ</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Motivo de cancelación</label>
+                  <input type="text" id="f-cancel-motivo" placeholder="Razón del cancelamiento" />
+                </div>
+                <div class="form-group">
+                  <label>Fecha de cancelación</label>
+                  <input type="date" id="f-cancel-fecha" />
+                </div>
+              </div>
+              <div style="padding:10px 14px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:var(--radius-sm);">
+                <div style="font-size:11px;color:var(--muted2);font-weight:600;margin-bottom:3px;">Al finalizar se registrará como cancelado:</div>
+                <div style="font-size:11px;color:var(--muted);">✓ Folio UNR generado desde Sheets &nbsp;·&nbsp; ✓ Registro en tab Cancelados &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:4px;">
+          <button class="btn btn-ghost" onclick="prevStep(2)">← Atrás</button>
+          <button class="btn btn-primary" onclick="nextStep(2)">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- ======= PASO 3: CIERRE ======= -->
+      <div id="form-step-3" style="display:none;">
+
+        <!-- ── Card 1 — Persona que reporta el robo ── -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><div class="card-title">Persona que reporta el robo</div></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <div class="form-group">
+                <label>Relación con la unidad</label>
+                <select id="f-relacion-unidad">
+                  <option value="">Seleccionar...</option>
+                  <option>Operador</option>
+                  <option>Propietario / Dueño</option>
+                  <option>Familiar del operador</option>
+                  <option>Encargado de flota</option>
+                  <option>Empresa / Razón social</option>
+                  <option>Monitorista externo</option>
+                  <option>Autoridad</option>
+                  <option>Otro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Nombre del reportante</label>
+                <input type="text" id="f-nombre-reportante" placeholder="Nombre completo" />
+              </div>
+              <div class="form-group">
+                <label>Medio de contacto</label>
+                <select id="f-medio-contacto">
+                  <option value="">Seleccionar...</option>
+                  <option>WHATSAPP</option>
+                  <option>LLAMADA</option>
+                  <option>CORREO</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label>Teléfono del reportante</label>
                 <input type="tel" id="f-tel-reportante" placeholder="Ej. 555 123 4567" />
               </div>
@@ -980,51 +1345,138 @@
               </div>
             </div>
 
-            <!-- Panel: RECUPERADA -->
+            <!-- ══ Panel: RECUPERADA ══ -->
             <div id="panel-si" style="display:none;">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;">
-                <div class="form-group">
-                  <label>Fecha y hora de recuperación</label>
-                  <input type="datetime-local" id="f-fecha-recuperacion" />
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="form-group"><label>Última señal GPS</label><input type="text" id="f-ultima-senal" placeholder="Ej. 13/03/2026 11:02 HRS." /></div>
+                <div class="form-group"><label>Fecha y hora de recuperación</label><input type="datetime-local" id="f-fecha-recuperacion" /></div>
+              </div>
+              <div class="form-group" style="margin-bottom:14px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <label>Situación</label>
+                  <button type="button" onclick="generarSituacion()" class="btn btn-ghost btn-sm">⚡ Auto-generar</button>
                 </div>
-                <div class="form-group">
-                  <label>Detalles de la recuperación</label>
-                  <input type="text" id="f-rec-detalles" placeholder="Lugar, condiciones, quién recuperó..." />
+                <textarea id="f-situacion" style="min-height:75px;" placeholder="Presiona Auto-generar o escribe la situación..."></textarea>
+              </div>
+              <div class="form-group" style="margin-bottom:14px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <label>Acciones realizadas</label>
+                  <button type="button" onclick="generarAcciones()" class="btn btn-ghost btn-sm">⚡ Auto-generar</button>
                 </div>
+                <textarea id="f-acciones" style="min-height:90px;" placeholder="Presiona Auto-generar o escribe las acciones..."></textarea>
+              </div>
+              <div class="form-group" style="margin-bottom:10px;">
+                <label>Escenario de cierre</label>
+                <select id="f-escenario" onchange="onEscenarioChange(this.value)">
+                  <option value="">Seleccionar...</option>
+                  <option value="corrralon">1. Remitida a corralón / depósito</option>
+                  <option value="cliente">2. Cliente recoge directamente</option>
+                  <option value="mp">3. Puesta a disposición del Ministerio Público</option>
+                  <option value="no-fisica">4. Localizada pero no recuperada físicamente</option>
+                  <option value="extranjero">5. Localizada en el extranjero</option>
+                </select>
+              </div>
+              <div id="campos-escenario" style="display:none;margin-bottom:14px;padding:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);">
+                <div id="campos-corrralon" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label>Lugar de recuperación</label><input type="text" id="f-lugar-rec-corrralon" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label>Fecha de recuperación</label><input type="date" id="f-fecha-rec-corrralon" /></div>
+                  <div class="form-group"><label>Nombre del corralón / depósito</label><input type="text" id="f-nombre-corrralon" placeholder="Ej. Corralón Municipal" /></div>
+                  <div class="form-group"><label>Dirección</label><input type="text" id="f-dir-corrralon" placeholder="Calle, número" /></div>
+                  <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-corrralon" placeholder="Municipio" /></div>
+                  <div class="form-group"><label>Estado</label><input type="text" id="f-edo-corrralon" placeholder="Estado" /></div>
+                </div></div>
+                <div id="campos-cliente" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label>Lugar de recuperación</label><input type="text" id="f-lugar-rec-cliente" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label>Fecha de recuperación</label><input type="date" id="f-fecha-rec-cliente" /></div>
+                  <div class="form-group"><label>Nombre del representante legal</label><input type="text" id="f-rep-cliente" placeholder="Nombre completo" /></div>
+                  <div class="form-group"><label>Municipio, Estado</label><input type="text" id="f-mun-cliente" placeholder="Ej. Monterrey, Nuevo León" /></div>
+                  <div class="form-group full"><label>¿Dónde recoge?</label>
+                    <select id="f-donde-cliente" onchange="toggleDependenciaCliente(this.value)">
+                      <option value="lugar">En el lugar donde fue encontrada</option>
+                      <option value="instalaciones">En instalaciones de la autoridad</option>
+                    </select>
+                  </div>
+                  <div id="campo-dependencia-cliente" class="form-group full" style="display:none;"><label>Nombre de la dependencia</label><input type="text" id="f-dep-cliente" placeholder="Ej. Fiscalía General del Estado" /></div>
+                </div></div>
+                <div id="campos-mp" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label>Lugar de recuperación</label><input type="text" id="f-lugar-rec-mp" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label>Fecha de recuperación</label><input type="date" id="f-fecha-rec-mp" /></div>
+                  <div class="form-group"><label>Fiscalía / Agencia del MP</label><input type="text" id="f-fiscalia" placeholder="Ej. Fiscalía General del Estado de NL" /></div>
+                  <div class="form-group"><label>Dirección</label><input type="text" id="f-dir-mp" placeholder="Calle, número" /></div>
+                  <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-mp" placeholder="Municipio" /></div>
+                  <div class="form-group"><label>Estado</label><input type="text" id="f-edo-mp" placeholder="Estado" /></div>
+                </div></div>
+                <div id="campos-no-fisica" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label>Lugar de localización GPS</label><input type="text" id="f-lugar-rec-nofisica" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label>Fecha de localización</label><input type="date" id="f-fecha-rec-nofisica" /></div>
+                  <div class="form-group"><label>Motivo</label>
+                    <select id="f-motivo-nofisica">
+                      <option value="">Seleccionar...</option>
+                      <option>propiedad privada</option>
+                      <option>área restringida</option>
+                      <option>zona de difícil acceso</option>
+                      <option>otro estado</option>
+                    </select>
+                  </div>
+                  <div class="form-group"><label>Municipio, Estado</label><input type="text" id="f-mun-nofisica" placeholder="Ej. Monterrey, Nuevo León" /></div>
+                </div></div>
+                <div id="campos-extranjero" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label>País</label><input type="text" id="f-pais-extranjero" placeholder="Ej. Estados Unidos" /></div>
+                  <div class="form-group"><label>Fecha de localización</label><input type="date" id="f-fecha-rec-extranjero" /></div>
+                </div></div>
+              </div>
+              <div class="form-group" style="margin-bottom:14px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <label>Observaciones adicionales</label>
+                  <button type="button" onclick="generarObservaciones()" class="btn btn-ghost btn-sm">⚡ Auto-generar</button>
+                </div>
+                <textarea id="f-observaciones" style="min-height:90px;" placeholder="Selecciona escenario y presiona Auto-generar..."></textarea>
               </div>
               <div style="padding:10px 14px;background:#f0fdf9;border:1px solid #99f6e4;border-radius:var(--radius-sm);">
                 <div style="font-size:11px;color:var(--success);font-weight:600;margin-bottom:3px;">Al finalizar se ejecutará automáticamente:</div>
-                <div style="font-size:11px;color:#0f766e;">✓ Folio UR generado desde Sheets &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo &nbsp;·&nbsp; ✓ Registro en Sheets &nbsp;·&nbsp; ✓ Zoho CRM &nbsp;·&nbsp; ✓ Drive</div>
+                <div style="font-size:11px;color:#0f766e;">✓ Folio UR generado desde Sheets &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo &nbsp;·&nbsp; ✓ Registro en Sheets &nbsp;·&nbsp; ✓ Drive</div>
               </div>
             </div>
 
-            <!-- Panel: NO RECUPERADA -->
+            <!-- ══ Panel: NO RECUPERADA ══ -->
             <div id="panel-no" style="display:none;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="form-group"><label>Última señal GPS</label><input type="text" id="f-ultima-senal-no" placeholder="Ej. 13/03/2026 11:02 HRS." /></div>
+              </div>
+              <div class="form-group" style="margin-bottom:14px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <label>Situación</label>
+                  <button type="button" onclick="generarSituacion('no')" class="btn btn-ghost btn-sm">⚡ Auto-generar</button>
+                </div>
+                <textarea id="f-situacion-no" style="min-height:75px;" placeholder="Presiona Auto-generar o escribe la situación..."></textarea>
+              </div>
+              <div class="form-group" style="margin-bottom:14px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <label>Acciones realizadas</label>
+                  <button type="button" onclick="generarAcciones('no')" class="btn btn-ghost btn-sm">⚡ Auto-generar</button>
+                </div>
+                <textarea id="f-acciones-no" style="min-height:90px;" placeholder="Presiona Auto-generar o escribe las acciones..."></textarea>
+              </div>
+              <div class="form-group" style="margin-bottom:14px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <label>Observaciones adicionales</label>
+                  <button type="button" onclick="generarObservacionesNoRec()" class="btn btn-ghost btn-sm">⚡ Auto-generar</button>
+                </div>
+                <textarea id="f-observaciones-no" style="min-height:90px;" placeholder="Presiona Auto-generar..."></textarea>
+              </div>
               <div style="padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);">
                 <div style="font-size:11px;color:var(--warning);font-weight:600;margin-bottom:3px;">Al finalizar se ejecutará automáticamente:</div>
-                <div style="font-size:11px;color:#92400e;">✓ Folio UNR generado desde Sheets &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo &nbsp;·&nbsp; ✓ Seguimiento 48 hrs &nbsp;·&nbsp; ✓ Sheets &nbsp;·&nbsp; ✓ Zoho CRM &nbsp;·&nbsp; ✓ Drive</div>
+                <div style="font-size:11px;color:#92400e;">✓ Folio UNR generado desde Sheets &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo &nbsp;·&nbsp; ✓ Seguimiento 48 hrs &nbsp;·&nbsp; ✓ Sheets &nbsp;·&nbsp; ✓ Drive</div>
               </div>
             </div>
 
-            <!-- Panel: CANCELADO -->
+            <!-- ══ Panel: CANCELADO ══ -->
             <div id="panel-cancel" style="display:none;">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;">
-                <div class="form-group">
-                  <label>¿Quién recibe el reporte?</label>
-                  <input type="text" id="f-cancel-recibe" placeholder="Nombre o área" />
-                </div>
-                <div class="form-group">
-                  <label>¿Quién autoriza?</label>
-                  <input type="text" id="f-cancel-autoriza" placeholder="Nombre o cargo" />
-                </div>
-                <div class="form-group">
-                  <label>Motivo de cancelación</label>
-                  <input type="text" id="f-cancel-motivo" placeholder="Razón del cancelamiento" />
-                </div>
-                <div class="form-group">
-                  <label>Fecha de cancelación</label>
-                  <input type="date" id="f-cancel-fecha" />
-                </div>
+                <div class="form-group"><label>¿Quién recibe el reporte?</label><input type="text" id="f-cancel-recibe" placeholder="Nombre o área" /></div>
+                <div class="form-group"><label>¿Quién autoriza?</label><input type="text" id="f-cancel-autoriza" placeholder="Nombre o cargo" /></div>
+                <div class="form-group"><label>Motivo de cancelación</label><input type="text" id="f-cancel-motivo" placeholder="Razón del cancelamiento" /></div>
+                <div class="form-group"><label>Fecha de cancelación</label><input type="date" id="f-cancel-fecha" /></div>
               </div>
               <div style="padding:10px 14px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:var(--radius-sm);">
                 <div style="font-size:11px;color:var(--muted2);font-weight:600;margin-bottom:3px;">Al finalizar se registrará como cancelado:</div>
@@ -1034,7 +1486,6 @@
 
           </div>
         </div>
-
         <div style="display:flex;justify-content:space-between;margin-top:4px;">
           <button class="btn btn-ghost" onclick="prevStep(3)">← Atrás</button>
           <button class="btn btn-primary" onclick="nextStep(3)">Finalizar y registrar →</button>
@@ -1688,6 +2139,7 @@ function syncParsedToForm() {
   if(getF('fp-lugar'))    setF('f-lugar',          getF('fp-lugar'));
   if(getF('fp-coords'))   setF('f-coords',         getF('fp-coords'));
   // NOTA: fecha-robo y hora-robo NO se sincronizan desde plantilla — se llenan manualmente
+  if(getF('fp-fechahora')) setF('f-ultima-senal',   getF('fp-fechahora'));
   if(getF('fp-folio911')) setF('f-folio911-step1', getF('fp-folio911'));
   // Caja — mapear todos los campos
   const cajaFields = {
@@ -1791,6 +2243,12 @@ function selectRecuperacion(v) {
   document.getElementById('panel-si').style.display      = v==='si'     ? 'block' : 'none';
   document.getElementById('panel-no').style.display      = v==='no'     ? 'block' : 'none';
   document.getElementById('panel-cancel').style.display  = v==='cancel' ? 'block' : 'none';
+  // Auto-llenar quién recibe con el monitorista
+  if(v === 'cancel') {
+    const mon = document.getElementById('f-monitorista')?.value || '';
+    const rec = document.getElementById('f-cancel-recibe');
+    if(rec && mon) rec.value = mon;
+  }
 }
 
 function nextStep(from) {
@@ -1874,15 +2332,33 @@ async function registerEvento() {
   const tipoAlerta  = getTiposAlerta().join(' + ') || 'N/A';
   const paroMotor   = getParoMotor();
   const resultadoLabel = { si:'RECUPERADA ✅', no:'NO RECUPERADA ❌', cancel:'CANCELADO 🚫' }[resultado] || '—';
+  const estatusCompleto = resultadoLabel;
 
   // Autoridades contactadas
   const autIds = ['municipales','estatales','federales','gn','marina','anerpv','fuerza','emergencias','ssp','recuperadores'];
   const autNombres = ['Municipales','Estatales','Federales','Guardia Nacional','Marina','ANERPV','Fuerza Civil','Emergencias','SSP','Recuperadores'];
   const autoridades = autIds.map((id,i) => document.getElementById('aut-'+id)?.checked ? autNombres[i] : null).filter(Boolean).join(', ') || '—';
 
+  // Calcular MES y HORARIO desde fecha de reporte
+  const fechaObj = fechaAtencion ? new Date(fechaAtencion) : new Date();
+  const meses = ['01. ENERO','02. FEBRERO','03. MARZO','04. ABRIL','05. MAYO','06. JUNIO',
+                 '07. JULIO','08. AGOSTO','09. SEPTIEMBRE','10. OCTUBRE','11. NOVIEMBRE','12. DICIEMBRE'];
+  const mes = meses[fechaObj.getMonth()] || '—';
+  const hora = fechaObj.getHours();
+  const horarioReporte = hora >= 7 && hora < 14 ? 'MATUTINO' : hora >= 14 && hora < 20 ? 'VESPERTINO' : 'NOCTURNO';
+
+  // Campos según resultado
+  const fechaRecuperacion = document.getElementById('f-fecha-recuperacion')?.value || '—';
+  const tiempoReporte     = document.getElementById('f-tiempo-reporte')?.value     || '—';
+  const tiempoPredenuncia = document.getElementById('f-tiempo-predenuncia')?.value || '—';
+  const cancelRecibe      = document.getElementById('f-cancel-recibe')?.value      || monitorista;
+  const cancelAutoriza    = document.getElementById('f-cancel-autoriza')?.value    || '—';
+  const cancelMotivo      = document.getElementById('f-cancel-motivo')?.value      || '—';
+  const cancelFecha       = document.getElementById('f-cancel-fecha')?.value       || '—';
+
   // Prefijo y consecutivo local como fallback
   const prefijos  = FOLIO_PREFIJOS[empresa] || { ur:'UR-X', unr:'UNR-X' };
-  const prefijo   = resultado === 'si' ? prefijos.ur : prefijos.unr;
+  const prefijo   = resultado === 'si' ? prefijos.ur : resultado === 'cancel' ? 'CANCEL' : prefijos.unr;
   const existentes = casos.filter(c => c.folio && c.folio.startsWith(prefijo)).length;
   const consecutivoFallback = existentes + 1;
 
@@ -1901,6 +2377,84 @@ async function registerEvento() {
     `━━━━━━━━━━━━━━━━━━━`,
   ].join('\n');
 
+  // ── sheetData según tipo de resultado ──
+  let sheetData = {};
+
+  if(resultado === 'si') {
+    // RECUPERADAS
+    sheetData = {
+      'MES':                                    mes,
+      'TIPO DE EVENTO':                         tipoEvento,
+      'FOLIO':                                  '(pendiente)',
+      'NOMBRE CLIENTE':                         cliente,
+      'NICK UNIDAD':                            nick,
+      'TIPO UNIDAD':                            tipoUnidad,
+      'COSTO ESTIMADO':                         costo,
+      'PLATAFORMA':                             plataforma,
+      'ESN/ID':                                 esn,
+      'ESTATUS':                                estatusCompleto,
+      'PARO DE MOTOR':                          paroMotor,
+      'COORDENADAS':                            coordenadas,
+      'ESTADO DE LA REPUBLICA DEL REPORTE':     estadoRep,
+      'TIPO DE AUTORIDADES CONTACTADAS':        autoridades,
+      'FOLIO PRE-DENUNCIA':                     folio911,
+      'FECHA Y HORA DEL ROBO':                  fechaRobo + ' ' + horaRobo,
+      'FECHA Y HORA DEL REPORTE AL CENTRO DE MONITOREO': fechaAtencion,
+      'HORARIO REPORTE':                        horarioReporte,
+      'FECHA Y HORA DE RECUPERACIÓN':           fechaRecuperacion,
+      'REPORTE DE PRE-DENUNCIA':                tiempoPredenuncia,
+      'REPORTE DE ROBO':                        tiempoReporte,
+      'NOMBRE':                                 monitorista,
+    };
+  } else if(resultado === 'no') {
+    // NO RECUPERADAS
+    sheetData = {
+      'MES':                                    mes,
+      'TIPO DE EVENTO':                         tipoEvento,
+      'FOLIO':                                  '(pendiente)',
+      'NOMBRE CLIENTE':                         cliente,
+      'NICK UNIDAD':                            nick,
+      'TIPO UNIDAD':                            tipoUnidad,
+      'COSTO ESTIMADO':                         costo,
+      'PLATAFORMA':                             plataforma,
+      'ESN/ID':                                 esn,
+      'ESTATUS':                                estatusCompleto,
+      'PARO DE MOTOR':                          paroMotor,
+      'COORDENADAS':                            coordenadas,
+      'ESTADO DE LA REPUBLICA DEL REPORTE':     estadoRep,
+      'TIPO DE AUTORIDADES CONTACTADAS':        autoridades,
+      'FOLIO PRE-DENUNCIA':                     folio911,
+      'FECHA Y HORA DEL ROBO':                  fechaRobo + ' ' + horaRobo,
+      'FECHA Y HORA DEL REPORTE AL CENTRO DE MONITOREO': fechaAtencion,
+      'HORARIO REPORTE':                        horarioReporte,
+      'REPORTE DE PRE-DENUNCIA':                tiempoPredenuncia,
+      'REPORTE DE ROBO':                        tiempoReporte,
+      'NOMBRE':                                 monitorista,
+    };
+  } else {
+    // CANCELADOS
+    sheetData = {
+      'MES':                                    mes,
+      'TIPO DE EVENTO':                         tipoEvento,
+      'FOLIO':                                  '(pendiente)',
+      'NOMBRE CLIENTE':                         cliente,
+      'NICK UNIDAD':                            nick,
+      'TIPO UNIDAD':                            tipoUnidad,
+      'PLATAFORMA':                             plataforma,
+      'ESN/ID':                                 esn,
+      'ESTATUS':                                estatusCompleto,
+      'COORDENADAS':                            coordenadas,
+      'FECHA Y HORA DEL ROBO':                  fechaRobo + ' ' + horaRobo,
+      'HORARIO REPORTE':                        horarioReporte,
+      'FECHA Y HORA DEL REPORTE AL CENTRO DE MONITOREO': fechaAtencion,
+      'REPORTE DE ROBO':                        tiempoReporte,
+      'QUIÉN RECIBE EL REPORTE':                cancelRecibe,
+      'QUIÉN AUTORIZA':                         cancelAutoriza,
+      'MOTIVO':                                 cancelMotivo,
+      'FECHA':                                  cancelFecha,
+    };
+  }
+
   // Payload completo para n8n
   const payload = {
     tipoEvento,
@@ -1909,31 +2463,14 @@ async function registerEvento() {
     consecutivo: consecutivoFallback,
     cliente,
     mensaje,
-    sheetData: {
-      'Fecha':          fechaAtencion,
-      'Cliente':        cliente,
-      'Placas':         placas,
-      'Nick':           nick,
-      'ESN':            esn,
-      'Tipo Evento':    tipoEvento,
-      'Plataforma':     plataforma,
-      'Lugar Robo':     lugar,
-      'Fecha Robo':     fechaRobo + ' ' + horaRobo,
-      'Folio 911':      folio911,
-      'Resultado':      resultadoLabel,
-      'Monitorista':    monitorista,
-      'Estado Rep':     estadoRep,
-      'Tipo Unidad':    tipoUnidad,
-      'Costo Estimado': costo,
-      'Autoridades':    autoridades,
-      'Paro Motor':     paroMotor,
-      'Alertas':        tipoAlerta,
-    }
+    sheetData,
   };
 
   // ── Llamar a n8n: finalizar-caso (WA + Drive + Sheets todo en uno) ──
   const waStatus = document.getElementById('wa-confirm-status');
-  let folio = prefijo + '-' + String(consecutivoFallback).padStart(3,'0');
+  let folio = resultado === 'cancel' 
+    ? prefijo + '-' + String(consecutivoFallback).padStart(3,'0')
+    : prefijo + String(consecutivoFallback).padStart(3,'0');
 
   try {
     document.getElementById('folio-valor').textContent = 'Registrando...';
@@ -1946,6 +2483,8 @@ async function registerEvento() {
     if(res.ok) {
       const data = await res.json();
       if(data.codigo) folio = data.codigo;
+      // Update folio in sheetData
+      payload.sheetData['FOLIO'] = folio;
       if(waStatus) { waStatus.textContent = '✓ Mensaje enviado al grupo WhatsApp'; waStatus.style.color='var(--success)'; }
       notify('Folio generado: ' + folio, 'success');
       setTimeout(()=>{ notify('Registrado en Google Sheets', 'success'); }, 600);
@@ -2159,7 +2698,134 @@ function generarReporte() { notify('Generando reporte PDF...','info'); setTimeou
 function enviarResultados() { notify('Enviando correo con reportes adjuntos...','info'); setTimeout(()=>notify('Correo enviado desde Zoho CRM','success'),1200); }
 function exportSheets() { notify('Exportando a Google Sheets...','info'); setTimeout(()=>notify('Datos sincronizados en Sheets','success'),1000); }
 
-// ===== TIPO DE EVENTO: PLANTILLA PLACEHOLDER + VISIBILIDAD CAJA =====
+// ===== DATOS PARA REPORTE =====
+
+function onEscenarioChange(val) {
+  const wrap = document.getElementById('campos-escenario');
+  wrap.style.display = val ? 'block' : 'none';
+  ['corrralon','cliente','mp','no-fisica','extranjero','no-recuperada'].forEach(s => {
+    const el = document.getElementById('campos-'+s);
+    if(el) el.style.display = (s === val) ? 'block' : 'none';
+  });
+  // Show/hide dependencia field in cliente
+  if(val === 'cliente') {
+    const sel = document.getElementById('f-donde-cliente');
+    if(sel) toggleDependenciaCliente(sel.value);
+  }
+}
+
+function toggleDependenciaCliente(v) {
+  const el = document.getElementById('campo-dependencia-cliente');
+  if(el) el.style.display = v === 'instalaciones' ? 'block' : 'none';
+}
+
+function generarSituacion(panel) {
+  const sfx = panel === 'no' ? '-no' : '';
+  const nombre   = document.getElementById('f-nombre-reportante')?.value || '—';
+  const relacion = document.getElementById('f-relacion-unidad')?.value   || '—';
+  const hora     = document.getElementById('f-hora-robo')?.value          || '—';
+  const fecha    = document.getElementById('f-fecha-robo')?.value         || '—';
+  const lugar    = document.getElementById('f-estado-rep')?.value         || '—';
+  const texto = `${nombre}, en su calidad de ${relacion}, establece comunicación para solicitar la activación inmediata de los protocolos de emergencia correspondientes para la unidad descrita anteriormente. El evento se registró aproximadamente a las ${hora} horas del día ${fecha}, en ${lugar}.`;
+  const el = document.getElementById('f-situacion'+sfx);
+  if(el) el.value = texto;
+}
+
+function generarAcciones(panel) {
+  const sfx = panel === 'no' ? '-no' : '';
+  const plataforma  = document.getElementById('f-plataforma')?.value          || '—';
+  const nick        = document.getElementById('f-nick')?.value                || '—';
+  const alertas     = getTiposAlerta().join(', ');
+  const paroMotor   = getParoMotor();
+  const coordenadas = document.getElementById('f-coords')?.value              || '';
+  const lugar       = document.getElementById('f-lugar')?.value               || '';
+  const folio       = document.getElementById('f-folio911-step1')?.value      || '';
+  const autIds     = ['municipales','estatales','federales','gn','marina','anerpv','fuerza','emergencias','ssp','recuperadores'];
+  const autNombres = ['Municipales','Estatales','Federales','Guardia Nacional','Marina','ANERPV','Fuerza Civil','Emergencias','SSP','Recuperadores'];
+  const autSelec   = autIds.map((id,i) => document.getElementById('aut-'+id)?.checked ? autNombres[i] : null).filter(Boolean);
+  const autSinANERPV = autSelec.filter(a => a !== 'ANERPV');
+  let autTexto = '';
+  if(autSinANERPV.length === 1) autTexto = autSinANERPV[0];
+  else if(autSinANERPV.length === 2) autTexto = autSinANERPV.join(' y ');
+  else if(autSinANERPV.length > 2) autTexto = autSinANERPV.slice(0,-1).join(', ') + ' y ' + autSinANERPV.slice(-1);
+  let texto = `Se realiza la verificación del estado de la unidad en la plataforma ${plataforma}, identificada con el nick ${nick}`;
+  if(alertas) texto += `, detectándose ${alertas}`;
+  texto += '.';
+  if(paroMotor && paroMotor !== 'No aplica' && paroMotor !== 'No especificado') {
+    texto += ` De forma inmediata, se ejecuta el protocolo de seguridad mediante ${paroMotor}.`;
+  }
+  if(coordenadas && lugar) {
+    texto += ` Posteriormente, se obtienen las coordenadas ${coordenadas}, correspondientes a ${lugar}, información considerada crítica para la localización y recuperación de la unidad.`;
+  }
+  if(autTexto) {
+    texto += ` Se procede a la notificación a autoridades ${autTexto}, proporcionando los datos relevantes del evento.`;
+  }
+  if(folio) {
+    texto += ` Con el folio de predenuncia ${folio}, se realiza el boletinaje formal ante ANERPV.`;
+  } else {
+    texto += ` Se informa al solicitante que una vez obtenido el folio de predenuncia se procederá al boletinaje formal ante las instancias correspondientes.`;
+  }
+  texto += ` Se establece comunicación continua con el solicitante, emitiendo actualizaciones periódicas sobre la evolución del evento hasta su cierre.`;
+  const el = document.getElementById('f-acciones'+sfx);
+  if(el) el.value = texto;
+}
+
+function generarObservacionesNoRec() {
+  const texto = `La unidad ha sido debidamente boletinada ante las instancias de seguridad y organismos especializados correspondientes. En caso de que las autoridades establezcan comunicación directa con el representante legal para informar avances sobre su localización, solicitamos notificarnos de inmediato para dar seguimiento coordinado al caso. De no recibir novedades, nuestro equipo se pondrá en contacto a la brevedad para mantenerle informado sobre los avances del evento.`;
+  const el = document.getElementById('f-observaciones-no');
+  if(el) el.value = texto;
+}
+
+function generarObservaciones() {
+  const escenario = document.getElementById('f-escenario')?.value || '';
+  let texto = '';
+
+  if(escenario === 'corrralon') {
+    const lugar  = document.getElementById('f-lugar-rec-corrralon')?.value  || '[LUGAR DE RECUPERACIÓN]';
+    const fecha  = document.getElementById('f-fecha-rec-corrralon')?.value  || '[FECHA DE RECUPERACIÓN]';
+    const nombre = document.getElementById('f-nombre-corrralon')?.value     || '[NOMBRE DEL CORRALÓN/DEPÓSITO]';
+    const dir    = document.getElementById('f-dir-corrralon')?.value        || '[DIRECCIÓN]';
+    const mun    = document.getElementById('f-mun-corrralon')?.value        || '[MUNICIPIO]';
+    const edo    = document.getElementById('f-edo-corrralon')?.value        || '[ESTADO]';
+    texto = `La unidad fue localizada en ${lugar} el ${fecha} y remitida al ${nombre}, ubicado en ${dir}, ${mun}, ${edo}. Para gestionar su liberación, el representante legal deberá presentarse con documentación que acredite la propiedad del vehículo y folio de denuncia correspondiente. Numaris queda a disposición para proporcionar la información técnica que el proceso requiera.`;
+
+  } else if(escenario === 'cliente') {
+    const lugar  = document.getElementById('f-lugar-rec-cliente')?.value || '[LUGAR DE RECUPERACIÓN]';
+    const fecha  = document.getElementById('f-fecha-rec-cliente')?.value || '[FECHA DE RECUPERACIÓN]';
+    const rep    = document.getElementById('f-rep-cliente')?.value       || '[NOMBRE REPRESENTANTE]';
+    const mun    = document.getElementById('f-mun-cliente')?.value       || '[MUNICIPIO, ESTADO]';
+    const donde  = document.getElementById('f-donde-cliente')?.value     || 'lugar';
+    const dep    = document.getElementById('f-dep-cliente')?.value       || '[NOMBRE DEPENDENCIA]';
+    const dondeTexto = donde === 'instalaciones' ? `en las instalaciones de ${dep}` : 'en el lugar';
+    texto = `La unidad fue localizada en ${lugar} el ${fecha}. El representante legal ${rep} procedió a su recuperación ${dondeTexto}, con supervisión de las autoridades de ${mun}. Se concluyen los protocolos correspondientes satisfactoriamente.`;
+
+  } else if(escenario === 'mp') {
+    const lugar    = document.getElementById('f-lugar-rec-mp')?.value || '[LUGAR DE RECUPERACIÓN]';
+    const fecha    = document.getElementById('f-fecha-rec-mp')?.value || '[FECHA DE RECUPERACIÓN]';
+    const fiscalia = document.getElementById('f-fiscalia')?.value     || '[FISCALÍA/AGENCIA DEL MP]';
+    const dir      = document.getElementById('f-dir-mp')?.value       || '[DIRECCIÓN]';
+    const mun      = document.getElementById('f-mun-mp')?.value       || '[MUNICIPIO]';
+    const edo      = document.getElementById('f-edo-mp')?.value       || '[ESTADO]';
+    texto = `La unidad fue localizada en ${lugar} el ${fecha} y puesta a disposición de la ${fiscalia}, con sede en ${dir}, ${mun}, ${edo}. El representante legal deberá gestionar ante dicha instancia los trámites necesarios para su liberación. Numaris queda a disposición para proporcionar la documentación técnica que las autoridades requieran.`;
+
+  } else if(escenario === 'no-fisica') {
+    const lugar  = document.getElementById('f-lugar-rec-nofisica')?.value  || '[LUGAR DE LOCALIZACIÓN]';
+    const fecha  = document.getElementById('f-fecha-rec-nofisica')?.value  || '[FECHA DE LOCALIZACIÓN]';
+    const motivo = document.getElementById('f-motivo-nofisica')?.value     || '[MOTIVO]';
+    const mun    = document.getElementById('f-mun-nofisica')?.value        || '[MUNICIPIO, ESTADO]';
+    texto = `La unidad fue localizada mediante rastreo GPS en ${lugar} el ${fecha}; sin embargo, no fue posible su recuperación física inmediata debido a ${motivo}. Se realizó coordinación formal con las autoridades de ${mun} para gestionar su recuperación sin éxito alguno. Se mantiene monitoreo activo y se informará al solicitante sobre cualquier avance.`;
+
+  } else if(escenario === 'extranjero') {
+    texto = `La última ubicación registrada de la unidad se encuentra fuera del territorio nacional, por lo que el caso queda fuera de la jurisdicción de las autoridades mexicanas. Se mantiene monitoreo activo en espera de que la unidad regrese al territorio nacional para reactivar los protocolos correspondientes.`;
+
+  } else if(escenario === 'no-recuperada') {
+    texto = `La unidad ha sido debidamente boletinada ante las instancias de seguridad y organismos especializados correspondientes. En caso de que las autoridades establezcan comunicación directa con el representante legal para informar avances sobre su localización, solicitamos notificarnos de inmediato para dar seguimiento coordinado al caso. De no recibir novedades, nuestro equipo se pondrá en contacto a la brevedad para mantenerle informado sobre los avances del evento.`;
+  }
+
+  const el = document.getElementById('f-observaciones');
+  if(el && texto) el.value = texto;
+  else if(!escenario) notify('Selecciona primero el escenario de cierre', 'warning');
+}
 const PLANTILLAS = {
   'ROBO': `Marca:\tKENWORTH
 Submarca:\tT680
@@ -2253,6 +2919,9 @@ function autoDetectEmpresa(plataforma) {
   const empresa = map[plataforma] || '';
   const el = document.getElementById('f-empresa-atiende');
   if(el) el.value = empresa;
+  // Mostrar campos INBURSA solo si aplica
+  const camposInbursa = document.getElementById('campos-inbursa');
+  if(camposInbursa) camposInbursa.style.display = plataforma === 'INBURSA' ? 'block' : 'none';
 }
 
 // INIT
