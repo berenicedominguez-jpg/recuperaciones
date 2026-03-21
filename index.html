@@ -439,14 +439,39 @@
             <span style="font-size:11px;color:var(--muted);">Campos que no vienen en la plantilla</span>
           </div>
           <div class="card-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;">
               <div class="form-group">
-                <label>Fecha y hora de atención <span style="color:var(--danger)">*</span></label>
-                <input type="datetime-local" id="f-fecha" required />
+                <label>Fecha y hora de atención</label>
+                <input type="datetime-local" id="f-fecha" />
               </div>
               <div class="form-group">
-                <label>Monitorista responsable <span style="color:var(--danger)">*</span></label>
-                <input type="text" id="f-monitorista" placeholder="Nombre completo" required />
+                <label>Monitorista responsable</label>
+                <select id="f-monitorista">
+                  <option value="">Seleccionar...</option>
+                  <option>BERENICE DOMINGUEZ</option>
+                  <option>BRENDA CASTILLO</option>
+                  <option>CRISTIAN CAMARILLO</option>
+                  <option>DANIEL BARAJAS</option>
+                  <option>DANIEL VILLASANA</option>
+                  <option>FREDY ZAMORANO</option>
+                  <option>JAVIER RIOS</option>
+                  <option>JOANA GOMEZ</option>
+                  <option>JORGE ESQUIVEL</option>
+                  <option>MIGUEL DIAZ</option>
+                  <option>RAFAEL MARTINEZ</option>
+                  <option>RICARDO MICHACA</option>
+                  <option>RUBEN RAMIREZ</option>
+                  <option>YATZIN MORA</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Tipo de evento</label>
+                <select id="f-tipo-evento" onchange="onTipoEventoChange(this.value)">
+                  <option value="">Seleccionar...</option>
+                  <option>ROBO</option>
+                  <option>ABUSO DE CONFIANZA</option>
+                  <option>RECUPERACIÓN DE CRÉDITO</option>
+                </select>
               </div>
             </div>
             <!-- ALERTA + TIPO + PARO DE MOTOR -->
@@ -570,23 +595,7 @@
           <div class="card-body">
             <div style="position:relative;">
               <textarea id="f-plantilla-raw"
-                placeholder="Pega aquí la plantilla completa...
-
-Marca:&#9;KENWORTH
-Submarca:&#9;T680
-Año:&#9;2025
-Placa y entidad&#9;01BJ1A
-Color:&#9;ROJO
-Serie:&#9;3WKYD40X5SF563577
-Ultima ubicación GPS:&#9;Carretera de Cuota México-Queretaro...
-Coordenadas:&#9;20.00814 -99.51108
-Fecha del robo:&#9;12/03/2026
-Hora del robo:&#9;12:13 HRS.
-Folio 911 por robo:&#9;TOL26031200155
-Nombre del operador:&#9;ROGELIO MORALES CORTES
-Modus operandi:&#9;ROBO A TRANSPORTE DE CARGA
-Razón social:&#9;SUPERTRACK
-Numero de contacto:&#9;222 598 7061"
+                placeholder="Selecciona el tipo de evento arriba para ver la plantilla correspondiente..."
                 style="min-height:220px;font-size:13px;line-height:1.75;font-family:var(--font-body);width:100%;background:#f8faff;border:1px solid rgba(37,99,235,0.18);border-radius:var(--radius-sm);color:var(--text);padding:14px;outline:none;resize:vertical;"
                 oninput="liveParseTemplate(this.value)"
               ></textarea>
@@ -628,15 +637,15 @@ Numero de contacto:&#9;222 598 7061"
             <!-- Razón social + teléfono + operador -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Razón social / Cliente <span style="color:var(--danger)">*</span></label>
+                <label>Razón social / Cliente</label>
                 <input type="text" id="f-cliente" placeholder="Ej. SUPERTRACK" />
               </div>
               <div class="form-group">
-                <label>Teléfono de contacto <span style="color:var(--danger)">*</span></label>
+                <label>Teléfono de contacto</label>
                 <input type="tel" id="f-telefono" placeholder="222 598 7061" />
               </div>
               <div class="form-group">
-                <label>Nombre del operador <span style="color:var(--danger)">*</span></label>
+                <label>Nombre del operador</label>
                 <input type="text" id="f-operador" placeholder="Nombre completo" />
               </div>
             </div>
@@ -644,11 +653,11 @@ Numero de contacto:&#9;222 598 7061"
             <!-- Marca + submarca + año + color + placa + serie -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Marca <span style="color:var(--danger)">*</span></label>
+                <label>Marca</label>
                 <input type="text" id="f-marca" placeholder="Ej. KENWORTH" />
               </div>
               <div class="form-group">
-                <label>Submarca / Modelo <span style="color:var(--danger)">*</span></label>
+                <label>Submarca / Modelo</label>
                 <input type="text" id="f-modelo" placeholder="Ej. T680" />
               </div>
               <div class="form-group">
@@ -659,7 +668,7 @@ Numero de contacto:&#9;222 598 7061"
 
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Placa <span style="color:var(--danger)">*</span></label>
+                <label>Placa</label>
                 <input type="text" id="f-placas" placeholder="Ej. 01BJ1A" />
               </div>
               <div class="form-group">
@@ -675,7 +684,7 @@ Numero de contacto:&#9;222 598 7061"
             <!-- Lugar + coords -->
             <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Lugar / Última ubicación GPS <span style="color:var(--danger)">*</span></label>
+                <label>Lugar / Última ubicación GPS</label>
                 <input type="text" id="f-lugar" placeholder="Carretera, municipio, estado..." />
               </div>
               <div class="form-group">
@@ -687,19 +696,19 @@ Numero de contacto:&#9;222 598 7061"
             <!-- Fecha + hora + folio 911 + modus -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Fecha del robo <span style="color:var(--danger)">*</span></label>
+                <label>Fecha del robo</label>
                 <input type="text" id="f-fecha-robo" placeholder="DD/MM/AAAA" />
               </div>
               <div class="form-group">
-                <label>Hora del robo <span style="color:var(--danger)">*</span></label>
+                <label>Hora del robo</label>
                 <input type="text" id="f-hora-robo" placeholder="12:13 HRS" />
               </div>
               <div class="form-group">
-                <label>Folio 911 <span style="color:var(--danger)">*</span></label>
+                <label>Folio 911</label>
                 <input type="text" id="f-folio911-step1" placeholder="TOL26031200155" />
               </div>
               <div class="form-group">
-                <label>Modus operandi <span style="color:var(--danger)">*</span></label>
+                <label>Modus operandi</label>
                 <select id="f-modus">
                   <option value="">Seleccionar...</option>
                   <option>ROBO A TRANSPORTE DE CARGA</option>
@@ -726,8 +735,8 @@ Numero de contacto:&#9;222 598 7061"
           </div>
         </div>
 
-        <!-- DATOS DE LA CAJA (colapsable) -->
-        <div class="card" style="margin-bottom:16px;">
+        <!-- DATOS DE LA CAJA (visible solo si tipo evento = ROBO) -->
+        <div class="card" id="card-caja" style="margin-bottom:16px;display:none;">
           <div class="card-header" style="cursor:pointer;" onclick="toggleCaja()">
             <div class="card-title">Datos de la caja / remolque <span style="font-size:11px;font-weight:400;color:var(--muted);">(opcional)</span></div>
             <span id="caja-chevron" style="color:var(--muted);font-size:13px;">▼</span>
@@ -776,33 +785,13 @@ Numero de contacto:&#9;222 598 7061"
       <!-- ======= PASO 3: CIERRE ======= -->
       <div id="form-step-3" style="display:none;">
 
-        <!-- ── Clasificación del evento ── -->
+        <!-- ── Card 1 — Persona que reporta el robo ── -->
         <div class="card" style="margin-bottom:14px;">
-          <div class="card-header"><div class="card-title">Clasificación del evento</div></div>
+          <div class="card-header"><div class="card-title">Persona que reporta el robo</div></div>
           <div class="card-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
               <div class="form-group">
-                <label>Empresa que atiende <span style="color:var(--danger)">*</span></label>
-                <select id="f-empresa-atiende">
-                  <option value="">Seleccionar...</option>
-                  <option>TECNOCONTROL VEHICULAR</option>
-                  <option>SMART TRACKER</option>
-                  <option>EASYTRACK</option>
-                  <option>SFLEET</option>
-                  <option>TRAFFILOG</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Tipo de evento <span style="color:var(--danger)">*</span></label>
-                <select id="f-tipo-evento">
-                  <option value="">Seleccionar...</option>
-                  <option>ROBO</option>
-                  <option>ABUSO DE CONFIANZA</option>
-                  <option>RECUPERACIÓN DE CRÉDITO</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Reportante — ¿Quién nos contactó?</label>
+                <label>Relación con la unidad</label>
                 <select id="f-relacion-unidad">
                   <option value="">Seleccionar...</option>
                   <option>Operador</option>
@@ -815,10 +804,29 @@ Numero de contacto:&#9;222 598 7061"
                   <option>Otro</option>
                 </select>
               </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
               <div class="form-group">
-                <label>Tipo de unidad <span style="color:var(--danger)">*</span></label>
+                <label>Nombre del reportante</label>
+                <input type="text" id="f-nombre-reportante" placeholder="Nombre completo" />
+              </div>
+              <div class="form-group">
+                <label>Teléfono del reportante</label>
+                <input type="tel" id="f-tel-reportante" placeholder="Ej. 555 123 4567" />
+              </div>
+              <div class="form-group">
+                <label>Correo del reportante</label>
+                <input type="email" id="f-correo-reportante" placeholder="correo@ejemplo.com" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Card 2 — Unidad, plataforma y equipo GPS ── -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><div class="card-title">Unidad, plataforma y equipo GPS</div></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label>Tipo de unidad</label>
                 <select id="f-tipo-unidad">
                   <option value="">Seleccionar...</option>
                   <option>PARTICULAR</option>
@@ -831,7 +839,45 @@ Numero de contacto:&#9;222 598 7061"
                 <input type="text" id="f-costo" placeholder="Ej. $1,500,000 MXN" />
               </div>
               <div class="form-group">
-                <label>Estado de la República <span style="color:var(--danger)">*</span></label>
+                <label>Plataforma</label>
+                <select id="f-plataforma" onchange="autoDetectEmpresa(this.value)">
+                  <option value="">Seleccionar...</option>
+                  <option>TECNOMETRICS</option>
+                  <option>UTRAX</option>
+                  <option>FT VISION</option>
+                  <option>RECUPERAMOVIL</option>
+                  <option>EASYTRACK</option>
+                  <option>SFLEET</option>
+                  <option>TRAFFILOG</option>
+                  <option>INBURSA</option>
+                  <option>OTRO PROVEEDOR</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+              <div class="form-group">
+                <label>Empresa que atiende</label>
+                <input type="text" id="f-empresa-atiende" readonly placeholder="Se detecta por plataforma" style="background:#f0f5fc;color:var(--muted2);cursor:not-allowed;" />
+              </div>
+              <div class="form-group">
+                <label>ESN (equipo GPS)</label>
+                <input type="text" id="f-esn" placeholder="No. de serie del equipo" />
+              </div>
+              <div class="form-group">
+                <label>Nick / Alias en plataforma</label>
+                <input type="text" id="f-nick" placeholder="Nombre del activo en sistema" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Card 3 — Datos extras del robo ── -->
+        <div class="card" style="margin-bottom:14px;">
+          <div class="card-header"><div class="card-title">Datos extras del robo</div></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label>Estado de la República</label>
                 <select id="f-estado-rep">
                   <option value="">Seleccionar...</option>
                   <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
@@ -847,157 +893,98 @@ Numero de contacto:&#9;222 598 7061"
                   <option>Yucatán</option><option>Zacatecas</option>
                 </select>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── Plataforma y equipo GPS ── -->
-        <div class="card" style="margin-bottom:14px;">
-          <div class="card-header"><div class="card-title">Plataforma y equipo GPS</div></div>
-          <div class="card-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
               <div class="form-group">
-                <label>Plataforma <span style="color:var(--danger)">*</span></label>
-                <select id="f-plataforma">
+                <label>Tiempo en reportar el robo</label>
+                <select id="f-tiempo-reporte">
                   <option value="">Seleccionar...</option>
-                  <option>TECNOMETRICS</option>
-                  <option>RECUPERAMOVIL</option>
-                  <option>UTRAX</option>
-                  <option>INBURSA</option>
-                  <option>OTRO</option>
+                  <option>- 30 minutos</option>
+                  <option>30 minutos - 1 hr</option>
+                  <option>1 - 3 hrs.</option>
+                  <option>3 - 12 hrs.</option>
+                  <option>12 hrs. - 1 día</option>
+                  <option>&gt; 1 día</option>
+                  <option>&gt; 2 días</option>
+                  <option>1 semana o más</option>
                 </select>
               </div>
               <div class="form-group">
-                <label>ESN (equipo GPS) <span style="color:var(--danger)">*</span></label>
-                <input type="text" id="f-esn" placeholder="No. de serie del equipo" required />
+                <label>Tiempo en dar predenuncia</label>
+                <select id="f-tiempo-predenuncia">
+                  <option value="">Seleccionar...</option>
+                  <option>- 30 minutos</option>
+                  <option>30 minutos - 1 hr</option>
+                  <option>1 - 3 hrs.</option>
+                  <option>3 - 12 hrs.</option>
+                  <option>12 hrs. - 1 día</option>
+                  <option>&gt; 1 día</option>
+                  <option>&gt; 2 días</option>
+                  <option>1 semana o más</option>
+                  <option>Sin pre-denuncia</option>
+                </select>
               </div>
-              <div class="form-group">
-                <label>Nick / Alias en plataforma <span style="color:var(--danger)">*</span></label>
-                <input type="text" id="f-nick" placeholder="Nombre del activo en sistema" required />
+            </div>
+            <div class="form-group">
+              <label style="margin-bottom:8px;display:block;">Autoridades contactadas</label>
+              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-municipales" style="accent-color:var(--accent);width:13px;height:13px;"> Municipales
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-estatales" style="accent-color:var(--accent);width:13px;height:13px;"> Estatales
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-federales" style="accent-color:var(--accent);width:13px;height:13px;"> Federales
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-gn" style="accent-color:var(--accent);width:13px;height:13px;"> Guardia Nacional
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-marina" style="accent-color:var(--accent);width:13px;height:13px;"> Marina
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-anerpv" style="accent-color:var(--accent);width:13px;height:13px;"> ANERPV
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-fuerza" style="accent-color:var(--accent);width:13px;height:13px;"> Fuerza Civil
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-emergencias" style="accent-color:var(--accent);width:13px;height:13px;"> Emergencias
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-ssp" style="accent-color:var(--accent);width:13px;height:13px;"> SSP
+                </label>
+                <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
+                  <input type="checkbox" id="aut-recuperadores" style="accent-color:var(--accent);width:13px;height:13px;"> Recuperadores
+                </label>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- ── Autoridades y tiempos ── -->
+        <!-- ── Resultado ── -->
         <div class="card" style="margin-bottom:14px;">
-          <div class="card-header"><div class="card-title">Autoridades y tiempos de respuesta</div></div>
+          <div class="card-header"><div class="card-title">Resultado</div></div>
           <div class="card-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
 
-              <!-- Autoridades: selección múltiple -->
-              <div class="form-group">
-                <label style="margin-bottom:8px;display:block;">Autoridades contactadas</label>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-                  <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
-                    <input type="checkbox" id="aut-municipales" style="accent-color:var(--accent);width:13px;height:13px;"> Municipales
-                  </label>
-                  <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
-                    <input type="checkbox" id="aut-estatales" style="accent-color:var(--accent);width:13px;height:13px;"> Estatales
-                  </label>
-                  <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
-                    <input type="checkbox" id="aut-federales" style="accent-color:var(--accent);width:13px;height:13px;"> Federales
-                  </label>
-                  <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
-                    <input type="checkbox" id="aut-gn" style="accent-color:var(--accent);width:13px;height:13px;"> Guardia Nacional
-                  </label>
-                  <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
-                    <input type="checkbox" id="aut-marina" style="accent-color:var(--accent);width:13px;height:13px;"> Marina
-                  </label>
-                  <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
-                    <input type="checkbox" id="aut-anerpv" style="accent-color:var(--accent);width:13px;height:13px;"> ANERPV
-                  </label>
-                  <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
-                    <input type="checkbox" id="aut-fuerza" style="accent-color:var(--accent);width:13px;height:13px;"> Fuerza Civil
-                  </label>
-                  <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
-                    <input type="checkbox" id="aut-emergencias" style="accent-color:var(--accent);width:13px;height:13px;"> Emergencias
-                  </label>
-                  <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
-                    <input type="checkbox" id="aut-ssp" style="accent-color:var(--accent);width:13px;height:13px;"> SSP
-                  </label>
-                  <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
-                    <input type="checkbox" id="aut-recuperadores" style="accent-color:var(--accent);width:13px;height:13px;"> Recuperadores
-                  </label>
-                </div>
-              </div>
-
-              <!-- Tiempos -->
-              <div style="display:flex;flex-direction:column;gap:12px;">
-                <div class="form-group">
-                  <label>¿Cuánto tardó el cliente en reportar el robo?</label>
-                  <select id="f-tiempo-reporte">
-                    <option value="">Seleccionar...</option>
-                    <option>- 30 minutos</option>
-                    <option>30 minutos - 1 hr</option>
-                    <option>1 - 3 hrs.</option>
-                    <option>3 - 12 hrs.</option>
-                    <option>12 hrs. - 1 día</option>
-                    <option>&gt; 1 día</option>
-                    <option>&gt; 2 días</option>
-                    <option>1 semana o más</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>¿Cuánto tardó el cliente en dar predenuncia?</label>
-                  <select id="f-tiempo-predenuncia">
-                    <option value="">Seleccionar...</option>
-                    <option>- 30 minutos</option>
-                    <option>30 minutos - 1 hr</option>
-                    <option>1 - 3 hrs.</option>
-                    <option>3 - 12 hrs.</option>
-                    <option>12 hrs. - 1 día</option>
-                    <option>&gt; 1 día</option>
-                    <option>&gt; 2 días</option>
-                    <option>1 semana o más</option>
-                    <option>Sin pre-denuncia</option>
-                  </select>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-        <!-- ── Acciones y estado final ── -->
-        <div class="card" style="margin-bottom:14px;">
-          <div class="card-header"><div class="card-title">Acciones y estado final</div></div>
-          <div class="card-body">
-            <div style="margin-bottom:16px;">
-              <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 16px;background:var(--card2);border:1px solid var(--border2);border-radius:var(--radius-sm);">
-                <div style="display:flex;align-items:center;gap:12px;">
-                  <div style="width:34px;height:34px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;">💬</div>
-                  <div>
-                    <div style="font-size:13px;font-weight:600;color:var(--text);">Notificar grupo de WhatsApp</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:1px;">Enviar alerta automática al grupo de monitoristas</div>
-                  </div>
-                </div>
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <span id="wa-status" style="font-size:11px;color:var(--muted);"></span>
-                  <button type="button" id="btn-wa" onclick="enviarWhatsApp()" class="btn btn-success btn-sm" style="gap:6px;">
-                    Enviar mensaje
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div style="height:1px;background:var(--border);margin-bottom:16px;"></div>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
               <div id="rec-si" onclick="selectRecuperacion('si')" style="border:2px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;">
                 <div style="font-size:24px;margin-bottom:6px;">✅</div>
                 <div style="font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--success);">Unidad recuperada</div>
               </div>
               <div id="rec-no" onclick="selectRecuperacion('no')" style="border:2px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;">
                 <div style="font-size:24px;margin-bottom:6px;">🔎</div>
-                <div style="font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--warning);">Aún no recuperada</div>
+                <div style="font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--warning);">No recuperada</div>
+              </div>
+              <div id="rec-cancel" onclick="selectRecuperacion('cancel')" style="border:2px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;">
+                <div style="font-size:24px;margin-bottom:6px;">🚫</div>
+                <div style="font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--muted2);">Cancelado</div>
               </div>
             </div>
 
+            <!-- Panel: RECUPERADA -->
             <div id="panel-si" style="display:none;">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;">
                 <div class="form-group">
-                  <label>Fecha y hora de recuperación <span style="color:var(--danger)">*</span></label>
+                  <label>Fecha y hora de recuperación</label>
                   <input type="datetime-local" id="f-fecha-recuperacion" />
                 </div>
                 <div class="form-group">
@@ -1006,17 +993,45 @@ Numero de contacto:&#9;222 598 7061"
                 </div>
               </div>
               <div style="padding:10px 14px;background:#f0fdf9;border:1px solid #99f6e4;border-radius:var(--radius-sm);">
-                <div style="font-size:11px;color:var(--success);font-weight:600;margin-bottom:3px;">Se ejecutará automáticamente:</div>
-                <div style="font-size:11px;color:#0f766e;">✓ Ticket Zoho Desk &nbsp;·&nbsp; ✓ PDF a Zoho CRM &nbsp;·&nbsp; ✓ Registro en Sheets &nbsp;·&nbsp; ✓ Carpeta Drive &nbsp;·&nbsp; ✓ Correo al cliente</div>
+                <div style="font-size:11px;color:var(--success);font-weight:600;margin-bottom:3px;">Al finalizar se ejecutará automáticamente:</div>
+                <div style="font-size:11px;color:#0f766e;">✓ Folio UR generado desde Sheets &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo &nbsp;·&nbsp; ✓ Registro en Sheets &nbsp;·&nbsp; ✓ Zoho CRM &nbsp;·&nbsp; ✓ Drive</div>
               </div>
             </div>
 
+            <!-- Panel: NO RECUPERADA -->
             <div id="panel-no" style="display:none;">
               <div style="padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);">
-                <div style="font-size:11px;color:var(--warning);font-weight:600;margin-bottom:3px;">Se activará seguimiento de 48 horas:</div>
-                <div style="font-size:11px;color:#92400e;">✓ 4 correos automáticos (7am y 2pm) &nbsp;·&nbsp; ✓ Concentrado Sheets &nbsp;·&nbsp; ✓ Zoho CRM &nbsp;·&nbsp; ✓ WhatsApp &nbsp;·&nbsp; ✓ Carpeta Drive</div>
+                <div style="font-size:11px;color:var(--warning);font-weight:600;margin-bottom:3px;">Al finalizar se ejecutará automáticamente:</div>
+                <div style="font-size:11px;color:#92400e;">✓ Folio UNR generado desde Sheets &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo &nbsp;·&nbsp; ✓ Seguimiento 48 hrs &nbsp;·&nbsp; ✓ Sheets &nbsp;·&nbsp; ✓ Zoho CRM &nbsp;·&nbsp; ✓ Drive</div>
               </div>
             </div>
+
+            <!-- Panel: CANCELADO -->
+            <div id="panel-cancel" style="display:none;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;">
+                <div class="form-group">
+                  <label>¿Quién recibe el reporte?</label>
+                  <input type="text" id="f-cancel-recibe" placeholder="Nombre o área" />
+                </div>
+                <div class="form-group">
+                  <label>¿Quién autoriza?</label>
+                  <input type="text" id="f-cancel-autoriza" placeholder="Nombre o cargo" />
+                </div>
+                <div class="form-group">
+                  <label>Motivo de cancelación</label>
+                  <input type="text" id="f-cancel-motivo" placeholder="Razón del cancelamiento" />
+                </div>
+                <div class="form-group">
+                  <label>Fecha de cancelación</label>
+                  <input type="date" id="f-cancel-fecha" />
+                </div>
+              </div>
+              <div style="padding:10px 14px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:var(--radius-sm);">
+                <div style="font-size:11px;color:var(--muted2);font-weight:600;margin-bottom:3px;">Al finalizar se registrará como cancelado:</div>
+                <div style="font-size:11px;color:var(--muted);">✓ Folio UNR generado desde Sheets &nbsp;·&nbsp; ✓ Registro en tab Cancelados &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo</div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -1028,7 +1043,20 @@ Numero de contacto:&#9;222 598 7061"
 
       <!-- CONFIRMACIÓN FINAL -->
       <div id="form-step-4-confirm" style="display:none;text-align:center;padding:40px 0;">
-  <!-- ===== CASOS ACTIVOS ===== -->
+        <div id="confirm-icon" style="font-size:48px;margin-bottom:16px;">✅</div>
+        <div id="confirm-title" style="font-family:var(--font-head);font-size:22px;font-weight:800;margin-bottom:8px;">Evento registrado</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:24px;">Todas las integraciones fueron notificadas automáticamente.</div>
+        <div id="folio-generado" style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:#f0fdf9;border:1px solid #99f6e4;border-radius:var(--radius);margin-bottom:16px;">
+          <span style="font-size:13px;color:var(--muted2);">Folio asignado:</span>
+          <div id="folio-valor" style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--success);">—</div>
+        </div>
+        <div id="wa-confirm-status" style="font-size:12px;color:var(--muted);margin-bottom:8px;"></div>
+        <div id="correo-status" style="font-size:12px;color:var(--muted);margin-bottom:24px;"></div>
+        <button class="btn btn-primary" onclick="resetForm()">+ Registrar nuevo evento</button>
+      </div>
+
+    </div><!-- /max-width wrapper -->
+  </div><!-- /page-nuevo -->
   <div class="page" id="page-casos">
     <div class="tabs">
       <button class="tab active" onclick="filterCasos('todos',this)">Todos</button>
@@ -1254,47 +1282,7 @@ async function enviarWhatsApp() {
   const tipoAlerta  = getTiposAlerta().join(' + ') || 'N/A';
   const paroMotor   = getParoMotor();
 
-  // ── Validar campos obligatorios antes de enviar ──
-  const camposReq = [
-    { id: 'f-monitorista',   label: 'Monitorista responsable' },
-    { id: 'f-cliente',       label: 'Razón social / Cliente' },
-    { id: 'f-placas',        label: 'Placa' },
-    { id: 'f-lugar',         label: 'Lugar del robo' },
-    { id: 'f-fecha-robo',    label: 'Fecha del robo' },
-    { id: 'f-hora-robo',     label: 'Hora del robo' },
-    { id: 'f-folio911-step1',label: 'Folio 911' },
-    { id: 'f-tipo-evento',   label: 'Tipo de evento' },
-    { id: 'f-plataforma',    label: 'Plataforma' },
-    { id: 'f-esn',           label: 'ESN' },
-    { id: 'f-nick',          label: 'Nick / Alias' },
-  ];
-
-  for (const campo of camposReq) {
-    const el = document.getElementById(campo.id);
-    if (!el || !el.value.trim()) {
-      notify('Campo obligatorio faltante: ' + campo.label, 'warning');
-      if (el) {
-        el.focus();
-        el.style.borderColor = 'var(--danger)';
-        setTimeout(() => el.style.borderColor = '', 3000);
-      }
-      return;
-    }
-  }
-
-  // Validar tipo de alerta si se marcó que hubo alerta
-  const alertaActiva = document.getElementById('toggle-alerta')?.checked;
-  if (alertaActiva && getTiposAlerta().length === 0) {
-    notify('Selecciona al menos un tipo de alerta', 'warning');
-    return;
-  }
-
-  // Validar paro de motor
-  if (!document.querySelector('input[name="paro-motor"]:checked')) {
-    notify('Indica el estado del paro de motor', 'warning');
-    return;
-  }
-
+  // ── Sin validación obligatoria — todos los campos son opcionales ──
   btn.disabled = true;
   btn.textContent = 'Enviando...';
   status.textContent = '';
@@ -1699,8 +1687,7 @@ function syncParsedToForm() {
   if(getF('fp-operador')) setF('f-operador',       getF('fp-operador'));
   if(getF('fp-lugar'))    setF('f-lugar',          getF('fp-lugar'));
   if(getF('fp-coords'))   setF('f-coords',         getF('fp-coords'));
-  if(getF('fp-fecha'))    setF('f-fecha-robo',     getF('fp-fecha'));
-  if(getF('fp-hora'))     setF('f-hora-robo',      getF('fp-hora'));
+  // NOTA: fecha-robo y hora-robo NO se sincronizan desde plantilla — se llenan manualmente
   if(getF('fp-folio911')) setF('f-folio911-step1', getF('fp-folio911'));
   // Caja — mapear todos los campos
   const cajaFields = {
@@ -1796,61 +1783,38 @@ function selectOrigen(v) {
 
 function selectRecuperacion(v) {
   recuperadoSelected = v;
-  document.getElementById('rec-si').style.borderColor = v==='si'?'var(--success)':'var(--border2)';
-  document.getElementById('rec-no').style.borderColor = v==='no'?'var(--warning)':'var(--border2)';
-  document.getElementById('panel-si').style.display = v==='si'?'block':'none';
-  document.getElementById('panel-no').style.display = v==='no'?'block':'none';
+  const colors = { si:'var(--success)', no:'var(--warning)', cancel:'var(--muted2)' };
+  ['si','no','cancel'].forEach(k => {
+    const el = document.getElementById('rec-'+k);
+    if(el) el.style.borderColor = k===v ? colors[k] : 'var(--border2)';
+  });
+  document.getElementById('panel-si').style.display      = v==='si'     ? 'block' : 'none';
+  document.getElementById('panel-no').style.display      = v==='no'     ? 'block' : 'none';
+  document.getElementById('panel-cancel').style.display  = v==='cancel' ? 'block' : 'none';
 }
 
 function nextStep(from) {
-  // Validate required fields on step 1 (only monitorista fields)
   if(from===1) {
-    const required = [
-      {id:'f-fecha',      label:'Fecha y hora de atención'},
-      {id:'f-monitorista',label:'Monitorista responsable'},
-    ];
-    for(const f of required) {
-      const el = document.getElementById(f.id);
-      if(!el || !el.value.trim()) {
-        notify('Campo obligatorio: ' + f.label, 'warning');
-        if(el) { el.focus(); el.style.borderColor='var(--danger)'; setTimeout(()=>el.style.borderColor='',2500); }
-        return;
-      }
-    }
     origenSelected = origenSelected || 'llamada';
     syncParsedToForm();
   }
   if(from===2) {
-    const req2 = [
-      {id:'f-cliente',    label:'Razón social / Cliente'},
-      {id:'f-telefono',   label:'Teléfono de contacto'},
-      {id:'f-operador',   label:'Nombre del operador'},
-      {id:'f-placas',     label:'Placa'},
-      {id:'f-marca',      label:'Marca'},
-      {id:'f-modelo',     label:'Submarca / Modelo'},
-      {id:'f-lugar',      label:'Lugar del robo'},
-      {id:'f-fecha-robo', label:'Fecha del robo'},
-      {id:'f-hora-robo',  label:'Hora del robo'},
-      {id:'f-folio911-step1', label:'Folio 911'},
-      {id:'f-modus',      label:'Modus operandi'},
-    ];
-    for(const f of req2) {
-      const el = document.getElementById(f.id);
-      if(!el || !el.value.trim()) {
-        notify('Campo obligatorio: ' + f.label, 'warning');
-        if(el) { el.focus(); el.style.borderColor='var(--danger)'; setTimeout(()=>el.style.borderColor='',2500); }
-        return;
-      }
-    }
+    // No mandatory fields — proceed freely
   }
   if(from===3) {
-    if(!recuperadoSelected) { notify('Indica si la unidad fue recuperada','warning'); return; }
-    registerEvento();
-    // Show confirm panel
+    if(!recuperadoSelected) { notify('Indica el resultado del evento','warning'); return; }
+    // Ocultar paso, mostrar pantalla de carga
     document.getElementById('form-step-3').style.display='none';
     const conf = document.getElementById('form-step-4-confirm');
     if(conf) conf.style.display='block';
     markStep(3,'done');
+    // Actualizar icono/título según resultado
+    const icons = {si:'✅', no:'🔎', cancel:'🚫'};
+    const titles = {si:'Unidad recuperada — registrada', no:'En seguimiento — registrada', cancel:'Cancelado — registrado'};
+    document.getElementById('confirm-icon').textContent = icons[recuperadoSelected]||'✅';
+    document.getElementById('confirm-title').textContent = titles[recuperadoSelected]||'Evento registrado';
+    document.getElementById('folio-valor').textContent = 'Generando...';
+    registerEvento();
     return;
   }
   document.getElementById('form-step-'+from).style.display='none';
@@ -1879,27 +1843,139 @@ function markStep(n, state) {
   if(state) el.classList.add(state);
 }
 
-function registerEvento() {
-  const folioNum = String(casos.length+1).padStart(3,'0');
-  const folio = 'REC-2025-0'+folioNum;
-  document.getElementById('folio-generado').querySelector('div:last-child').textContent = folio;
-  if(recuperadoSelected==='no') {
-    document.getElementById('correo-status').textContent = '✓ Programado';
+// ===== PREFIJOS DE FOLIO POR EMPRESA =====
+const FOLIO_PREFIJOS = {
+  'TECNOCONTROL VEHICULAR': { ur: 'UR-T',  unr: 'UNR-T'  },
+  'SMART TRACKER':          { ur: 'UR-ST', unr: 'UNR-ST' },
+  'EASYTRACK':              { ur: 'UR-ET', unr: 'UNR-ET' },
+  'SFLEET':                 { ur: 'UR-SF', unr: 'UNR-SF' },
+  'TRAFFILOG':              { ur: 'UR-TL', unr: 'UNR-TL' },
+  'INBURSA':                { ur: 'UR-I',  unr: 'UNR-I'  },
+};
+
+async function registerEvento() {
+  const resultado   = recuperadoSelected; // 'si', 'no', 'cancel'
+  const empresa     = document.getElementById('f-empresa-atiende')?.value || '';
+  const tipoEvento  = document.getElementById('f-tipo-evento')?.value     || '—';
+  const cliente     = document.getElementById('f-cliente')?.value         || '—';
+  const placas      = document.getElementById('f-placas')?.value          || '—';
+  const nick        = document.getElementById('f-nick')?.value            || '—';
+  const esn         = document.getElementById('f-esn')?.value             || '—';
+  const plataforma  = document.getElementById('f-plataforma')?.value      || '—';
+  const lugar       = document.getElementById('f-lugar')?.value           || '—';
+  const fechaRobo   = document.getElementById('f-fecha-robo')?.value      || '—';
+  const horaRobo    = document.getElementById('f-hora-robo')?.value       || '—';
+  const folio911    = document.getElementById('f-folio911-step1')?.value  || '—';
+  const monitorista = document.getElementById('f-monitorista')?.value     || '—';
+  const fechaAtencion = document.getElementById('f-fecha')?.value         || '—';
+  const estadoRep   = document.getElementById('f-estado-rep')?.value      || '—';
+  const tipoUnidad  = document.getElementById('f-tipo-unidad')?.value     || '—';
+  const costo       = document.getElementById('f-costo')?.value           || '—';
+  const tipoAlerta  = getTiposAlerta().join(' + ') || 'N/A';
+  const paroMotor   = getParoMotor();
+  const resultadoLabel = { si:'RECUPERADA ✅', no:'NO RECUPERADA ❌', cancel:'CANCELADO 🚫' }[resultado] || '—';
+
+  // Autoridades contactadas
+  const autIds = ['municipales','estatales','federales','gn','marina','anerpv','fuerza','emergencias','ssp','recuperadores'];
+  const autNombres = ['Municipales','Estatales','Federales','Guardia Nacional','Marina','ANERPV','Fuerza Civil','Emergencias','SSP','Recuperadores'];
+  const autoridades = autIds.map((id,i) => document.getElementById('aut-'+id)?.checked ? autNombres[i] : null).filter(Boolean).join(', ') || '—';
+
+  // Prefijo y consecutivo local como fallback
+  const prefijos  = FOLIO_PREFIJOS[empresa] || { ur:'UR-X', unr:'UNR-X' };
+  const prefijo   = resultado === 'si' ? prefijos.ur : prefijos.unr;
+  const existentes = casos.filter(c => c.folio && c.folio.startsWith(prefijo)).length;
+  const consecutivoFallback = existentes + 1;
+
+  // Mensaje WhatsApp
+  const mensaje = [
+    `🚨 *${tipoEvento} — ${cliente} — ${plataforma}*`,
+    `━━━━━━━━━━━━━━━━━━━`,
+    `🚛 *Unidad:* ${nick} | Placas: ${placas}`,
+    `🔢 *ESN:* ${esn}`,
+    `📍 *Lugar del robo:* ${lugar}`,
+    `📅 *Fecha del robo:* ${fechaRobo} ${horaRobo}`,
+    `⚡ *Alertas:* ${tipoAlerta}`,
+    `🔑 *Paro de motor:* ${paroMotor}`,
+    `📋 *Resultado:* ${resultadoLabel}`,
+    `👮 *Monitorista:* ${monitorista}`,
+    `━━━━━━━━━━━━━━━━━━━`,
+  ].join('\n');
+
+  // Payload completo para n8n
+  const payload = {
+    tipoEvento,
+    empresa,
+    resultado: resultadoLabel,
+    consecutivo: consecutivoFallback,
+    cliente,
+    mensaje,
+    sheetData: {
+      'Fecha':          fechaAtencion,
+      'Cliente':        cliente,
+      'Placas':         placas,
+      'Nick':           nick,
+      'ESN':            esn,
+      'Tipo Evento':    tipoEvento,
+      'Plataforma':     plataforma,
+      'Lugar Robo':     lugar,
+      'Fecha Robo':     fechaRobo + ' ' + horaRobo,
+      'Folio 911':      folio911,
+      'Resultado':      resultadoLabel,
+      'Monitorista':    monitorista,
+      'Estado Rep':     estadoRep,
+      'Tipo Unidad':    tipoUnidad,
+      'Costo Estimado': costo,
+      'Autoridades':    autoridades,
+      'Paro Motor':     paroMotor,
+      'Alertas':        tipoAlerta,
+    }
+  };
+
+  // ── Llamar a n8n: finalizar-caso (WA + Drive + Sheets todo en uno) ──
+  const waStatus = document.getElementById('wa-confirm-status');
+  let folio = prefijo + '-' + String(consecutivoFallback).padStart(3,'0');
+
+  try {
+    document.getElementById('folio-valor').textContent = 'Registrando...';
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if(res.ok) {
+      const data = await res.json();
+      if(data.codigo) folio = data.codigo;
+      if(waStatus) { waStatus.textContent = '✓ Mensaje enviado al grupo WhatsApp'; waStatus.style.color='var(--success)'; }
+      notify('Folio generado: ' + folio, 'success');
+      setTimeout(()=>{ notify('Registrado en Google Sheets', 'success'); }, 600);
+      setTimeout(()=>{ notify('Carpeta creada en Google Drive', 'success'); }, 1200);
+    } else {
+      if(waStatus) { waStatus.textContent = '⚠ Error al conectar con n8n'; waStatus.style.color='var(--warning)'; }
+      notify('Folio generado localmente: ' + folio, 'warning');
+    }
+  } catch(e) {
+    if(waStatus) { waStatus.textContent = '⚠ Sin conexión con n8n — folio local'; waStatus.style.color='var(--warning)'; }
+    notify('Folio generado localmente: ' + folio, 'warning');
   }
-  // Add to casos
+
+  // ── Mostrar folio final ──
+  document.getElementById('folio-valor').textContent = folio;
+
+  // ── Registrar en lista local ──
+  const estadoMap = { si:'Recuperada', no:'En seguimiento', cancel:'Cancelado' };
   casos.unshift({
-    folio, cliente: document.getElementById('f-cliente').value||'Cliente nuevo',
-    unidad: document.getElementById('f-unidad').value||'UTD-XXXX',
-    estado: recuperadoSelected==='si'?'Recuperada':'En seguimiento',
-    origen: origenSelected==='alerta'?'Alerta':'Llamada',
-    correos:0, total: recuperadoSelected==='si'?0:4,
-    recuperado: recuperadoSelected==='si', hora: new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}),
-    estadoMx: document.getElementById('f-estado').value||'—'
+    folio,
+    cliente,
+    unidad:     nick || '—',
+    estado:     estadoMap[resultado] || 'En proceso',
+    origen:     origenSelected==='alerta' ? 'Alerta' : 'Llamada',
+    correos:    0,
+    total:      resultado==='no' ? 4 : 0,
+    recuperado: resultado==='si',
+    hora:       new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}),
+    estadoMx:   estadoRep
   });
-  setTimeout(()=>{ notify('Evento registrado en Zoho CRM','success'); },400);
-  setTimeout(()=>{ notify('Fila agregada en Google Sheets','success'); },900);
-  setTimeout(()=>{ notify('Carpeta creada en Google Drive','success'); },1400);
-  setTimeout(()=>{ notify('Notificación enviada por WhatsApp','success'); },1900);
 }
 
 function resetForm() {
@@ -1931,8 +2007,10 @@ function resetForm() {
   // Reset recuperacion
   document.getElementById('rec-si').style.borderColor='var(--border2)';
   document.getElementById('rec-no').style.borderColor='var(--border2)';
+  document.getElementById('rec-cancel').style.borderColor='var(--border2)';
   document.getElementById('panel-si').style.display='none';
   document.getElementById('panel-no').style.display='none';
+  document.getElementById('panel-cancel').style.display='none';
   // Reset plantilla
   const raw = document.getElementById('f-plantilla-raw');
   if(raw) raw.value='';
@@ -2081,13 +2159,106 @@ function generarReporte() { notify('Generando reporte PDF...','info'); setTimeou
 function enviarResultados() { notify('Enviando correo con reportes adjuntos...','info'); setTimeout(()=>notify('Correo enviado desde Zoho CRM','success'),1200); }
 function exportSheets() { notify('Exportando a Google Sheets...','info'); setTimeout(()=>notify('Datos sincronizados en Sheets','success'),1000); }
 
+// ===== TIPO DE EVENTO: PLANTILLA PLACEHOLDER + VISIBILIDAD CAJA =====
+const PLANTILLAS = {
+  'ROBO': `Marca:\tKENWORTH
+Submarca:\tT680
+Año:\t2025
+Placa y entidad\t01BJ1A
+Color:\tROJO
+Serie:\t3WKYD40X5SF563577
+Ultima ubicación GPS:\tCarretera de Cuota México-Querétaro...
+Coordenadas:\t20.00814 -99.51108
+Fecha del robo:\t12/03/2026
+Hora del robo:\t12:13 HRS.
+Folio 911 por robo:\tTOL26031200155
+Nombre del operador:\tROGELIO MORALES CORTES
+Modus operandi:\tROBO A TRANSPORTE DE CARGA
+Razón social:\tSUPERTRACK
+Numero de contacto:\t222 598 7061
+
+En caso de contar con acoplados:
+TIPO DE CAJA:\t
+Marca de caja:\t
+Color de caja:\t
+Año de caja:\t
+Placas de caja:\t
+Serie de caja:\t`,
+
+  'ABUSO DE CONFIANZA': `Marca:\tKENWORTH
+Submarca:\tT680
+Año:\t2025
+Placa y entidad\t01BJ1A
+Color:\tROJO
+Serie:\t3WKYD40X5SF563577
+Ultima ubicación GPS:\tCarretera de Cuota México-Querétaro...
+Coordenadas:\t20.00814 -99.51108
+Fecha del robo:\t12/03/2026
+Hora del robo:\t12:13 HRS.
+Folio 911 por robo:\tTOL26031200155
+Nombre del operador:\tROGELIO MORALES CORTES
+Modus operandi:\tABUSO DE CONFIANZA
+Razón social:\tSUPERTRACK
+Numero de contacto:\t222 598 7061`,
+
+  'RECUPERACIÓN DE CRÉDITO': `TK:\t
+TIPO DE ENTREGA:\t
+LUGAR DE RECUPERACIÓN:\t
+FECHA DE RECUPERACIÓN:\t
+Marca:\t
+Modelo:\t
+Placas:\t
+Entidad:\t
+Nombre:\t
+Motivo:\t
+Fecha inicio seguimiento:\t
+Fecha fin seguimiento:\t
+Localidad de gestión:\t
+Lugar de resguardo:\t`
+};
+
+function onTipoEventoChange(val) {
+  const ta = document.getElementById('f-plantilla-raw');
+  const cardCaja = document.getElementById('card-caja');
+
+  // Limpiar textarea
+  if(ta) { ta.value = ''; liveParseTemplate(''); }
+
+  // Mostrar/ocultar caja
+  if(cardCaja) cardCaja.style.display = (val === 'ROBO') ? 'block' : 'none';
+
+  // Cambiar placeholder según tipo
+  if(ta) {
+    if(val && PLANTILLAS[val]) {
+      ta.placeholder = 'Pega aquí la plantilla de ' + val + ':\n\n' + PLANTILLAS[val];
+    } else {
+      ta.placeholder = 'Selecciona el tipo de evento arriba para ver la plantilla correspondiente...';
+    }
+  }
+}
+
+// ===== AUTO-DETECCIÓN DE EMPRESA POR PLATAFORMA =====
+function autoDetectEmpresa(plataforma) {
+  const map = {
+    'TECNOMETRICS':    'TECNOCONTROL VEHICULAR',
+    'UTRAX':           'TECNOCONTROL VEHICULAR',
+    'FT VISION':       'TECNOCONTROL VEHICULAR',
+    'OTRO PROVEEDOR':  'TECNOCONTROL VEHICULAR',
+    'RECUPERAMOVIL':   'SMART TRACKER',
+    'EASYTRACK':       'EASYTRACK',
+    'SFLEET':          'SFLEET',
+    'TRAFFILOG':       'TRAFFILOG',
+    'INBURSA':         'INBURSA',
+  };
+  const empresa = map[plataforma] || '';
+  const el = document.getElementById('f-empresa-atiende');
+  if(el) el.value = empresa;
+}
+
 // INIT
 document.addEventListener('DOMContentLoaded', ()=>{
   renderDashboard();
-  // Set default datetime
-  const now = new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset());
-  const inp = document.getElementById('f-fecha');
-  if(inp) inp.value = now.toISOString().slice(0,16);
+  // f-fecha empieza vacío — el monitorista lo llena manualmente
 });
 </script>
 </body>
