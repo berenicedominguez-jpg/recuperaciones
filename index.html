@@ -2332,7 +2332,7 @@ async function registerEvento() {
   const tipoAlerta  = getTiposAlerta().join(' + ') || 'N/A';
   const paroMotor   = getParoMotor();
   const resultadoLabel = { si:'RECUPERADA ✅', no:'NO RECUPERADA ❌', cancel:'CANCELADO 🚫' }[resultado] || '—';
-  const estatusCompleto = resultadoLabel;
+  const estatusCompleto = paroMotor;
 
   // Autoridades contactadas
   const autIds = ['municipales','estatales','federales','gn','marina','anerpv','fuerza','emergencias','ssp','recuperadores'];
@@ -2393,7 +2393,6 @@ async function registerEvento() {
       'PLATAFORMA':                             plataforma,
       'ESN/ID':                                 esn,
       'ESTATUS':                                estatusCompleto,
-      'PARO DE MOTOR':                          paroMotor,
       'COORDENADAS':                            coordenadas,
       'ESTADO DE LA REPUBLICA DEL REPORTE':     estadoRep,
       'TIPO DE AUTORIDADES CONTACTADAS':        autoridades,
@@ -2419,7 +2418,6 @@ async function registerEvento() {
       'PLATAFORMA':                             plataforma,
       'ESN/ID':                                 esn,
       'ESTATUS':                                estatusCompleto,
-      'PARO DE MOTOR':                          paroMotor,
       'COORDENADAS':                            coordenadas,
       'ESTADO DE LA REPUBLICA DEL REPORTE':     estadoRep,
       'TIPO DE AUTORIDADES CONTACTADAS':        autoridades,
