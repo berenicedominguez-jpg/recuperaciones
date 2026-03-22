@@ -817,6 +817,10 @@
                   <option>CORREO</option>
                 </select>
               </div>
+              <div class="form-group" id="campo-poliza" style="display:none;">
+                <label>No. Póliza</label>
+                <input type="text" id="f-poliza" placeholder="Número de póliza" />
+              </div>
               <div class="form-group">
                 <label>Teléfono del reportante</label>
                 <input type="tel" id="f-tel-reportante" placeholder="Ej. 555 123 4567" />
@@ -991,6 +995,42 @@
               </div>
             </div>
 
+            <!-- Campos ABUSO DE CONFIANZA -->
+            <div id="campos-abuso-desc" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+              <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:10px;">Datos adicionales — Abuso de confianza</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="form-group">
+                  <label>Número de carpeta</label>
+                  <input type="text" id="f-num-carpeta" placeholder="Proporcionado por el cliente" />
+                </div>
+                <div class="form-group">
+                  <label>¿Se levanta denuncia en el MP?</label>
+                  <select id="f-denuncia-mp">
+                    <option value="">Seleccionar...</option>
+                    <option>SÍ</option>
+                    <option>NO</option>
+                  </select>
+                </div>
+              </div>
+              <!-- Imágenes -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="form-group">
+                  <label>Imagen — Lugar del robo</label>
+                  <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;background:var(--card2);" onclick="document.getElementById('img-lugar-robo').click()">
+                    <div id="preview-lugar-robo" style="font-size:11px;color:var(--muted);">📍 Captura de plataforma GPS<br><span style="font-size:10px;">Clic para subir</span></div>
+                    <input type="file" id="img-lugar-robo" accept="image/*" style="display:none;" onchange="previewImg(this,'preview-lugar-robo')" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Imagen — Evidencia</label>
+                  <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;background:var(--card2);" onclick="document.getElementById('img-evidencia').click()">
+                    <div id="preview-evidencia" style="font-size:11px;color:var(--muted);">📷 Foto de la unidad<br><span style="font-size:10px;">Clic para subir</span></div>
+                    <input type="file" id="img-evidencia" accept="image/*" style="display:none;" onchange="previewImg(this,'preview-evidencia')" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
         <!-- ── Resultado ── -->
@@ -1088,6 +1128,41 @@
                 <div style="font-size:11px;color:var(--success);font-weight:600;margin-bottom:3px;">Al finalizar se ejecutará automáticamente:</div>
                 <div style="font-size:11px;color:#0f766e;">✓ Folio UR generado desde Sheets &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo &nbsp;·&nbsp; ✓ Registro en Sheets &nbsp;·&nbsp; ✓ Drive</div>
               </div>
+
+              <!-- Campos extra ABUSO DE CONFIANZA — Estatus actual + Acciones -->
+              <div id="campos-abuso-estatus-si" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+                <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:10px;">Estatus actual</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                  <div class="form-group">
+                    <label>Lugar de recuperación</label>
+                    <input type="text" id="f-abuso-lugar-rec" placeholder="Dirección o descripción" />
+                  </div>
+                  <div class="form-group">
+                    <label>¿Vehículo remitido?</label>
+                    <select id="f-abuso-remitido" onchange="toggleLugarRemision(this.value)">
+                      <option value="">Seleccionar...</option>
+                      <option>SÍ</option>
+                      <option>NO</option>
+                    </select>
+                  </div>
+                  <div class="form-group" id="campo-lugar-remision" style="display:none;">
+                    <label>Lugar de remisión</label>
+                    <input type="text" id="f-abuso-lugar-remision" placeholder="Lugar donde fue remitido" />
+                  </div>
+                  <div class="form-group">
+                    <label>¿Entregado al cliente?</label>
+                    <select id="f-abuso-entregado">
+                      <option value="">Seleccionar...</option>
+                      <option>SÍ</option>
+                      <option>NO</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Acciones realizadas</label>
+                  <textarea id="f-acciones-abuso-si" style="min-height:120px;" placeholder="Describe detalladamente las acciones tomadas durante el evento..."></textarea>
+                </div>
+              </div>
             </div>
 
             <!-- ══ Panel: NO RECUPERADA ══ -->
@@ -1095,6 +1170,39 @@
               <div style="padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-sm);">
                 <div style="font-size:11px;color:var(--warning);font-weight:600;margin-bottom:3px;">Al finalizar se ejecutará automáticamente:</div>
                 <div style="font-size:11px;color:#92400e;">✓ Folio UNR generado desde Sheets &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo &nbsp;·&nbsp; ✓ Seguimiento 48 hrs &nbsp;·&nbsp; ✓ Sheets &nbsp;·&nbsp; ✓ Drive</div>
+              </div>
+
+              <!-- Campos extra ABUSO DE CONFIANZA — Estatus actual + Acciones -->
+              <div id="campos-abuso-estatus-no" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+                <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:10px;">Estatus actual</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                  <div class="form-group">
+                    <label>Lugar de recuperación</label>
+                    <input type="text" id="f-abuso-lugar-rec-no" placeholder="N/A si no aplica" />
+                  </div>
+                  <div class="form-group">
+                    <label>¿Vehículo remitido?</label>
+                    <select id="f-abuso-remitido-no">
+                      <option value="NO">NO</option>
+                      <option value="SÍ">SÍ</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Lugar de remisión</label>
+                    <input type="text" id="f-abuso-lugar-remision-no" placeholder="N/A si no aplica" />
+                  </div>
+                  <div class="form-group">
+                    <label>¿Entregado al cliente?</label>
+                    <select id="f-abuso-entregado-no">
+                      <option value="NO">NO</option>
+                      <option value="SÍ">SÍ</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Acciones realizadas</label>
+                  <textarea id="f-acciones-abuso-no" style="min-height:120px;" placeholder="Describe detalladamente las acciones tomadas durante el evento..."></textarea>
+                </div>
               </div>
             </div>
 
@@ -2243,6 +2351,7 @@ function selectRecuperacion(v) {
   document.getElementById('panel-si').style.display      = v==='si'     ? 'block' : 'none';
   document.getElementById('panel-no').style.display      = v==='no'     ? 'block' : 'none';
   document.getElementById('panel-cancel').style.display  = v==='cancel' ? 'block' : 'none';
+  toggleCamposAbuso(v);
   // Auto-llenar quién recibe con el monitorista
   if(v === 'cancel') {
     const mon = document.getElementById('f-monitorista')?.value || '';
@@ -2884,12 +2993,20 @@ Lugar de resguardo:\t`
 function onTipoEventoChange(val) {
   const ta = document.getElementById('f-plantilla-raw');
   const cardCaja = document.getElementById('card-caja');
+  const campoPoliza = document.getElementById('campo-poliza');
+  const camposAbuso = document.getElementById('campos-abuso-desc');
 
   // Limpiar textarea
   if(ta) { ta.value = ''; liveParseTemplate(''); }
 
-  // Mostrar/ocultar caja
+  // Mostrar/ocultar caja (solo ROBO)
   if(cardCaja) cardCaja.style.display = (val === 'ROBO') ? 'block' : 'none';
+
+  // Mostrar No. Póliza para ABUSO DE CONFIANZA
+  if(campoPoliza) campoPoliza.style.display = (val === 'ABUSO DE CONFIANZA') ? 'block' : 'none';
+
+  // Mostrar campos extra de descripción para ABUSO DE CONFIANZA
+  if(camposAbuso) camposAbuso.style.display = (val === 'ABUSO DE CONFIANZA') ? 'block' : 'none';
 
   // Cambiar placeholder según tipo
   if(ta) {
