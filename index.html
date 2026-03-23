@@ -697,11 +697,18 @@
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label>Fecha del robo</label>
-                <input type="text" id="f-fecha-robo" placeholder="DD/MM/AAAA" />
+                <input type="date" id="f-fecha-robo" />
               </div>
               <div class="form-group">
                 <label>Hora del robo</label>
-                <input type="text" id="f-hora-robo" placeholder="12:13 HRS" />
+                <div style="display:flex;gap:6px;align-items:center;">
+                  <input type="time" id="f-hora-robo-raw" style="flex:1;" />
+                  <select id="f-hora-robo-ampm" style="width:80px;">
+                    <option value="AM">AM</option>
+                    <option value="PM">PM</option>
+                  </select>
+                </div>
+                <input type="hidden" id="f-hora-robo" />
               </div>
               <div class="form-group">
                 <label>Folio 911</label>
@@ -1715,6 +1722,7 @@ function liveParseTemplate(text) {
 
   // Editable fields
   const grid = document.getElementById('parse-fields-grid');
+  if(!grid) return;
   grid.innerHTML = FIELD_MAP.filter(f => parsedData[f.id]).map(f => {
     const val = parsedData[f.id] || '';
     const isLong = f.id === 'fp-descripcion' || val.length > 60;
@@ -1888,12 +1896,18 @@ function syncParsedToForm() {
   if(marca)               setF('f-marca',          marca);
   if(submarca)            setF('f-modelo',         submarca);
   if(getF('fp-anio'))     setF('f-anio',           getF('fp-anio'));
+  if(getF('fp-color'))    setF('f-color',          getF('fp-color'));
   if(getF('fp-serie'))    setF('f-serie',          getF('fp-serie'));
   if(getF('fp-operador')) setF('f-operador',       getF('fp-operador'));
   if(getF('fp-lugar'))    setF('f-lugar',          getF('fp-lugar'));
-  if(getF('fp-coords'))   setF('f-coords',         getF('fp-coords'));
-  // NOTA: fecha-robo y hora-robo NO se sincronizan desde plantilla — se llenan manualmente
-  if(getF('fp-fechahora')) setF('f-ultima-senal',   getF('fp-fechahora'));
+  // Coordenadas — normalizar formato (puede venir con espacio en vez de coma)
+  const coordsRaw = getF('fp-coords') || '';
+  const coordsNorm = coordsRaw.replace(/\s+(-?\d)/, ', $1');
+  if(coordsRaw)           setF('f-coords',         coordsNorm);
+  // NOTA: fecha-robo y hora-robo se sincronizan usando los nuevos pickers
+  if(getF('fp-fecha')) setFechaRobo(getF('fp-fecha'));
+  if(getF('fp-hora'))  setHoraRobo(getF('fp-hora'));
+  if(getF('fp-fechahora')) setF('f-ultima-senal', getF('fp-fechahora'));
   if(getF('fp-folio911')) setF('f-folio911-step1', getF('fp-folio911'));
   // Caja — mapear todos los campos
   const cajaFields = {
@@ -2076,7 +2090,10 @@ async function registerEvento() {
   const esn         = document.getElementById('f-esn')?.value             || '—';
   const plataforma  = document.getElementById('f-plataforma')?.value      || '—';
   const lugar       = document.getElementById('f-lugar')?.value           || '—';
-  const fechaRobo   = document.getElementById('f-fecha-robo')?.value      || '—';
+  const fechaRoboRaw = document.getElementById('f-fecha-robo')?.value || '—';
+  const fechaRobo = fechaRoboRaw.includes('-') 
+    ? fechaRoboRaw.split('-').reverse().join('/') 
+    : fechaRoboRaw;
   const horaRobo    = document.getElementById('f-hora-robo')?.value       || '—';
   const folio911    = document.getElementById('f-folio911-step1')?.value  || '—';
   const monitorista = document.getElementById('f-monitorista')?.value     || '—';
@@ -2086,6 +2103,7 @@ async function registerEvento() {
   const costo       = document.getElementById('f-costo')?.value           || '—';
   const tipoAlerta  = getTiposAlerta().join(' + ') || 'N/A';
   const paroMotor   = getParoMotor();
+  const coordenadas = document.getElementById('f-coords')?.value || '—';
   const resultadoLabel = { si:'RECUPERADA ✅', no:'NO RECUPERADA ❌', cancel:'CANCELADO 🚫' }[resultado] || '—';
   const estatusCompleto = paroMotor;
 
@@ -2641,6 +2659,90 @@ Fecha fin seguimiento:\t
 Localidad de gestión:\t
 Lugar de resguardo:\t`
 };
+
+// ===== ABUSO DE CONFIANZA =====
+function toggleLugarRemision(val) {
+  const el = document.getElementById('campo-lugar-remision');
+  if(el) el.style.display = val === 'SÍ' ? 'block' : 'none';
+}
+
+function previewImg(input, previewId) {
+  const preview = document.getElementById(previewId);
+  if(!preview) return;
+  if(input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.innerHTML = '<img src="' + e.target.result + '" style="max-width:100%;max-height:120px;border-radius:4px;object-fit:contain;" />';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function toggleCamposAbuso(resultado) {
+  const esAbuso = document.getElementById('f-tipo-evento')?.value === 'ABUSO DE CONFIANZA';
+  ['campos-abuso-estatus-si','campos-abuso-estatus-no'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  if(!esAbuso) return;
+  if(resultado === 'si') {
+    const el = document.getElementById('campos-abuso-estatus-si');
+    if(el) el.style.display = 'block';
+  } else if(resultado === 'no') {
+    const el = document.getElementById('campos-abuso-estatus-no');
+    if(el) el.style.display = 'block';
+  }
+}
+
+function syncHoraRobo() {
+  const raw  = document.getElementById('f-hora-robo-raw')?.value;   // "HH:MM"
+  const ampm = document.getElementById('f-hora-robo-ampm')?.value || 'AM';
+  if(!raw) return;
+  const [hStr, mStr] = raw.split(':');
+  let h = parseInt(hStr);
+  const m = mStr || '00';
+  if(ampm === 'PM' && h < 12) h += 12;
+  if(ampm === 'AM' && h === 12) h = 0;
+  const formatted = String(h).padStart(2,'0') + ':' + m + ' ' + ampm;
+  const hidden = document.getElementById('f-hora-robo');
+  if(hidden) hidden.value = formatted;
+}
+
+// Auto-sync on change
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('f-hora-robo-raw')?.addEventListener('change', syncHoraRobo);
+  document.getElementById('f-hora-robo-ampm')?.addEventListener('change', syncHoraRobo);
+});
+
+function setHoraRobo(horaStr) {
+  // Parse "12:13 HRS." or "12:13 PM" or "12:13"
+  if(!horaStr) return;
+  const clean = horaStr.replace(/HRS\.?/i,'').trim();
+  const ampmMatch = clean.match(/(AM|PM)/i);
+  const timeMatch = clean.match(/(\d{1,2}):(\d{2})/);
+  if(!timeMatch) return;
+  let h = parseInt(timeMatch[1]);
+  const m = timeMatch[2];
+  let ampm = ampmMatch ? ampmMatch[1].toUpperCase() : (h >= 12 ? 'PM' : 'AM');
+  // Convert to 12h
+  if(h > 12) { h -= 12; ampm = 'PM'; }
+  if(h === 0) { h = 12; ampm = 'AM'; }
+  const raw = document.getElementById('f-hora-robo-raw');
+  const sel = document.getElementById('f-hora-robo-ampm');
+  if(raw) raw.value = String(h).padStart(2,'0') + ':' + m;
+  if(sel) sel.value = ampm;
+  syncHoraRobo();
+}
+
+function setFechaRobo(fechaStr) {
+  // Parse "12/03/2026" → "2026-03-12" for date input
+  if(!fechaStr) return;
+  const parts = fechaStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if(!parts) return;
+  const iso = `${parts[3]}-${parts[2].padStart(2,'0')}-${parts[1].padStart(2,'0')}`;
+  const el = document.getElementById('f-fecha-robo');
+  if(el) el.value = iso;
+}
 
 function onTipoEventoChange(val) {
   const ta = document.getElementById('f-plantilla-raw');
