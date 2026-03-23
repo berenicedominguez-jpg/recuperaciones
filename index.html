@@ -2227,28 +2227,34 @@ async function registerEvento() {
 
   try {
     document.getElementById('folio-valor').textContent = 'Registrando...';
+    console.log('📤 Enviando a n8n:', JSON.stringify(payload).substring(0,200));
     const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
+    console.log('📥 Respuesta n8n:', res.status, res.statusText);
+
     if(res.ok) {
       const data = await res.json();
+      console.log('✅ Data n8n:', JSON.stringify(data));
       if(data.codigo) folio = data.codigo;
-      // Update folio in sheetData
       payload.sheetData['FOLIO'] = folio;
       if(waStatus) { waStatus.textContent = '✓ Mensaje enviado al grupo WhatsApp'; waStatus.style.color='var(--success)'; }
       notify('Folio generado: ' + folio, 'success');
       setTimeout(()=>{ notify('Registrado en Google Sheets', 'success'); }, 600);
       setTimeout(()=>{ notify('Carpeta creada en Google Drive', 'success'); }, 1200);
     } else {
-      if(waStatus) { waStatus.textContent = '⚠ Error al conectar con n8n'; waStatus.style.color='var(--warning)'; }
-      notify('Folio generado localmente: ' + folio, 'warning');
+      const errText = await res.text();
+      console.error('❌ Error n8n:', res.status, errText);
+      if(waStatus) { waStatus.textContent = '⚠ Error ' + res.status + ': ' + errText.substring(0,50); waStatus.style.color='var(--warning)'; }
+      notify('Error n8n ' + res.status + ' — folio local: ' + folio, 'warning');
     }
   } catch(e) {
-    if(waStatus) { waStatus.textContent = '⚠ Sin conexión con n8n — folio local'; waStatus.style.color='var(--warning)'; }
-    notify('Folio generado localmente: ' + folio, 'warning');
+    console.error('❌ Excepción:', e.message);
+    if(waStatus) { waStatus.textContent = '⚠ Error: ' + e.message; waStatus.style.color='var(--warning)'; }
+    notify('Error: ' + e.message + ' — folio local: ' + folio, 'warning');
   }
 
   // ── Mostrar folio final ──
