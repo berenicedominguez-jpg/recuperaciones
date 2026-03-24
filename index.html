@@ -2087,18 +2087,20 @@ function nextStep(from) {
   }
   if(from===3) {
     if(!recuperadoSelected) { notify('Indica el resultado del evento','warning'); return; }
-    // Ocultar paso, mostrar pantalla de carga
+    // Ocultar paso, mostrar pantalla de verificación
     document.getElementById('form-step-3').style.display='none';
     const conf = document.getElementById('form-step-4-confirm');
     if(conf) conf.style.display='block';
     markStep(3,'done');
-    // Actualizar icono/título según resultado
     const icons = {si:'✅', no:'🔎', cancel:'🚫'};
-    const titles = {si:'Unidad recuperada — registrada', no:'En seguimiento — registrada', cancel:'Cancelado — registrado'};
+    const titles = {si:'Unidad recuperada', no:'No recuperada', cancel:'Cancelado'};
     document.getElementById('confirm-icon').textContent = icons[recuperadoSelected]||'✅';
     document.getElementById('confirm-title').textContent = titles[recuperadoSelected]||'Evento registrado';
-    document.getElementById('folio-valor').textContent = 'Generando...';
-    registerEvento();
+    document.getElementById('folio-valor').textContent = '—';
+    // Guardar datos para los botones de prueba
+    _lastPayload = null;
+    _lastFolio = null;
+    ['wa','sheets','drive','pdf','folio'].forEach(id => setCheck(id, '', '—'));
     return;
   }
   document.getElementById('form-step-'+from).style.display='none';
@@ -2772,13 +2774,50 @@ async function ejecutarTodo() {
 }
 
 // ===== FUNCIONES DE PRUEBA INDIVIDUALES =====
+function buildPayload() {
+  const resultado  = recuperadoSelected;
+  const empresa    = document.getElementById('f-empresa-atiende')?.value || '';
+  const tipoEvento = document.getElementById('f-tipo-evento')?.value     || '—';
+  const cliente    = document.getElementById('f-cliente')?.value         || '—';
+  const placas     = document.getElementById('f-placas')?.value          || '—';
+  const nick       = document.getElementById('f-nick')?.value            || '—';
+  const esn        = document.getElementById('f-esn')?.value             || '—';
+  const plataforma = document.getElementById('f-plataforma')?.value      || '—';
+  const lugar      = document.getElementById('f-lugar')?.value           || '—';
+  const monitorista= document.getElementById('f-monitorista')?.value     || '—';
+  const coords     = document.getElementById('f-coords')?.value          || '—';
+  const estadoRep  = document.getElementById('f-estado-rep')?.value      || '—';
+  const tipoAlerta = getTiposAlerta().join(' + ') || 'N/A';
+  const paroMotor  = getParoMotor();
+  const prefijos   = FOLIO_PREFIJOS[empresa] || { ur:'UR-X', unr:'UNR-X' };
+  const prefijo    = resultado === 'si' ? prefijos.ur : resultado === 'cancel' ? 'CANCEL' : prefijos.unr;
+  const resultadoLabel = { si:'RECUPERADA ✅', no:'NO RECUPERADA ❌', cancel:'CANCELADO 🚫' }[resultado] || '—';
+  const consecutivo = (casos.filter(c => c.folio && c.folio.startsWith(prefijo)).length) + 1;
+  const folio = resultado === 'cancel'
+    ? prefijo + '-' + String(consecutivo).padStart(3,'0')
+    : prefijo + String(consecutivo).padStart(3,'0');
+  const mensaje = [
+    '🚨 *' + tipoEvento + ' — ' + cliente + ' — ' + plataforma + '*',
+    '━━━━━━━━━━━━━━━━━━━',
+    '🚛 *Unidad:* ' + nick + ' | Placas: ' + placas,
+    '🔢 *ESN:* ' + esn,
+    '📍 *Lugar:* ' + lugar,
+    '⚡ *Alertas:* ' + tipoAlerta,
+    '🔑 *Paro de motor:* ' + paroMotor,
+    '📋 *Resultado:* ' + resultadoLabel,
+    '👮 *Monitorista:* ' + monitorista,
+    '━━━━━━━━━━━━━━━━━━━',
+  ].join('\n');
+  return { tipoEvento, empresa, resultado: resultadoLabel, consecutivo, cliente, nick, placas, esn, plataforma, lugar, coords, estadoRep, monitorista, tipoAlerta, paroMotor, folio, prefijo, mensaje };
+}
+
 async function probarWA() {
-  setCheck('wa', 'pending', 'Enviando...');
+  setCheck('wa', 'pending', 'Enviando mensaje...');
+  const p = buildPayload();
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-wa', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ mensaje: _lastPayload?.mensaje || '🧪 Prueba de WhatsApp', tipoEvento: _lastPayload?.tipoEvento || 'PRUEBA' })
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ ...p, soloWA: true })
     });
     if(res.ok) setCheck('wa', 'ok', 'Mensaje enviado al grupo');
     else setCheck('wa', 'error', 'Error ' + res.status);
@@ -2786,43 +2825,63 @@ async function probarWA() {
 }
 
 async function probarFolio() {
-  setCheck('folio', 'pending', 'Verificando...');
-  if(_lastFolio) {
-    setCheck('folio', 'ok', 'Folio asignado: ' + _lastFolio);
-  } else {
-    setCheck('folio', 'error', 'No hay folio generado aún');
-  }
+  setCheck('folio', 'pending', 'Consultando Sheet...');
+  const p = buildPayload();
+  try {
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ ...p, soloFolio: true })
+    });
+    if(res.ok) {
+      const data = await res.json();
+      _lastFolio = data.codigo || p.folio;
+      document.getElementById('folio-valor').textContent = _lastFolio;
+      setCheck('folio', 'ok', 'Folio: ' + _lastFolio);
+    } else setCheck('folio', 'error', 'Error ' + res.status);
+  } catch(e) { setCheck('folio', 'error', e.message); }
 }
 
 async function probarDrive() {
-  setCheck('drive', 'pending', 'Verificando...');
-  if(_lastPayload?.folderUrl) {
-    setCheck('drive', 'ok', 'Carpeta creada');
-    const link = document.getElementById('check-drive-link');
-    if(link) { link.href = _lastPayload.folderUrl; link.style.display = 'inline'; }
-  } else {
-    setCheck('drive', 'error', 'No se creó carpeta — revisa n8n');
-  }
+  setCheck('drive', 'pending', 'Creando carpeta...');
+  const p = buildPayload();
+  try {
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ ...p, soloDrive: true, codigo: _lastFolio || p.folio })
+    });
+    if(res.ok) {
+      const data = await res.json();
+      setCheck('drive', 'ok', 'Carpeta creada');
+      if(data.folderUrl) {
+        const link = document.getElementById('check-drive-link');
+        if(link) { link.href = data.folderUrl; link.style.display = 'inline'; }
+      }
+    } else setCheck('drive', 'error', 'Error ' + res.status);
+  } catch(e) { setCheck('drive', 'error', e.message); }
 }
 
 async function probarPDF() {
-  setCheck('pdf', 'pending', 'Generando PDF de prueba...');
+  setCheck('pdf', 'pending', 'Verificando servicio...');
   try {
     const res = await fetch('https://pdf-service-jdql.onrender.com/health');
-    if(res.ok) setCheck('pdf', 'ok', 'Servicio PDF activo');
-    else setCheck('pdf', 'error', 'Servicio PDF no responde');
+    if(res.ok) setCheck('pdf', 'ok', 'Servicio activo en Render');
+    else setCheck('pdf', 'error', 'Servicio no responde');
   } catch(e) { setCheck('pdf', 'error', 'Sin conexión con Render'); }
 }
 
 async function probarSheets() {
-  setCheck('sheets', 'pending', 'Verificando...');
-  if(_lastPayload?.sheetData) {
-    const hoja = _lastPayload.resultado?.includes('NO') ? 'UNIDADES NO RECUPERADAS' : 
-                 _lastPayload.resultado?.includes('CANCELADO') ? 'REPORTES CANCELADOS' : 'UNIDADES RECUPERADAS';
-    setCheck('sheets', 'ok', 'Registrado en ' + hoja);
-  } else {
-    setCheck('sheets', 'error', 'No hay datos registrados aún');
-  }
+  setCheck('sheets', 'pending', 'Registrando...');
+  const p = buildPayload();
+  try {
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ ...p, soloSheets: true, codigo: _lastFolio || p.folio })
+    });
+    if(res.ok) {
+      const hoja = p.resultado.includes('NO') ? 'UNIDADES NO RECUPERADAS' : p.resultado.includes('CANCELADO') ? 'REPORTES CANCELADOS' : 'UNIDADES RECUPERADAS';
+      setCheck('sheets', 'ok', 'Registrado en ' + hoja);
+    } else setCheck('sheets', 'error', 'Error ' + res.status);
+  } catch(e) { setCheck('sheets', 'error', e.message); }
 }
 
 function setCheck(id, status, msg) {
@@ -2833,6 +2892,7 @@ function setCheck(id, status, msg) {
 }
 
 function toggleLugarRemision(val) {
+  const el = document.getElementById('campo-lugar-remision');
   if(el) el.style.display = val === 'SÍ' ? 'block' : 'none';
 }
 
