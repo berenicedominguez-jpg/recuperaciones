@@ -2834,7 +2834,7 @@ async function probarFolio() {
     });
     if(res.ok) {
       const data = await res.json();
-      _lastFolio = data.codigo || p.folio;
+      _lastFolio = data.folio || data.codigo || p.folio;
       document.getElementById('folio-valor').textContent = _lastFolio;
       setCheck('folio', 'ok', 'Folio: ' + _lastFolio);
     } else setCheck('folio', 'error', 'Error ' + res.status);
