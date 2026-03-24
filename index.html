@@ -2851,7 +2851,33 @@ async function probarDrive() {
   try {
     const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-drive', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ codigo: _lastFolio || p.folio, mesNombre, recuperada })
+      body: JSON.stringify({ 
+        codigo: _lastFolio || p.folio, 
+        mesNombre, 
+        recuperada,
+        tipoEvento: p.tipoEvento,
+        datos: {
+          folio: _lastFolio || p.folio,
+          cliente: p.cliente,
+          placas: p.placas,
+          nick: p.nick,
+          esn: p.esn,
+          modelo: p.modelo || '—',
+          operador: p.operador || '—',
+          empresa: p.empresa,
+          plataforma: p.plataforma,
+          lugar: p.lugar,
+          fechaRobo: p.fechaRobo || '—',
+          horaRobo: p.horaRobo || '—',
+          tipoAlerta: p.tipoAlerta || '—',
+          paroMotor: p.paroMotor || '—',
+          folio911: p.folio911 || '—',
+          modus: p.modus || '—',
+          monitorista: p.monitorista,
+          resultado: p.resultado,
+          mensaje: p.mensaje
+        }
+      })
     });
     if(res.ok) {
       const data = await res.json();
