@@ -1263,78 +1263,65 @@
             <div id="folio-valor" style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--success);">—</div>
           </div>
         </div>
-
-        <!-- Botones de integración individuales -->
         <div class="card" style="margin-bottom:16px;">
-          <div class="card-header"><div class="card-title">Ejecutar integraciones</div></div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-
-            <!-- WhatsApp -->
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-              <div style="display:flex;align-items:center;gap:10px;flex:1;">
-                <span style="font-size:18px;">💬</span>
-                <div>
-                  <div style="font-size:13px;font-weight:600;">WhatsApp</div>
-                  <div id="check-wa-status" style="font-size:11px;color:var(--muted);">Sin ejecutar</div>
-                </div>
+          <div class="card-header"><div class="card-title">🔍 Verificación de integraciones</div></div>
+          <div class="card-body" style="padding:8px 0;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="font-size:20px;">💬</div>
+                <div><div style="font-size:13px;font-weight:600;">WhatsApp</div><div id="check-wa-status" style="font-size:11px;color:var(--muted);">—</div></div>
               </div>
-              <div id="check-wa-icon" style="font-size:16px;min-width:20px;text-align:center;">—</div>
-              <button class="btn btn-ghost btn-sm" onclick="ejecutarIntegracion('wa')">Enviar</button>
-            </div>
-
-            <!-- Sheets -->
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-              <div style="display:flex;align-items:center;gap:10px;flex:1;">
-                <span style="font-size:18px;">📊</span>
-                <div>
-                  <div style="font-size:13px;font-weight:600;">Concentrado Sheets</div>
-                  <div id="check-sheets-status" style="font-size:11px;color:var(--muted);">Sin ejecutar</div>
-                </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div id="check-wa-icon" style="font-size:18px;"></div>
+                <button class="btn btn-ghost btn-sm" onclick="probarWA()">Probar</button>
               </div>
-              <div id="check-sheets-icon" style="font-size:16px;min-width:20px;text-align:center;">—</div>
-              <button class="btn btn-ghost btn-sm" onclick="ejecutarIntegracion('sheets')">Registrar</button>
             </div>
-
-            <!-- Drive -->
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-              <div style="display:flex;align-items:center;gap:10px;flex:1;">
-                <span style="font-size:18px;">📁</span>
-                <div>
-                  <div style="font-size:13px;font-weight:600;">Carpeta Drive</div>
-                  <div id="check-drive-status" style="font-size:11px;color:var(--muted);">Sin ejecutar</div>
-                </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="font-size:20px;">🔢</div>
+                <div><div style="font-size:13px;font-weight:600;">Folio consecutivo</div><div id="check-folio-status" style="font-size:11px;color:var(--muted);">—</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div id="check-folio-icon" style="font-size:18px;"></div>
+                <button class="btn btn-ghost btn-sm" onclick="probarFolio()">Probar</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="font-size:20px;">📁</div>
+                <div><div style="font-size:13px;font-weight:600;">Carpeta Drive</div><div id="check-drive-status" style="font-size:11px;color:var(--muted);">—</div></div>
               </div>
               <div style="display:flex;align-items:center;gap:8px;">
                 <a id="check-drive-link" href="#" target="_blank" style="display:none;font-size:11px;color:var(--accent);">Abrir →</a>
-                <div id="check-drive-icon" style="font-size:16px;min-width:20px;text-align:center;">—</div>
+                <div id="check-drive-icon" style="font-size:18px;"></div>
+                <button class="btn btn-ghost btn-sm" onclick="probarDrive()">Probar</button>
               </div>
-              <button class="btn btn-ghost btn-sm" onclick="ejecutarIntegracion('drive')">Crear</button>
             </div>
-
-            <!-- PDF -->
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-              <div style="display:flex;align-items:center;gap:10px;flex:1;">
-                <span style="font-size:18px;">📄</span>
-                <div>
-                  <div style="font-size:13px;font-weight:600;">Reporte PDF</div>
-                  <div id="check-pdf-status" style="font-size:11px;color:var(--muted);">Sin ejecutar</div>
-                </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="font-size:20px;">📄</div>
+                <div><div style="font-size:13px;font-weight:600;">Reporte PDF</div><div id="check-pdf-status" style="font-size:11px;color:var(--muted);">—</div></div>
               </div>
-              <div id="check-pdf-icon" style="font-size:16px;min-width:20px;text-align:center;">—</div>
-              <button class="btn btn-ghost btn-sm" onclick="ejecutarIntegracion('pdf')">Generar</button>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div id="check-pdf-icon" style="font-size:18px;"></div>
+                <button class="btn btn-ghost btn-sm" onclick="probarPDF()">Probar</button>
+              </div>
             </div>
-
-            <!-- Todo junto -->
-            <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
-              <button class="btn btn-primary" style="width:100%;" onclick="ejecutarTodo()">🚀 Ejecutar todo</button>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="font-size:20px;">📊</div>
+                <div><div style="font-size:13px;font-weight:600;">Concentrado Sheets</div><div id="check-sheets-status" style="font-size:11px;color:var(--muted);">—</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div id="check-sheets-icon" style="font-size:18px;"></div>
+                <button class="btn btn-ghost btn-sm" onclick="probarSheets()">Probar</button>
+              </div>
             </div>
-
           </div>
         </div>
-
         <div id="wa-confirm-status" style="display:none;"></div>
         <div id="correo-status" style="display:none;"></div>
-        <button class="btn btn-ghost" onclick="resetForm()" style="width:100%;margin-top:8px;">+ Registrar nuevo evento</button>
+        <button class="btn btn-primary" onclick="resetForm()" style="width:100%;">+ Registrar nuevo evento</button>
       </div>
 
     </div><!-- /max-width wrapper -->
@@ -2317,7 +2304,7 @@ async function registerEvento() {
   _lastPayload = payload;
 
   // Reset checks
-  ['wa','sheets','drive','pdf','folio'].forEach(id => setCheck(id, 'pending', 'Procesando...'));
+  ['wa','sheets','drive','pdf','folio'].forEach(id => setCheck(id, '', '—'));
 
   try {
     document.getElementById('folio-valor').textContent = 'Registrando...';
@@ -2334,6 +2321,8 @@ async function registerEvento() {
       const data = await res.json();
       console.log('✅ Data n8n:', JSON.stringify(data));
       if(data.codigo) folio = data.codigo;
+      _lastFolio = folio;
+      if(data.folderUrl) _lastPayload.folderUrl = data.folderUrl;
       payload.sheetData['FOLIO'] = folio;
       setCheck('wa', 'ok', 'Mensaje enviado al grupo');
       setCheck('sheets', 'ok', resultado === 'si' ? 'UNIDADES RECUPERADAS' : resultado === 'no' ? 'UNIDADES NO RECUPERADAS' : 'REPORTES CANCELADOS');
@@ -2779,6 +2768,60 @@ async function ejecutarIntegracion(tipo) {
 async function ejecutarTodo() {
   for(const tipo of ['wa','sheets','drive','pdf']) {
     await ejecutarIntegracion(tipo);
+  }
+}
+
+// ===== FUNCIONES DE PRUEBA INDIVIDUALES =====
+async function probarWA() {
+  setCheck('wa', 'pending', 'Enviando...');
+  try {
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-wa', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ mensaje: _lastPayload?.mensaje || '🧪 Prueba de WhatsApp', tipoEvento: _lastPayload?.tipoEvento || 'PRUEBA' })
+    });
+    if(res.ok) setCheck('wa', 'ok', 'Mensaje enviado al grupo');
+    else setCheck('wa', 'error', 'Error ' + res.status);
+  } catch(e) { setCheck('wa', 'error', e.message); }
+}
+
+async function probarFolio() {
+  setCheck('folio', 'pending', 'Verificando...');
+  if(_lastFolio) {
+    setCheck('folio', 'ok', 'Folio asignado: ' + _lastFolio);
+  } else {
+    setCheck('folio', 'error', 'No hay folio generado aún');
+  }
+}
+
+async function probarDrive() {
+  setCheck('drive', 'pending', 'Verificando...');
+  if(_lastPayload?.folderUrl) {
+    setCheck('drive', 'ok', 'Carpeta creada');
+    const link = document.getElementById('check-drive-link');
+    if(link) { link.href = _lastPayload.folderUrl; link.style.display = 'inline'; }
+  } else {
+    setCheck('drive', 'error', 'No se creó carpeta — revisa n8n');
+  }
+}
+
+async function probarPDF() {
+  setCheck('pdf', 'pending', 'Generando PDF de prueba...');
+  try {
+    const res = await fetch('https://pdf-service-jdql.onrender.com/health');
+    if(res.ok) setCheck('pdf', 'ok', 'Servicio PDF activo');
+    else setCheck('pdf', 'error', 'Servicio PDF no responde');
+  } catch(e) { setCheck('pdf', 'error', 'Sin conexión con Render'); }
+}
+
+async function probarSheets() {
+  setCheck('sheets', 'pending', 'Verificando...');
+  if(_lastPayload?.sheetData) {
+    const hoja = _lastPayload.resultado?.includes('NO') ? 'UNIDADES NO RECUPERADAS' : 
+                 _lastPayload.resultado?.includes('CANCELADO') ? 'REPORTES CANCELADOS' : 'UNIDADES RECUPERADAS';
+    setCheck('sheets', 'ok', 'Registrado en ' + hoja);
+  } else {
+    setCheck('sheets', 'error', 'No hay datos registrados aún');
   }
 }
 
