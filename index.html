@@ -1254,17 +1254,87 @@
       </div>
 
       <!-- CONFIRMACIÓN FINAL -->
-      <div id="form-step-4-confirm" style="display:none;text-align:center;padding:40px 0;">
-        <div id="confirm-icon" style="font-size:48px;margin-bottom:16px;">✅</div>
-        <div id="confirm-title" style="font-family:var(--font-head);font-size:22px;font-weight:800;margin-bottom:8px;">Evento registrado</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:24px;">Todas las integraciones fueron notificadas automáticamente.</div>
-        <div id="folio-generado" style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:#f0fdf9;border:1px solid #99f6e4;border-radius:var(--radius);margin-bottom:16px;">
-          <span style="font-size:13px;color:var(--muted2);">Folio asignado:</span>
-          <div id="folio-valor" style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--success);">—</div>
+      <div id="form-step-4-confirm" style="display:none;padding:24px 0;">
+        <div style="text-align:center;margin-bottom:24px;">
+          <div id="confirm-icon" style="font-size:48px;margin-bottom:12px;">✅</div>
+          <div id="confirm-title" style="font-family:var(--font-head);font-size:22px;font-weight:800;margin-bottom:6px;">Evento registrado</div>
+          <div id="folio-generado" style="display:inline-flex;align-items:center;gap:10px;padding:12px 24px;background:#f0fdf9;border:1px solid #99f6e4;border-radius:var(--radius);margin-top:8px;">
+            <span style="font-size:13px;color:var(--muted2);">Folio asignado:</span>
+            <div id="folio-valor" style="font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--success);">—</div>
+          </div>
         </div>
-        <div id="wa-confirm-status" style="font-size:12px;color:var(--muted);margin-bottom:8px;"></div>
-        <div id="correo-status" style="font-size:12px;color:var(--muted);margin-bottom:24px;"></div>
-        <button class="btn btn-primary" onclick="resetForm()">+ Registrar nuevo evento</button>
+
+        <!-- Botones de integración individuales -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-header"><div class="card-title">Ejecutar integraciones</div></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+
+            <!-- WhatsApp -->
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div style="display:flex;align-items:center;gap:10px;flex:1;">
+                <span style="font-size:18px;">💬</span>
+                <div>
+                  <div style="font-size:13px;font-weight:600;">WhatsApp</div>
+                  <div id="check-wa-status" style="font-size:11px;color:var(--muted);">Sin ejecutar</div>
+                </div>
+              </div>
+              <div id="check-wa-icon" style="font-size:16px;min-width:20px;text-align:center;">—</div>
+              <button class="btn btn-ghost btn-sm" onclick="ejecutarIntegracion('wa')">Enviar</button>
+            </div>
+
+            <!-- Sheets -->
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div style="display:flex;align-items:center;gap:10px;flex:1;">
+                <span style="font-size:18px;">📊</span>
+                <div>
+                  <div style="font-size:13px;font-weight:600;">Concentrado Sheets</div>
+                  <div id="check-sheets-status" style="font-size:11px;color:var(--muted);">Sin ejecutar</div>
+                </div>
+              </div>
+              <div id="check-sheets-icon" style="font-size:16px;min-width:20px;text-align:center;">—</div>
+              <button class="btn btn-ghost btn-sm" onclick="ejecutarIntegracion('sheets')">Registrar</button>
+            </div>
+
+            <!-- Drive -->
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div style="display:flex;align-items:center;gap:10px;flex:1;">
+                <span style="font-size:18px;">📁</span>
+                <div>
+                  <div style="font-size:13px;font-weight:600;">Carpeta Drive</div>
+                  <div id="check-drive-status" style="font-size:11px;color:var(--muted);">Sin ejecutar</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <a id="check-drive-link" href="#" target="_blank" style="display:none;font-size:11px;color:var(--accent);">Abrir →</a>
+                <div id="check-drive-icon" style="font-size:16px;min-width:20px;text-align:center;">—</div>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="ejecutarIntegracion('drive')">Crear</button>
+            </div>
+
+            <!-- PDF -->
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div style="display:flex;align-items:center;gap:10px;flex:1;">
+                <span style="font-size:18px;">📄</span>
+                <div>
+                  <div style="font-size:13px;font-weight:600;">Reporte PDF</div>
+                  <div id="check-pdf-status" style="font-size:11px;color:var(--muted);">Sin ejecutar</div>
+                </div>
+              </div>
+              <div id="check-pdf-icon" style="font-size:16px;min-width:20px;text-align:center;">—</div>
+              <button class="btn btn-ghost btn-sm" onclick="ejecutarIntegracion('pdf')">Generar</button>
+            </div>
+
+            <!-- Todo junto -->
+            <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;">
+              <button class="btn btn-primary" style="width:100%;" onclick="ejecutarTodo()">🚀 Ejecutar todo</button>
+            </div>
+
+          </div>
+        </div>
+
+        <div id="wa-confirm-status" style="display:none;"></div>
+        <div id="correo-status" style="display:none;"></div>
+        <button class="btn btn-ghost" onclick="resetForm()" style="width:100%;margin-top:8px;">+ Registrar nuevo evento</button>
       </div>
 
     </div><!-- /max-width wrapper -->
@@ -2243,6 +2313,12 @@ async function registerEvento() {
     ? prefijo + '-' + String(consecutivoFallback).padStart(3,'0')
     : prefijo + String(consecutivoFallback).padStart(3,'0');
 
+  // Guardar payload para botones individuales
+  _lastPayload = payload;
+
+  // Reset checks
+  ['wa','sheets','drive','pdf','folio'].forEach(id => setCheck(id, 'pending', 'Procesando...'));
+
   try {
     document.getElementById('folio-valor').textContent = 'Registrando...';
     console.log('📤 Enviando a n8n:', JSON.stringify(payload).substring(0,200));
@@ -2259,20 +2335,31 @@ async function registerEvento() {
       console.log('✅ Data n8n:', JSON.stringify(data));
       if(data.codigo) folio = data.codigo;
       payload.sheetData['FOLIO'] = folio;
-      if(waStatus) { waStatus.textContent = '✓ Mensaje enviado al grupo WhatsApp'; waStatus.style.color='var(--success)'; }
-      notify('Folio generado: ' + folio, 'success');
-      setTimeout(()=>{ notify('Registrado en Google Sheets', 'success'); }, 600);
-      setTimeout(()=>{ notify('Carpeta creada en Google Drive', 'success'); }, 1200);
+      setCheck('wa', 'ok', 'Mensaje enviado al grupo');
+      setCheck('sheets', 'ok', resultado === 'si' ? 'UNIDADES RECUPERADAS' : resultado === 'no' ? 'UNIDADES NO RECUPERADAS' : 'REPORTES CANCELADOS');
+      setCheck('folio', 'ok', 'Folio: ' + folio);
+      if(data.folderUrl) {
+        setCheck('drive', 'ok', 'Carpeta creada');
+        const link = document.getElementById('check-drive-link');
+        if(link) { link.href = data.folderUrl; link.style.display = 'inline'; }
+      } else {
+        setCheck('drive', resultado === 'cancel' ? 'ok' : 'error', resultado === 'cancel' ? 'No aplica' : 'Sin URL de carpeta');
+      }
+      if(data.pdfUrl) {
+        setCheck('pdf', 'ok', 'PDF subido a Drive');
+      } else {
+        setCheck('pdf', 'error', 'PDF no generado — verificar Render');
+      }
     } else {
       const errText = await res.text();
       console.error('❌ Error n8n:', res.status, errText);
-      if(waStatus) { waStatus.textContent = '⚠ Error ' + res.status + ': ' + errText.substring(0,50); waStatus.style.color='var(--warning)'; }
-      notify('Error n8n ' + res.status + ' — folio local: ' + folio, 'warning');
+      ['wa','sheets','drive','pdf'].forEach(id => setCheck(id, 'error', 'Error ' + res.status));
+      setCheck('folio', 'ok', 'Folio local: ' + folio);
     }
   } catch(e) {
     console.error('❌ Excepción:', e.message);
-    if(waStatus) { waStatus.textContent = '⚠ Error: ' + e.message; waStatus.style.color='var(--warning)'; }
-    notify('Error: ' + e.message + ' — folio local: ' + folio, 'warning');
+    ['wa','sheets','drive','pdf'].forEach(id => setCheck(id, 'error', e.message));
+    setCheck('folio', 'ok', 'Folio local: ' + folio);
   }
 
   // ── Mostrar folio final ──
@@ -2661,8 +2748,48 @@ Lugar de resguardo:\t`
 };
 
 // ===== ABUSO DE CONFIANZA =====
+// ===== INTEGRACIONES INDIVIDUALES =====
+let _lastPayload = null; // guardado al finalizar para reusar en botones
+
+async function ejecutarIntegracion(tipo) {
+  if(!_lastPayload) { notify('Primero registra el evento', 'warning'); return; }
+  setCheck(tipo, 'pending', 'Ejecutando...');
+
+  try {
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ..._lastPayload, soloIntegracion: tipo })
+    });
+    const data = await res.json();
+    if(res.ok) {
+      setCheck(tipo, 'ok', data.mensaje || 'Ejecutado correctamente');
+      if(tipo === 'drive' && data.folderUrl) {
+        const link = document.getElementById('check-drive-link');
+        if(link) { link.href = data.folderUrl; link.style.display = 'inline'; }
+      }
+    } else {
+      setCheck(tipo, 'error', 'Error ' + res.status + ': ' + (data.message || ''));
+    }
+  } catch(e) {
+    setCheck(tipo, 'error', e.message);
+  }
+}
+
+async function ejecutarTodo() {
+  for(const tipo of ['wa','sheets','drive','pdf']) {
+    await ejecutarIntegracion(tipo);
+  }
+}
+
+function setCheck(id, status, msg) {
+  const icon = document.getElementById('check-' + id + '-icon');
+  const stat = document.getElementById('check-' + id + '-status');
+  if(icon) icon.textContent = status === 'ok' ? '✅' : status === 'error' ? '❌' : '⏳';
+  if(stat) { stat.textContent = msg; stat.style.color = status === 'ok' ? 'var(--success)' : status === 'error' ? '#dc2626' : 'var(--muted)'; }
+}
+
 function toggleLugarRemision(val) {
-  const el = document.getElementById('campo-lugar-remision');
   if(el) el.style.display = val === 'SÍ' ? 'block' : 'none';
 }
 
