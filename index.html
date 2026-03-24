@@ -2815,9 +2815,9 @@ async function probarWA() {
   setCheck('wa', 'pending', 'Enviando mensaje...');
   const p = buildPayload();
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-wa', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ ...p, soloWA: true })
+      body: JSON.stringify({ mensaje: p.mensaje, tipoEvento: p.tipoEvento })
     });
     if(res.ok) setCheck('wa', 'ok', 'Mensaje enviado al grupo');
     else setCheck('wa', 'error', 'Error ' + res.status);
@@ -2828,9 +2828,9 @@ async function probarFolio() {
   setCheck('folio', 'pending', 'Consultando Sheet...');
   const p = buildPayload();
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-folio', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ ...p, soloFolio: true })
+      body: JSON.stringify({ prefijo: p.prefijo, resultado: p.resultado })
     });
     if(res.ok) {
       const data = await res.json();
@@ -2844,10 +2844,14 @@ async function probarFolio() {
 async function probarDrive() {
   setCheck('drive', 'pending', 'Creando carpeta...');
   const p = buildPayload();
+  const meses = ['01. ENERO','02. FEBRERO','03. MARZO','04. ABRIL','05. MAYO','06. JUNIO',
+                 '07. JULIO','08. AGOSTO','09. SEPTIEMBRE','10. OCTUBRE','11. NOVIEMBRE','12. DICIEMBRE'];
+  const mesNombre = meses[new Date().getMonth()];
+  const recuperada = p.resultado.includes('RECUPERADA') && !p.resultado.includes('NO');
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-drive', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ ...p, soloDrive: true, codigo: _lastFolio || p.folio })
+      body: JSON.stringify({ codigo: _lastFolio || p.folio, mesNombre, recuperada })
     });
     if(res.ok) {
       const data = await res.json();
@@ -2873,9 +2877,9 @@ async function probarSheets() {
   setCheck('sheets', 'pending', 'Registrando...');
   const p = buildPayload();
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-sheets', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ ...p, soloSheets: true, codigo: _lastFolio || p.folio })
+      body: JSON.stringify({ ...p, codigo: _lastFolio || p.folio })
     });
     if(res.ok) {
       const hoja = p.resultado.includes('NO') ? 'UNIDADES NO RECUPERADAS' : p.resultado.includes('CANCELADO') ? 'REPORTES CANCELADOS' : 'UNIDADES RECUPERADAS';
