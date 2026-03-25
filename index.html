@@ -2899,7 +2899,7 @@ async function probarPDF() {
   setCheck('pdf', 'pending', 'Generando reporte...');
   const p = buildPayload();
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-pdf', {
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/generar-reporte', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         tipoEvento: p.tipoEvento,
