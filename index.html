@@ -2100,6 +2100,7 @@ function nextStep(from) {
     // Guardar datos para los botones de prueba
     _lastPayload = null;
     _lastFolio = null;
+  _lastCarpetaId = null;
     ['wa','sheets','drive','pdf','folio'].forEach(id => setCheck(id, '', '—'));
     return;
   }
@@ -2331,6 +2332,7 @@ async function registerEvento() {
       setCheck('folio', 'ok', 'Folio: ' + folio);
       if(data.folderUrl) {
         setCheck('drive', 'ok', 'Carpeta creada');
+      if(data.carpetaId) _lastCarpetaId = data.carpetaId;
         const link = document.getElementById('check-drive-link');
         if(link) { link.href = data.folderUrl; link.style.display = 'inline'; }
       } else {
@@ -2891,12 +2893,41 @@ async function probarDrive() {
 }
 
 async function probarPDF() {
-  setCheck('pdf', 'pending', 'Verificando servicio...');
+  setCheck('pdf', 'pending', 'Generando reporte...');
+  const p = buildPayload();
   try {
-    const res = await fetch('https://pdf-service-jdql.onrender.com/health');
-    if(res.ok) setCheck('pdf', 'ok', 'Servicio activo en Render');
-    else setCheck('pdf', 'error', 'Servicio no responde');
-  } catch(e) { setCheck('pdf', 'error', 'Sin conexión con Render'); }
+    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-pdf', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        tipoEvento: p.tipoEvento,
+        carpetaId: _lastCarpetaId || '',
+        datos: {
+          folio: _lastFolio || p.folio,
+          cliente: p.cliente,
+          placas: p.placas,
+          nick: p.nick,
+          esn: p.esn,
+          modelo: p.modelo || '—',
+          operador: p.operador || '—',
+          empresa: p.empresa,
+          plataforma: p.plataforma,
+          lugar: p.lugar,
+          fechaRobo: p.fechaRobo || '—',
+          horaRobo: p.horaRobo || '—',
+          tipoAlerta: p.tipoAlerta || '—',
+          paroMotor: p.paroMotor || '—',
+          folio911: p.folio911 || '—',
+          modus: p.modus || '—',
+          monitorista: p.monitorista,
+          resultado: p.resultado
+        }
+      })
+    });
+    if(res.ok) {
+      const data = await res.json();
+      setCheck('pdf', 'ok', 'PDF generado: ' + (data.pdfNombre || 'reporte.pdf'));
+    } else setCheck('pdf', 'error', 'Error ' + res.status);
+  } catch(e) { setCheck('pdf', 'error', e.message); }
 }
 
 async function probarSheets() {
