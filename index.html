@@ -2926,20 +2926,45 @@ async function probarPDF() {
           hora_robo: document.getElementById('f-hora-robo')?.value || '—',
           alertas: p.tipoAlerta || 'N/A',
           paro_motor: p.paroMotor || 'N/A',
-          folio_predenuncia: document.getElementById('f-folio911')?.value || '—',
+          folio_predenuncia: document.getElementById('f-folio911-step1')?.value || '—',
           modus: document.getElementById('f-modus')?.value || '—',
           monitorista: p.monitorista,
           resultado: p.resultado,
-          fecha_atencion: document.getElementById('f-fecha-atencion')?.value || '—',
+          fecha_atencion: document.getElementById('f-fecha')?.value || '—',
           nombre_reportante: document.getElementById('f-nombre-reportante')?.value || '—',
           relacion_unidad: document.getElementById('f-relacion-unidad')?.value || '—',
           medio_contacto: document.getElementById('f-medio-contacto')?.value || '—',
           tel_reportante: document.getElementById('f-tel-reportante')?.value || '—',
           correo_reportante: document.getElementById('f-correo-reportante')?.value || '—',
           estado_rep: p.estadoRep || '—',
-          situacion: document.getElementById('f-situacion')?.value || '—',
-          acciones: document.getElementById('f-acciones')?.value || '—',
-          observaciones: document.getElementById('f-observaciones')?.value || '—',
+          situacion: (() => {
+            const nombre = document.getElementById('f-nombre-reportante')?.value || '—';
+            const relacion = document.getElementById('f-relacion-unidad')?.value || '—';
+            const hora = document.getElementById('f-hora-robo')?.value || '—';
+            const fecha = document.getElementById('f-fecha-robo')?.value || '—';
+            const lugar = document.getElementById('f-estado-rep')?.value || '—';
+            return nombre + ', en su calidad de ' + relacion + ', establece comunicación para solicitar la activación inmediata de los protocolos de emergencia correspondientes para la unidad descrita anteriormente. El evento se registró aproximadamente a las ' + hora + ' horas del día ' + fecha + ', en ' + lugar + '.';
+          })(),
+          acciones: document.getElementById('f-acciones-abuso-si')?.value || document.getElementById('f-acciones-abuso-no')?.value || (() => {
+            const plataforma = document.getElementById('f-plataforma')?.value || '—';
+            const nick = document.getElementById('f-nick')?.value || '—';
+            const alertas = typeof getTiposAlerta === 'function' ? getTiposAlerta().join(', ') : '';
+            const paroMotor = typeof getParoMotor === 'function' ? getParoMotor() : '—';
+            const coordenadas = document.getElementById('f-coords')?.value || '';
+            const lugar = document.getElementById('f-lugar')?.value || '';
+            const folio = document.getElementById('f-folio911-step1')?.value || '';
+            let texto = 'Se realiza la verificación del estado de la unidad en la plataforma ' + plataforma + ', identificada con el nick ' + nick;
+            if(alertas) texto += ', detectándose ' + alertas;
+            texto += '.';
+            if(paroMotor && paroMotor !== 'No aplica' && paroMotor !== 'No especificado') texto += ' De forma inmediata, se ejecuta el protocolo de seguridad mediante ' + paroMotor + '.';
+            if(coordenadas && lugar) texto += ' Posteriormente, se obtienen las coordenadas ' + coordenadas + ', correspondientes a ' + lugar + '.';
+            if(folio) texto += ' Con el folio de predenuncia ' + folio + ', se realiza el boletinaje formal ante ANERPV.';
+            else texto += ' Se informa al solicitante que una vez obtenido el folio de predenuncia se procederá al boletinaje formal.';
+            texto += ' Se establece comunicación continua con el solicitante, emitiendo actualizaciones periódicas sobre la evolución del evento hasta su cierre.';
+            return texto;
+          })(),
+          observaciones: document.getElementById('f-observaciones')?.value || document.getElementById('f-observaciones-no')?.value || '—',
+          paro_motor: p.paroMotor || 'N/A',
           caja_tipo: document.getElementById('f-caja-tipo')?.value || 'N/A',
           caja_marca: document.getElementById('f-caja-marca')?.value || 'N/A',
           caja_color: document.getElementById('f-caja-color')?.value || 'N/A',
