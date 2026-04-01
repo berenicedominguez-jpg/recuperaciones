@@ -1579,7 +1579,7 @@ async function enviarWhatsApp() {
       `━━━━━━━━━━━━━━━━━━━`,
     ].join('\n');
 
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/alerta-robo', {
+    const res = await fetch('https://ain8n.numaris.com/webhook/alerta-robo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mensaje, tipoEvento })
@@ -2312,7 +2312,7 @@ async function registerEvento() {
   try {
     document.getElementById('folio-valor').textContent = 'Registrando...';
     console.log('📤 Enviando a n8n:', JSON.stringify(payload).substring(0,200));
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+    const res = await fetch('https://ain8n.numaris.com/webhook/finalizar-caso', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -2750,7 +2750,7 @@ async function ejecutarIntegracion(tipo) {
   setCheck(tipo, 'pending', 'Ejecutando...');
 
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/finalizar-caso', {
+    const res = await fetch('https://ain8n.numaris.com/webhook/finalizar-caso', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ..._lastPayload, soloIntegracion: tipo })
@@ -2818,7 +2818,7 @@ async function probarWA() {
   setCheck('wa', 'pending', 'Enviando mensaje...');
   const p = buildPayload();
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-wa', {
+    const res = await fetch('https://ain8n.numaris.com/webhook/test-wa', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ mensaje: p.mensaje, tipoEvento: p.tipoEvento })
     });
@@ -2831,7 +2831,7 @@ async function probarFolio() {
   setCheck('folio', 'pending', 'Consultando Sheet...');
   const p = buildPayload();
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-folio', {
+    const res = await fetch('https://ain8n.numaris.com/webhook/test-folio', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ prefijo: p.prefijo, resultado: p.resultado })
     });
@@ -2852,7 +2852,7 @@ async function probarDrive() {
   const mesNombre = meses[new Date().getMonth()];
   const recuperada = p.resultado.includes('RECUPERADA') && !p.resultado.includes('NO');
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-drive', {
+    const res = await fetch('https://ain8n.numaris.com/webhook/test-drive', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ 
         codigo: _lastFolio || p.folio, 
@@ -2901,7 +2901,7 @@ async function probarPDF() {
   setCheck('pdf', 'pending', 'Generando reporte...');
   const p = buildPayload();
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/generar-reporte', {
+    const res = await fetch('https://ain8n.numaris.com/webhook/generar-reporte', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
         tipoEvento: p.tipoEvento,
@@ -2939,7 +2939,7 @@ async function probarSheets() {
   setCheck('sheets', 'pending', 'Registrando...');
   const p = buildPayload();
   try {
-    const res = await fetch('https://primary-production-0ac7.up.railway.app/webhook/test-sheets', {
+    const res = await fetch('https://ain8n.numaris.com/webhook/test-sheets', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ ...p, codigo: _lastFolio || p.folio })
     });
