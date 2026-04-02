@@ -2164,7 +2164,7 @@ async function registerEvento() {
   const tipoAlerta  = getTiposAlerta().join(' + ') || 'N/A';
   const paroMotor   = getParoMotor();
   const coordenadas = document.getElementById('f-coords')?.value || '—';
-  const resultadoLabel = { si:'RECUPERADA ✅', no:'NO RECUPERADA ❌', cancel:'CANCELADO 🚫' }[resultado] || '—';
+  const resultadoLabel = { si:'RECUPERADA', no:'NO RECUPERADA', cancel:'CANCELADO' }[resultado] || '—';
   const estatusCompleto = paroMotor;
 
   // Autoridades contactadas
@@ -2794,7 +2794,7 @@ function buildPayload() {
   const paroMotor  = getParoMotor();
   const prefijos   = FOLIO_PREFIJOS[empresa] || { ur:'UR-X', unr:'UNR-X' };
   const prefijo    = resultado === 'si' ? prefijos.ur : resultado === 'cancel' ? 'CANCEL' : prefijos.unr;
-  const resultadoLabel = { si:'RECUPERADA ✅', no:'NO RECUPERADA ❌', cancel:'CANCELADO 🚫' }[resultado] || '—';
+  const resultadoLabel = { si:'RECUPERADA', no:'NO RECUPERADA', cancel:'CANCELADO' }[resultado] || '—';
   const consecutivo = (casos.filter(c => c.folio && c.folio.startsWith(prefijo)).length) + 1;
   const folio = resultado === 'cancel'
     ? prefijo + '-' + String(consecutivo).padStart(3,'0')
@@ -2963,7 +2963,45 @@ async function probarPDF() {
             texto += ' Se establece comunicación continua con el solicitante, emitiendo actualizaciones periódicas sobre la evolución del evento hasta su cierre.';
             return texto;
           })(),
-          observaciones: document.getElementById('f-observaciones')?.value || document.getElementById('f-observaciones-no')?.value || '—',
+          observaciones: (function() {
+            const escenario = document.getElementById('f-escenario')?.value || '';
+            if(escenario === 'corrralon') {
+              const lugar = document.getElementById('f-lugar-rec-corrralon')?.value || '[LUGAR]';
+              const fecha = document.getElementById('f-fecha-rec-corrralon')?.value || '[FECHA]';
+              const nombre = document.getElementById('f-nombre-corrralon')?.value || '[CORRALÓN]';
+              const dir = document.getElementById('f-dir-corrralon')?.value || '[DIRECCIÓN]';
+              const mun = document.getElementById('f-mun-corrralon')?.value || '[MUNICIPIO]';
+              const edo = document.getElementById('f-edo-corrralon')?.value || '[ESTADO]';
+              return 'La unidad fue localizada en '+lugar+' el '+fecha+' y remitida al '+nombre+', ubicado en '+dir+', '+mun+', '+edo+'. Para gestionar su liberación, el representante legal deberá presentarse con documentación que acredite la propiedad del vehículo y folio de denuncia correspondiente. Numaris queda a disposición para proporcionar la información técnica que el proceso requiera.';
+            } else if(escenario === 'cliente') {
+              const lugar = document.getElementById('f-lugar-rec-cliente')?.value || '[LUGAR]';
+              const fecha = document.getElementById('f-fecha-rec-cliente')?.value || '[FECHA]';
+              const rep = document.getElementById('f-rep-cliente')?.value || '[REPRESENTANTE]';
+              const mun = document.getElementById('f-mun-cliente')?.value || '[MUNICIPIO]';
+              const donde = document.getElementById('f-donde-cliente')?.value || 'lugar';
+              const dep = document.getElementById('f-dep-cliente')?.value || '[DEPENDENCIA]';
+              const dondeTexto = donde === 'instalaciones' ? 'en las instalaciones de '+dep : 'en el lugar';
+              return 'La unidad fue localizada en '+lugar+' el '+fecha+'. El representante legal '+rep+' procedió a su recuperación '+dondeTexto+', con supervisión de las autoridades de '+mun+'. Se concluyen los protocolos correspondientes satisfactoriamente.';
+            } else if(escenario === 'mp') {
+              const lugar = document.getElementById('f-lugar-rec-mp')?.value || '[LUGAR]';
+              const fecha = document.getElementById('f-fecha-rec-mp')?.value || '[FECHA]';
+              const fiscalia = document.getElementById('f-fiscalia')?.value || '[FISCALÍA]';
+              const dir = document.getElementById('f-dir-mp')?.value || '[DIRECCIÓN]';
+              const mun = document.getElementById('f-mun-mp')?.value || '[MUNICIPIO]';
+              const edo = document.getElementById('f-edo-mp')?.value || '[ESTADO]';
+              return 'La unidad fue localizada en '+lugar+' el '+fecha+' y puesta a disposición de la '+fiscalia+', con sede en '+dir+', '+mun+', '+edo+'. El representante legal deberá gestionar ante dicha instancia los trámites necesarios para su liberación.';
+            } else if(escenario === 'no-fisica') {
+              const lugar = document.getElementById('f-lugar-rec-nofisica')?.value || '[LUGAR]';
+              const fecha = document.getElementById('f-fecha-rec-nofisica')?.value || '[FECHA]';
+              const motivo = document.getElementById('f-motivo-nofisica')?.value || '[MOTIVO]';
+              const mun = document.getElementById('f-mun-nofisica')?.value || '[MUNICIPIO]';
+              return 'La unidad fue localizada mediante rastreo GPS en '+lugar+' el '+fecha+'; sin embargo, no fue posible su recuperación física inmediata debido a '+motivo+'. Se realizó coordinación formal con las autoridades de '+mun+'.';
+            } else if(escenario === 'extranjero') {
+              return 'La última ubicación registrada de la unidad se encuentra fuera del territorio nacional, por lo que el caso queda fuera de la jurisdicción de las autoridades mexicanas. Se mantiene monitoreo activo en espera de que la unidad regrese al territorio nacional.';
+            } else {
+              return document.getElementById('f-observaciones-no')?.value || '—';
+            }
+          })(),
           paro_motor: p.paroMotor || 'N/A',
           caja_tipo: document.getElementById('f-caja-tipo')?.value || 'N/A',
           caja_marca: document.getElementById('f-caja-marca')?.value || 'N/A',
@@ -2975,7 +3013,12 @@ async function probarPDF() {
           inbursa_cis: document.getElementById('f-inbursa-cis')?.value || '—',
           inbursa_siniestro: document.getElementById('f-inbursa-siniestro')?.value || '—',
           inbursa_alarmado: document.getElementById('f-inbursa-alarmado')?.value || '—',
-          ultima_senal: document.getElementById('f-ultima-senal')?.value || '—'
+          ultima_senal: (function() {
+            const fp = document.getElementById('fp-fechahora');
+            if(fp && fp.value) return fp.value;
+            const fa = document.getElementById('f-fecha')?.value || '';
+            return fa || '—';
+          })()
         }
       })
     });
