@@ -2788,6 +2788,13 @@ async function ejecutarTodo() {
 }
 
 // ===== FUNCIONES DE PRUEBA INDIVIDUALES =====
+
+function formatFecha(v) {
+  if(!v) return '—';
+  const d = new Date(v + 'T00:00:00');
+  if(isNaN(d)) return v;
+  return d.toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
+}
 function buildPayload() {
   const resultado  = recuperadoSelected;
   const empresa    = document.getElementById('f-empresa-atiende')?.value || '';
@@ -2933,7 +2940,7 @@ async function probarPDF() {
           plataforma: p.plataforma,
           lugar: p.lugar,
           coordenadas: p.coords || '—',
-          fecha_robo: document.getElementById('f-fecha-robo')?.value || '—',
+          fecha_robo: formatFecha(document.getElementById('f-fecha-robo')?.value),
           hora_robo: document.getElementById('f-hora-robo')?.value || '—',
           alertas: p.tipoAlerta || 'N/A',
           paro_motor: p.paroMotor || 'N/A',
@@ -2971,9 +2978,19 @@ async function probarPDF() {
             const lugar = document.getElementById('f-lugar')?.value || '';
             const folio = document.getElementById('f-folio911-step1')?.value || '';
             let texto = 'Se realiza la verificación del estado de la unidad en la plataforma ' + plataforma + ', identificada con el nick ' + nick;
-            if(alertas) texto += ', detectándose ' + alertas;
+            if(alertas && alertas !== 'N/A' && alertas !== '—') texto += ', detectándose ' + alertas;
             texto += '.';
-            if(paroMotor && paroMotor !== 'No aplica' && paroMotor !== 'No especificado') texto += ' De forma inmediata, se ejecuta el protocolo de seguridad mediante ' + paroMotor + '.';
+            if(paroMotor === 'Enviado y ejecutado') {
+              texto += ' De forma inmediata, se ejecuta el comando de paro de motor, siendo autorizado por el cliente y confirmado por el equipo.';
+            } else if(paroMotor === 'Autorizado sin respuesta') {
+              texto += ' Se ejecuta el comando de paro de motor con autorización del cliente; sin embargo, el equipo no reporta respuesta.';
+            } else if(paroMotor === 'No enviado — desconexión') {
+              texto += ' No fue posible ejecutar el comando de paro de motor debido a que el equipo se encuentra desconectado.';
+            } else if(paroMotor === 'No enviado — sin reporte') {
+              texto += ' No fue posible ejecutar el comando de paro de motor ya que el equipo no reporta señal o se encuentra fuera de cobertura.';
+            } else if(paroMotor === 'No autorizado por cliente') {
+              texto += ' El cliente no otorgó autorización para ejecutar el comando de paro de motor.';
+            }
             if(coordenadas && lugar) texto += ' Posteriormente, se obtienen las coordenadas ' + coordenadas + ', correspondientes a ' + lugar + '.';
             if(folio) texto += ' Con el folio de predenuncia ' + folio + ', se realiza el boletinaje formal ante ANERPV.';
             else texto += ' Se informa al solicitante que una vez obtenido el folio de predenuncia se procederá al boletinaje formal.';
@@ -2984,7 +3001,7 @@ async function probarPDF() {
             const escenario = document.getElementById('f-escenario')?.value || '';
             if(escenario === 'corrralon') {
               const lugar = document.getElementById('f-lugar-rec-corrralon')?.value || '[LUGAR]';
-              const fecha = document.getElementById('f-fecha-rec-corrralon')?.value || '[FECHA]';
+              const fecha = formatFecha(document.getElementById('f-fecha-rec-corrralon')?.value) || '[FECHA]';
               const nombre = document.getElementById('f-nombre-corrralon')?.value || '[CORRALÓN]';
               const dir = document.getElementById('f-dir-corrralon')?.value || '[DIRECCIÓN]';
               const mun = document.getElementById('f-mun-corrralon')?.value || '[MUNICIPIO]';
@@ -2992,7 +3009,7 @@ async function probarPDF() {
               return 'La unidad fue localizada en '+lugar+' el '+fecha+' y remitida al '+nombre+', ubicado en '+dir+', '+mun+', '+edo+'. Para gestionar su liberación, el representante legal deberá presentarse con documentación que acredite la propiedad del vehículo y folio de denuncia correspondiente. Numaris queda a disposición para proporcionar la información técnica que el proceso requiera.';
             } else if(escenario === 'cliente') {
               const lugar = document.getElementById('f-lugar-rec-cliente')?.value || '[LUGAR]';
-              const fecha = document.getElementById('f-fecha-rec-cliente')?.value || '[FECHA]';
+              const fecha = formatFecha(document.getElementById('f-fecha-rec-cliente')?.value) || '[FECHA]';
               const rep = document.getElementById('f-rep-cliente')?.value || '[REPRESENTANTE]';
               const mun = document.getElementById('f-mun-cliente')?.value || '[MUNICIPIO]';
               const donde = document.getElementById('f-donde-cliente')?.value || 'lugar';
@@ -3001,7 +3018,7 @@ async function probarPDF() {
               return 'La unidad fue localizada en '+lugar+' el '+fecha+'. El representante legal '+rep+' procedió a su recuperación '+dondeTexto+', con supervisión de las autoridades de '+mun+'. Se concluyen los protocolos correspondientes satisfactoriamente.';
             } else if(escenario === 'mp') {
               const lugar = document.getElementById('f-lugar-rec-mp')?.value || '[LUGAR]';
-              const fecha = document.getElementById('f-fecha-rec-mp')?.value || '[FECHA]';
+              const fecha = formatFecha(document.getElementById('f-fecha-rec-mp')?.value) || '[FECHA]';
               const fiscalia = document.getElementById('f-fiscalia')?.value || '[FISCALÍA]';
               const dir = document.getElementById('f-dir-mp')?.value || '[DIRECCIÓN]';
               const mun = document.getElementById('f-mun-mp')?.value || '[MUNICIPIO]';
@@ -3009,7 +3026,7 @@ async function probarPDF() {
               return 'La unidad fue localizada en '+lugar+' el '+fecha+' y puesta a disposición de la '+fiscalia+', con sede en '+dir+', '+mun+', '+edo+'. El representante legal deberá gestionar ante dicha instancia los trámites necesarios para su liberación.';
             } else if(escenario === 'no-fisica') {
               const lugar = document.getElementById('f-lugar-rec-nofisica')?.value || '[LUGAR]';
-              const fecha = document.getElementById('f-fecha-rec-nofisica')?.value || '[FECHA]';
+              const fecha = formatFecha(document.getElementById('f-fecha-rec-nofisica')?.value) || '[FECHA]';
               const motivo = document.getElementById('f-motivo-nofisica')?.value || '[MOTIVO]';
               const mun = document.getElementById('f-mun-nofisica')?.value || '[MUNICIPIO]';
               return 'La unidad fue localizada mediante rastreo GPS en '+lugar+' el '+fecha+'; sin embargo, no fue posible su recuperación física inmediata debido a '+motivo+'. Se realizó coordinación formal con las autoridades de '+mun+'.';
