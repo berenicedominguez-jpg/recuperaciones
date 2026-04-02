@@ -2999,6 +2999,9 @@ async function probarPDF() {
           })(),
           observaciones: (function() {
             const escenario = document.getElementById('f-escenario')?.value || '';
+            if(!escenario || escenario === '') {
+              return 'La unidad ha sido debidamente boletinada ante las instancias de seguridad y organismos especializados correspondientes. En caso de que las autoridades establezcan comunicación directa con el representante legal para informar avances sobre su localización, solicitamos notificarnos de inmediato para dar seguimiento coordinado al caso. De no recibir novedades, nuestro equipo se pondrá en contacto a la brevedad para mantenerle informado sobre los avances del evento.';
+            }
             if(escenario === 'corrralon') {
               const lugar = document.getElementById('f-lugar-rec-corrralon')?.value || '[LUGAR]';
               const fecha = formatFecha(document.getElementById('f-fecha-rec-corrralon')?.value) || '[FECHA]';
