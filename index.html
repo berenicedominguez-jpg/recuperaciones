@@ -3064,7 +3064,44 @@ async function probarSheets() {
   try {
     const res = await fetch('https://ain8n.numaris.com/webhook/test-sheets', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ ...p, codigo: _lastFolio || p.folio })
+      body: JSON.stringify({
+        tipoEvento: p.tipoEvento,
+        resultado: p.resultado,
+        folio: _lastFolio || p.folio,
+        cliente: p.cliente,
+        nick: p.nick,
+        esn: p.esn,
+        plataforma: p.plataforma,
+        empresa: p.empresa,
+        coordenadas: p.coords || '—',
+        estadoRep: p.estadoRep || '—',
+        monitorista: p.monitorista,
+        paroMotor: p.paroMotor || '—',
+        tipoAlerta: p.tipoAlerta || '—',
+        autoridades: document.querySelectorAll('input[id^="aut-"]:checked') ? Array.from(document.querySelectorAll('input[id^="aut-"]:checked')).map(e => e.closest('label')?.textContent?.trim() || e.id).join(', ') : '—',
+        tipoUnidad: document.getElementById('f-tipo-unidad')?.value || '—',
+        costoEstimado: document.getElementById('f-costo-estimado')?.value || '—',
+        folio911: document.getElementById('f-folio911-step1')?.value || '—',
+        fechaRobo: formatFecha(document.getElementById('f-fecha-robo')?.value),
+        horaRobo: document.getElementById('f-hora-robo')?.value || '—',
+        fechaAtencion: (function() {
+          const v = document.getElementById('f-fecha')?.value || '';
+          if(!v) return '—';
+          const d = new Date(v);
+          if(isNaN(d)) return v;
+          return d.toLocaleDateString('es-MX', {day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + d.toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit', hour12:true});
+        })(),
+        fechaRecuperacion: (function() {
+          const escenario = document.getElementById('f-escenario')?.value || '';
+          const campos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica'};
+          return formatFecha(document.getElementById(campos[escenario])?.value) || '—';
+        })(),
+        quienRecibe: document.getElementById('f-quien-recibe')?.value || '—',
+        quienAutoriza: document.getElementById('f-quien-autoriza')?.value || '—',
+        motivoCancelacion: document.getElementById('f-motivo-cancelacion')?.value || '—',
+        fechaCancelacion: formatFecha(document.getElementById('f-cancel-fecha')?.value) || '—',
+        reporteRobo: '—'
+      })
     });
     if(res.ok) {
       const hoja = p.resultado.includes('NO') ? 'UNIDADES NO RECUPERADAS' : p.resultado.includes('CANCELADO') ? 'REPORTES CANCELADOS' : 'UNIDADES RECUPERADAS';
