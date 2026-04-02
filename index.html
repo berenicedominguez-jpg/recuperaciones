@@ -3096,9 +3096,9 @@ async function probarSheets() {
           const campos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica'};
           return formatFecha(document.getElementById(campos[escenario])?.value) || '—';
         })(),
-        quienRecibe: document.getElementById('f-quien-recibe')?.value || '—',
-        quienAutoriza: document.getElementById('f-quien-autoriza')?.value || '—',
-        motivoCancelacion: document.getElementById('f-motivo-cancelacion')?.value || '—',
+        quienRecibe: document.getElementById('f-cancel-recibe')?.value || '—',
+        quienAutoriza: document.getElementById('f-cancel-autoriza')?.value || '—',
+        motivoCancelacion: document.getElementById('f-cancel-motivo')?.value || '—',
         fechaCancelacion: formatFecha(document.getElementById('f-cancel-fecha')?.value) || '—',
         reporteRobo: document.getElementById('f-tiempo-reporte')?.value || '—',
         reportePreDenuncia: document.getElementById('f-tiempo-predenuncia')?.value || '—',
