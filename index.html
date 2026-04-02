@@ -3080,7 +3080,7 @@ async function probarSheets() {
         tipoAlerta: p.tipoAlerta || '—',
         autoridades: document.querySelectorAll('input[id^="aut-"]:checked') ? Array.from(document.querySelectorAll('input[id^="aut-"]:checked')).map(e => e.closest('label')?.textContent?.trim() || e.id).join(', ') : '—',
         tipoUnidad: document.getElementById('f-tipo-unidad')?.value || '—',
-        costoEstimado: document.getElementById('f-costo-estimado')?.value || '—',
+        costoEstimado: document.getElementById('f-costo-estimado')?.value || document.getElementById('f-costo')?.value || '—',
         folio911: document.getElementById('f-folio911-step1')?.value || '—',
         fechaRobo: formatFecha(document.getElementById('f-fecha-robo')?.value),
         horaRobo: document.getElementById('f-hora-robo')?.value || '—',
@@ -3100,7 +3100,13 @@ async function probarSheets() {
         quienAutoriza: document.getElementById('f-quien-autoriza')?.value || '—',
         motivoCancelacion: document.getElementById('f-motivo-cancelacion')?.value || '—',
         fechaCancelacion: formatFecha(document.getElementById('f-cancel-fecha')?.value) || '—',
-        reporteRobo: '—'
+        reporteRobo: document.getElementById('f-tiempo-reporte')?.value || '—',
+        reportePreDenuncia: document.getElementById('f-tiempo-predenuncia')?.value || '—',
+        fechaRecuperacion: (function() {
+          const escenario = document.getElementById('f-escenario')?.value || '';
+          const campos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica'};
+          return formatFecha(document.getElementById(campos[escenario])?.value) || '—';
+        })()
       })
     });
     if(res.ok) {
