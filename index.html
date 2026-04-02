@@ -737,6 +737,10 @@
                 <label>No. de motor</label>
                 <input type="text" id="f-motor" placeholder="Si aplica" />
               </div>
+              <div class="form-group">
+                <label>Última señal GPS</label>
+                <input type="text" id="f-ultima-senal" placeholder="Ej. 12/03/2026 12:13 HRS." />
+              </div>
             </div>
 
           </div>
@@ -1722,7 +1726,8 @@ const FIELD_MAP = [
   { id:'fp-modus',      label:'Modus operandi',          keys:['modus operandi','modus','modalidad'] },
   { id:'fp-lugar',      label:'Lugar del robo',          keys:['lugar del robo','lugar','ultima ubicación gps','última ubicación gps','ultima ubicacion gps'] },
   { id:'fp-coords',     label:'Coordenadas GPS',         keys:['coordenadas','coords','gps'] },
-  { id:'fp-fecha',      label:'Fecha del robo',          keys:['fecha del robo','fecha y hora de la ultima','fecha'] },
+  { id:'fp-fechahora',  label:'Última señal GPS',        keys:['fecha y hora de la ultima ubicación','fecha y hora de la ultima ubicacion','fecha y hora de la ultima'] },
+  { id:'fp-fecha',      label:'Fecha del robo',          keys:['fecha del robo','fecha'] },
   { id:'fp-hora',       label:'Hora del robo',           keys:['hora del robo','hora'] },
   { id:'fp-folio911',   label:'Folio 911',               keys:['folio 911','folio','número de reporte','reporte'] },
   { id:'fp-motor',      label:'No. de motor',            keys:['numero de motor','número de motor','motor'] },
@@ -1964,7 +1969,13 @@ function syncParsedToForm() {
   // NOTA: fecha-robo y hora-robo se sincronizan usando los nuevos pickers
   if(getF('fp-fecha')) setFechaRobo(getF('fp-fecha'));
   if(getF('fp-hora'))  setHoraRobo(getF('fp-hora'));
-  if(getF('fp-fechahora')) setF('f-ultima-senal', getF('fp-fechahora'));
+  if(getF('fp-fechahora')) {
+    setF('f-ultima-senal', getF('fp-fechahora'));
+  } else if(getF('fp-fecha') && getF('fp-hora')) {
+    setF('f-ultima-senal', getF('fp-fecha') + ' ' + getF('fp-hora'));
+  } else if(getF('fp-fecha')) {
+    setF('f-ultima-senal', getF('fp-fecha'));
+  }
   if(getF('fp-folio911')) setF('f-folio911-step1', getF('fp-folio911'));
   // Caja — mapear todos los campos
   const cajaFields = {
@@ -2930,7 +2941,13 @@ async function probarPDF() {
           modus: document.getElementById('f-modus')?.value || '—',
           monitorista: p.monitorista,
           resultado: p.resultado,
-          fecha_atencion: document.getElementById('f-fecha')?.value || '—',
+          fecha_atencion: (function() {
+            const v = document.getElementById('f-fecha')?.value || '';
+            if(!v) return '—';
+            const d = new Date(v);
+            if(isNaN(d)) return v;
+            return d.toLocaleDateString('es-MX', {day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + d.toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit', hour12:true});
+          })(),
           nombre_reportante: document.getElementById('f-nombre-reportante')?.value || '—',
           relacion_unidad: document.getElementById('f-relacion-unidad')?.value || '—',
           medio_contacto: document.getElementById('f-medio-contacto')?.value || '—',
@@ -3013,12 +3030,7 @@ async function probarPDF() {
           inbursa_cis: document.getElementById('f-inbursa-cis')?.value || '—',
           inbursa_siniestro: document.getElementById('f-inbursa-siniestro')?.value || '—',
           inbursa_alarmado: document.getElementById('f-inbursa-alarmado')?.value || '—',
-          ultima_senal: (function() {
-            const fp = document.getElementById('fp-fechahora');
-            if(fp && fp.value) return fp.value;
-            const fa = document.getElementById('f-fecha')?.value || '';
-            return fa || '—';
-          })()
+          ultima_senal: document.getElementById('f-ultima-senal')?.value || '—'
         }
       })
     });
