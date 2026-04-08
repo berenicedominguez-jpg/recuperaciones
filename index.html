@@ -3002,7 +3002,8 @@ async function probarPDF() {
             const escenario = document.getElementById('f-escenario')?.value || '';
             if(!escenario || escenario === '') {
               const folio = document.getElementById('f-folio911-step1')?.value || '';
-              if(folio) {
+              const folioValido = folio && folio !== '—' && folio.toUpperCase() !== 'NA' && folio.toUpperCase() !== 'N/A';
+              if(folioValido) {
                 return 'La unidad ha sido debidamente boletinada ante las instancias de seguridad y organismos especializados correspondientes, con folio de predenuncia ' + folio + '. En caso de que las autoridades establezcan comunicación directa con el representante legal para informar avances sobre su localización, solicitamos notificarnos de inmediato para dar seguimiento coordinado al caso. De no recibir novedades, nuestro equipo se pondrá en contacto a la brevedad para mantenerle informado sobre los avances del evento.';
               } else {
                 return 'La unidad ha sido reportada ante las instancias de seguridad correspondientes. Pendiente de obtener folio de predenuncia para proceder con el boletinaje formal ante los organismos especializados. En caso de que las autoridades establezcan comunicación directa con el representante legal, solicitamos notificarnos de inmediato. Nuestro equipo se pondrá en contacto a la brevedad para dar seguimiento al caso.';
