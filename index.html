@@ -1027,16 +1027,16 @@
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
                 <div class="form-group">
                   <label>Imagen — Lugar del robo</label>
-                  <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;background:var(--card2);" onclick="document.getElementById('img-lugar-robo').click()">
-                    <div id="preview-lugar-robo" style="font-size:11px;color:var(--muted);">📍 Captura de plataforma GPS<br><span style="font-size:10px;">Clic para subir</span></div>
+                  <div id="drop-lugar-robo" style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;background:var(--card2);" onclick="document.getElementById('img-lugar-robo').click()" ondragover="event.preventDefault()" ondrop="handleDrop(event,'img-lugar-robo','preview-lugar-robo')">
+                    <div id="preview-lugar-robo" style="font-size:11px;color:var(--muted);">📍 Captura de plataforma GPS<br><span style="font-size:10px;">Clic para subir · Arrastra · Ctrl+V</span></div>
                     <input type="file" id="img-lugar-robo" accept="image/*" style="display:none;" onchange="previewImg(this,'preview-lugar-robo')" />
                   </div>
                 </div>
                 <div class="form-group">
                   <label>Imagen — Evidencia</label>
-                  <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;background:var(--card2);" onclick="document.getElementById('img-evidencia').click()">
-                    <div id="preview-evidencia" style="font-size:11px;color:var(--muted);">📷 Foto de la unidad<br><span style="font-size:10px;">Clic para subir</span></div>
-                    <input type="file" id="img-evidencia" accept="image/*" style="display:none;" onchange="previewImg(this,'preview-evidencia')" />
+                  <div id="drop-evidencia" style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;background:var(--card2);" onclick="document.getElementById('img-evidencia').click()" ondragover="event.preventDefault()" ondrop="handleDropMultiple(event,'img-evidencia','preview-evidencia')">
+                    <div id="preview-evidencia" style="font-size:11px;color:var(--muted);">📷 Evidencia (1 o 2 imágenes)<br><span style="font-size:10px;">Clic para subir · Arrastra · Ctrl+V</span></div>
+                    <input type="file" id="img-evidencia" accept="image/*" multiple style="display:none;" onchange="previewImgMultiple(this,'preview-evidencia')" />
                   </div>
                 </div>
               </div>
@@ -2789,6 +2789,27 @@ async function ejecutarTodo() {
 
 // ===== FUNCIONES DE PRUEBA INDIVIDUALES =====
 
+async function imgToBase64(inputId) {
+  const input = document.getElementById(inputId);
+  if(!input || !input.files || !input.files[0]) return null;
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result.split(',')[1]);
+    reader.readAsDataURL(input.files[0]);
+  });
+}
+
+async function imgToBase64Multiple(inputId) {
+  const input = document.getElementById(inputId);
+  if(!input || !input.files || !input.files.length) return [];
+  const files = Array.from(input.files).slice(0,2);
+  return Promise.all(files.map(file => new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result.split(',')[1]);
+    reader.readAsDataURL(file);
+  })));
+}
+
 function formatFecha(v) {
   if(!v) return '—';
   const d = new Date(v + 'T00:00:00');
@@ -3058,6 +3079,8 @@ async function probarPDF() {
           inbursa_siniestro: document.getElementById('f-inbursa-siniestro')?.value || '—',
           inbursa_alarmado: document.getElementById('f-inbursa-alarmado')?.value || '—',
           ultima_senal: document.getElementById('f-ultima-senal')?.value || '—',
+          img_lugar: await imgToBase64('img-lugar-robo'),
+          img_evidencia: await imgToBase64Multiple('img-evidencia'),
           poliza: document.getElementById('f-poliza')?.value || '—',
           num_carpeta: document.getElementById('f-num-carpeta')?.value || '—',
           denuncia_mp: document.getElementById('f-denuncia-mp')?.value || '—',
@@ -3160,6 +3183,81 @@ function previewImg(input, previewId) {
     reader.readAsDataURL(input.files[0]);
   }
 }
+
+function setImgFromBlob(blob, inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if(!input || !preview) return;
+  const file = new File([blob], 'imagen.png', { type: blob.type || 'image/png' });
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  input.files = dt.files;
+  const reader = new FileReader();
+  reader.onload = e => {
+    preview.innerHTML = '<img src="' + e.target.result + '" style="max-width:100%;max-height:120px;border-radius:4px;object-fit:contain;" />';
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleDrop(event, inputId, previewId) {
+  event.preventDefault();
+  const file = event.dataTransfer.files[0];
+  if(file && file.type.startsWith('image/')) {
+    setImgFromBlob(file, inputId, previewId);
+  }
+}
+
+function handleDropMultiple(event, inputId, previewId) {
+  event.preventDefault();
+  const files = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/')).slice(0,2);
+  if(!files.length) return;
+  const input = document.getElementById(inputId);
+  const dt = new DataTransfer();
+  files.forEach(f => dt.items.add(f));
+  input.files = dt.files;
+  previewImgMultiple(input, previewId);
+}
+
+function previewImgMultiple(input, previewId) {
+  const preview = document.getElementById(previewId);
+  if(!preview || !input.files?.length) return;
+  const files = Array.from(input.files).slice(0,2);
+  Promise.all(files.map(file => new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.readAsDataURL(file);
+  }))).then(results => {
+    preview.innerHTML = results.map(src => 
+      '<img src="' + src + '" style="max-width:48%;max-height:120px;border-radius:4px;object-fit:contain;margin:2px;" />'
+    ).join('');
+  });
+}
+
+// Soporte global para Ctrl+V - pega en el campo de imagen activo o en el primero disponible
+document.addEventListener('paste', function(e) {
+  const items = e.clipboardData?.items;
+  if(!items) return;
+  for(const item of items) {
+    if(item.type.startsWith('image/')) {
+      const blob = item.getAsFile();
+      // Pegar en lugar-robo si no tiene imagen, sino en evidencia
+      const inputLugar = document.getElementById('img-lugar-robo');
+      const inputEvidencia = document.getElementById('img-evidencia');
+      if(!inputLugar?.files?.length) {
+        setImgFromBlob(blob, 'img-lugar-robo', 'preview-lugar-robo');
+      } else {
+        // Agregar a evidencia (máx 2)
+        const inputEv = document.getElementById('img-evidencia');
+        const dt = new DataTransfer();
+        if(inputEv?.files) Array.from(inputEv.files).slice(0,1).forEach(f => dt.items.add(f));
+        dt.items.add(new File([blob], 'evidencia.png', { type: blob.type || 'image/png' }));
+        inputEv.files = dt.files;
+        previewImgMultiple(inputEv, 'preview-evidencia');
+      }
+      break;
+    }
+  }
+});
 
 function toggleCamposAbuso(resultado) {
   const esAbuso = document.getElementById('f-tipo-evento')?.value === 'ABUSO DE CONFIANZA';
