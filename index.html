@@ -3343,6 +3343,15 @@ function onTipoEventoChange(val) {
   // Mostrar campos extra de descripción para ABUSO DE CONFIANZA
   if(camposAbuso) camposAbuso.style.display = (val === 'ABUSO DE CONFIANZA') ? 'block' : 'none';
 
+  // Ocultar escenario de cierre para ABUSO DE CONFIANZA y RECUPERACIÓN DE CRÉDITO
+  const esRobo = (val === 'ROBO');
+  const escenarioDiv = document.querySelector('#panel-si .form-group:first-child');
+  const camposEscenario = document.getElementById('campos-escenario');
+  const selectEscenario = document.getElementById('f-escenario');
+  if(escenarioDiv) escenarioDiv.style.display = esRobo ? 'block' : 'none';
+  if(camposEscenario && !esRobo) { camposEscenario.style.display = 'none'; }
+  if(selectEscenario && !esRobo) { selectEscenario.value = ''; }
+
   // Cambiar placeholder según tipo
   if(ta) {
     if(val && PLANTILLAS[val]) {
