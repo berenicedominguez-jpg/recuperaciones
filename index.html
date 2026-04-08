@@ -2982,6 +2982,9 @@ async function probarPDF() {
           tel_reportante: document.getElementById('f-tel-reportante')?.value || '—',
           correo_reportante: document.getElementById('f-correo-reportante')?.value || '—',
           estado_rep: p.estadoRep || '—',
+          autoridades: Array.from(document.querySelectorAll('input[id^="aut-"]:checked'))
+            .map(e => e.closest('label')?.textContent?.trim())
+            .filter(Boolean).join(', ') || '—',
           situacion: (() => {
             const nombre = document.getElementById('f-nombre-reportante')?.value || '—';
             const relacion = document.getElementById('f-relacion-unidad')?.value || '—';
