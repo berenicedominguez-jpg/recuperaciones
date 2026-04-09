@@ -974,7 +974,7 @@
                 <label>ESN (equipo GPS)</label>
                 <input type="text" id="f-esn" placeholder="No. de serie del equipo" />
               </div>
-              <div class="form-group">
+              <div class="form-group" id="campo-nick-alias">
                 <label>Nick / Alias en plataforma</label>
                 <input type="text" id="f-nick" placeholder="Nombre del activo en sistema" />
               </div>
@@ -2278,8 +2278,8 @@ function nextStep(from) {
     const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
     const cardPersona = document.getElementById('card-persona-reporta');
     if(cardPersona) cardPersona.style.display = esCredito ? 'none' : 'block';
-    const cardUnidad = document.getElementById('card-unidad-plataforma');
-    if(cardUnidad) cardUnidad.style.display = esCredito ? 'none' : 'block';
+    const campoNick = document.getElementById('campo-nick-alias');
+    if(campoNick) campoNick.style.display = esCredito ? 'none' : 'block';
   }
   if(from===2) {
     // No mandatory fields — proceed freely
