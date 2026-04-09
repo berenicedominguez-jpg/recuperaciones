@@ -802,7 +802,11 @@
               </div>
               <div class="form-group">
                 <label>Tipo de entrega</label>
-                <input type="text" id="f-credito-tipo-entrega" placeholder="Ej. Voluntaria" />
+                <select id="f-credito-tipo-entrega">
+                  <option value="">Seleccionar...</option>
+                  <option>Voluntaria</option>
+                  <option>Sin presencia del cliente</option>
+                </select>
               </div>
             </div>
             <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
@@ -1996,7 +2000,7 @@ function parseTemplate(text) {
 
   const VEHICULO_KEYS = {
     'fp-marca':    ['marca'],
-    'fp-submarca': ['submarca'],
+    'fp-submarca': ['submarca','modelo'],
     'fp-anio':     ['año','ano'],
     'fp-color':    ['color'],
     'fp-serie':    ['serie'],
@@ -2024,9 +2028,22 @@ function parseTemplate(text) {
     'fp-motor':     ['numero de motor','número de motor'],
     'fp-mercancia': ['mercancía','mercancia'],
     'fp-origdest':  ['origen - destino'],
+    // Crédito
+    'fp-credito-razon':        ['razón social','razon social'],
+    'fp-credito-tk':           ['tk'],
+    'fp-credito-tipo-entrega': ['tipo de entrega'],
+    'fp-credito-lugar-rec':    ['lugar de recuperación','lugar de recuperacion'],
+    'fp-credito-fecha-rec':    ['fecha de recuperación','fecha de recuperacion'],
+    'fp-credito-entidad':      ['entidad'],
+    'fp-credito-nombre':       ['nombre'],
+    'fp-credito-motivo':       ['motivo'],
+    'fp-credito-fecha-inicio': ['fecha inicio seguimiento'],
+    'fp-credito-fecha-fin':    ['fecha fin seguimiento'],
+    'fp-credito-localidad':    ['localidad de gestión','localidad de gestion'],
+    'fp-credito-resguardo':    ['lugar de resguardo'],
   };
   const CAJA_TRIGGERS = ['en caso de contar con acoplados','grafica del veh','gráfica del veh'];
-  const IGNORE        = ['datos para canalizar evento de inmediato'];
+  const IGNORE        = ['datos para canalizar evento de inmediato','datos del vehículo','datos del vehiculo','datos del cliente'];
 
   for (const line of lines) {
     const ll = line.toLowerCase().trim();
@@ -2165,7 +2182,17 @@ function syncParsedToForm() {
   if(esCredito) {
     if(getF('fp-credito-tk'))           setF('f-credito-tk',           getF('fp-credito-tk'));
     if(getF('fp-credito-razon'))        setF('f-credito-razon',        getF('fp-credito-razon'));
-    if(getF('fp-credito-tipo-entrega')) setF('f-credito-tipo-entrega', getF('fp-credito-tipo-entrega'));
+    if(getF('fp-credito-tipo-entrega')) {
+      const sel = document.getElementById('f-credito-tipo-entrega');
+      const val = getF('fp-credito-tipo-entrega');
+      if(sel) {
+        // Buscar opción que coincida
+        for(const o of sel.options) {
+          if(o.value && o.value.toLowerCase() === val.toLowerCase()) { sel.value = o.value; break; }
+        }
+        if(!sel.value) sel.value = 'Voluntaria'; // default
+      }
+    }
     if(getF('fp-credito-lugar-rec'))    setF('f-credito-lugar-rec',    getF('fp-credito-lugar-rec'));
     if(getF('fp-credito-fecha-rec'))    setF('f-credito-fecha-rec',    getF('fp-credito-fecha-rec'));
     if(getF('fp-marca'))                setF('f-marca',                getF('fp-marca'));
