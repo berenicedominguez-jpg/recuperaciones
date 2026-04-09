@@ -2797,7 +2797,6 @@ function resizeImageToBase64(file, maxW, maxH) {
       const img = new Image();
       img.onload = () => {
         let w = img.width, h = img.height;
-        // Escalar manteniendo proporción
         const ratio = Math.min(maxW / w, maxH / h);
         if (ratio < 1) { w = Math.round(w * ratio); h = Math.round(h * ratio); }
         const canvas = document.createElement('canvas');
@@ -2814,16 +2813,16 @@ function resizeImageToBase64(file, maxW, maxH) {
 async function imgToBase64(inputId) {
   const input = document.getElementById(inputId);
   if(!input || !input.files || !input.files[0]) return null;
-  // Máximo para imagen de lugar: ancho carta completo ~1600px, alto ~900px
-  return resizeImageToBase64(input.files[0], 1600, 900);
+  // 8709 twips ancho = 15.37cm = 587px a 96dpi — alto máximo para hoja 2
+  return resizeImageToBase64(input.files[0], 875, 500);
 }
 
 async function imgToBase64Multiple(inputId) {
   const input = document.getElementById(inputId);
   if(!input || !input.files || !input.files.length) return [];
   const files = Array.from(input.files).slice(0,2);
-  // Máximo para evidencias: ancho carta completo ~1600px, alto ~900px (landscape)
-  return Promise.all(files.map(file => resizeImageToBase64(file, 1600, 900)));
+  // Para evidencias: mismo ancho, alto máximo para que quepan 2 en hoja 4
+  return Promise.all(files.map(file => resizeImageToBase64(file, 875, 420)));
 }
 
 function formatFecha(v) {
