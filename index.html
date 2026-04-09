@@ -2181,7 +2181,8 @@ function syncParsedToForm() {
   const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
   if(esCredito) {
     if(getF('fp-credito-tk'))           setF('f-credito-tk',           getF('fp-credito-tk'));
-    if(getF('fp-credito-razon'))        setF('f-credito-razon',        getF('fp-credito-razon'));
+    if(getF('fp-credito-razon') || getF('fp-razon')) 
+      setF('f-credito-razon', getF('fp-credito-razon') || getF('fp-razon'));
     if(getF('fp-credito-tipo-entrega')) {
       const sel = document.getElementById('f-credito-tipo-entrega');
       const val = getF('fp-credito-tipo-entrega');
