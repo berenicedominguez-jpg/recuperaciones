@@ -1133,9 +1133,12 @@
             <!-- Imagen del mapa -->
             <div style="margin-bottom:16px;">
               <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;">Imagen del mapa (rastreo GPS)</label>
-              <input type="file" id="img-credito-mapa" accept="image/*" style="margin-bottom:6px;" />
-              <div id="preview-credito-mapa" style="display:none;margin-top:8px;">
-                <img id="img-preview-credito-mapa" style="max-width:100%;max-height:200px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
+              <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;background:var(--card2);"
+                   onclick="document.getElementById('img-credito-mapa').click()"
+                   ondragover="event.preventDefault()"
+                   ondrop="handleDropCredito(event,'img-credito-mapa','preview-credito-mapa')">
+                <input type="file" id="img-credito-mapa" accept="image/*" style="display:none;" onchange="previewCreditoEv(this,'preview-credito-mapa')" />
+                <div id="preview-credito-mapa" style="font-size:11px;color:var(--muted);">🗺️ Imagen del mapa GPS<br><span style="font-size:10px;">Clic · Arrastra · Ctrl+V</span></div>
               </div>
             </div>
 
@@ -1167,26 +1170,26 @@
             <div>
               <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">Evidencia de la unidad (hasta 3 fotos)</label>
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-                <div>
-                  <label style="font-size:11px;color:var(--muted2);">Foto 1</label>
-                  <input type="file" id="img-credito-ev1" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev1')" />
-                  <div id="preview-credito-ev1" style="display:none;margin-top:6px;">
-                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
-                  </div>
+                <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;background:var(--card2);"
+                     onclick="document.getElementById('img-credito-ev1').click()"
+                     ondragover="event.preventDefault()"
+                     ondrop="handleDropCredito(event,'img-credito-ev1','preview-credito-ev1')">
+                  <input type="file" id="img-credito-ev1" accept="image/*" style="display:none;" onchange="previewCreditoEv(this,'preview-credito-ev1')" />
+                  <div id="preview-credito-ev1" style="font-size:11px;color:var(--muted);">📷 Foto 1<br><span style="font-size:10px;">Clic · Arrastra · Ctrl+V</span></div>
                 </div>
-                <div>
-                  <label style="font-size:11px;color:var(--muted2);">Foto 2</label>
-                  <input type="file" id="img-credito-ev2" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev2')" />
-                  <div id="preview-credito-ev2" style="display:none;margin-top:6px;">
-                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
-                  </div>
+                <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;background:var(--card2);"
+                     onclick="document.getElementById('img-credito-ev2').click()"
+                     ondragover="event.preventDefault()"
+                     ondrop="handleDropCredito(event,'img-credito-ev2','preview-credito-ev2')">
+                  <input type="file" id="img-credito-ev2" accept="image/*" style="display:none;" onchange="previewCreditoEv(this,'preview-credito-ev2')" />
+                  <div id="preview-credito-ev2" style="font-size:11px;color:var(--muted);">📷 Foto 2<br><span style="font-size:10px;">Clic · Arrastra · Ctrl+V</span></div>
                 </div>
-                <div>
-                  <label style="font-size:11px;color:var(--muted2);">Foto 3</label>
-                  <input type="file" id="img-credito-ev3" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev3')" />
-                  <div id="preview-credito-ev3" style="display:none;margin-top:6px;">
-                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
-                  </div>
+                <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;background:var(--card2);"
+                     onclick="document.getElementById('img-credito-ev3').click()"
+                     ondragover="event.preventDefault()"
+                     ondrop="handleDropCredito(event,'img-credito-ev3','preview-credito-ev3')">
+                  <input type="file" id="img-credito-ev3" accept="image/*" style="display:none;" onchange="previewCreditoEv(this,'preview-credito-ev3')" />
+                  <div id="preview-credito-ev3" style="font-size:11px;color:var(--muted);">📷 Foto 3<br><span style="font-size:10px;">Clic · Arrastra · Ctrl+V</span></div>
                 </div>
               </div>
             </div>
@@ -1960,25 +1963,34 @@ function getResumenData() {
 
 function previewCreditoEv(input, previewId) {
   const div = document.getElementById(previewId);
-  if(!input.files || !input.files[0]) { if(div) div.style.display='none'; return; }
+  if(!div) return;
+  if(!input.files || !input.files[0]) {
+    div.innerHTML = '📷 Foto<br><span style="font-size:10px;">Clic · Arrastra · Ctrl+V</span>';
+    return;
+  }
   const reader = new FileReader();
   reader.onload = e => {
-    if(div) { div.style.display='block'; div.querySelector('img').src = e.target.result; }
+    div.innerHTML = `<img src="${e.target.result}" style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);" />`;
   };
   reader.readAsDataURL(input.files[0]);
 }
 
-// Preview imagen mapa crédito
-document.addEventListener('DOMContentLoaded', () => {
-  const mapaInput = document.getElementById('img-credito-mapa');
-  if(mapaInput) mapaInput.addEventListener('change', function() {
-    const div = document.getElementById('preview-credito-mapa');
-    if(!this.files || !this.files[0]) { div.style.display='none'; return; }
-    const reader = new FileReader();
-    reader.onload = e => { div.style.display='block'; document.getElementById('img-preview-credito-mapa').src = e.target.result; };
-    reader.readAsDataURL(this.files[0]);
-  });
-});
+function handleDropCredito(e, inputId, previewId) {
+  e.preventDefault();
+  const file = e.dataTransfer?.files?.[0];
+  if(!file || !file.type.startsWith('image/')) return;
+  setImgFromBlob(file, inputId, previewId);
+}
+
+function setImgCreditoFromBlob(blob, inputId, previewId) {
+  const input = document.getElementById(inputId);
+  if(!input) return;
+  const file = new File([blob], 'imagen.png', { type: blob.type || 'image/png' });
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  input.files = dt.files;
+  previewCreditoEv(input, previewId);
+}
 
 function selectRecuperacionCredito(val) {
   creditoExitoso = (val === 'exitoso');
@@ -3566,19 +3578,31 @@ document.addEventListener('paste', function(e) {
   for(const item of items) {
     if(item.type.startsWith('image/')) {
       const blob = item.getAsFile();
-      // Pegar en lugar-robo si no tiene imagen, sino en evidencia
-      const inputLugar = document.getElementById('img-lugar-robo');
-      const inputEvidencia = document.getElementById('img-evidencia');
-      if(!inputLugar?.files?.length) {
-        setImgFromBlob(blob, 'img-lugar-robo', 'preview-lugar-robo');
+      const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
+
+      if(esCredito) {
+        const ids = ['img-credito-mapa','img-credito-ev1','img-credito-ev2','img-credito-ev3'];
+        const previews = ['preview-credito-mapa','preview-credito-ev1','preview-credito-ev2','preview-credito-ev3'];
+        for(let i = 0; i < ids.length; i++) {
+          const input = document.getElementById(ids[i]);
+          if(input && !input.files?.length) {
+            setImgCreditoFromBlob(blob, ids[i], previews[i]);
+            break;
+          }
+        }
       } else {
-        // Agregar a evidencia (máx 2)
-        const inputEv = document.getElementById('img-evidencia');
-        const dt = new DataTransfer();
-        if(inputEv?.files) Array.from(inputEv.files).slice(0,1).forEach(f => dt.items.add(f));
-        dt.items.add(new File([blob], 'evidencia.png', { type: blob.type || 'image/png' }));
-        inputEv.files = dt.files;
-        previewImgMultiple(inputEv, 'preview-evidencia');
+        // Para abuso/robo: comportamiento original
+        const inputLugar = document.getElementById('img-lugar-robo');
+        const inputEvidencia = document.getElementById('img-evidencia');
+        if(!inputLugar?.files?.length) {
+          setImgFromBlob(blob, 'img-lugar-robo', 'preview-lugar-robo');
+        } else {
+          const dt = new DataTransfer();
+          if(inputEvidencia?.files) Array.from(inputEvidencia.files).slice(0,1).forEach(f => dt.items.add(f));
+          dt.items.add(new File([blob], 'evidencia.png', { type: blob.type || 'image/png' }));
+          inputEvidencia.files = dt.files;
+          previewImgMultiple(inputEvidencia, 'preview-evidencia');
+        }
       }
       break;
     }
