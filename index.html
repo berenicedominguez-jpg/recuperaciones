@@ -932,7 +932,7 @@
         </div>
 
         <!-- ── Card 2 — Unidad, plataforma y equipo GPS ── -->
-        <div class="card" style="margin-bottom:14px;">
+        <div class="card" id="card-unidad-plataforma" style="margin-bottom:14px;">
           <div class="card-header"><div class="card-title">Unidad, plataforma y equipo GPS</div></div>
           <div class="card-body">
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
@@ -2278,6 +2278,8 @@ function nextStep(from) {
     const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
     const cardPersona = document.getElementById('card-persona-reporta');
     if(cardPersona) cardPersona.style.display = esCredito ? 'none' : 'block';
+    const cardUnidad = document.getElementById('card-unidad-plataforma');
+    if(cardUnidad) cardUnidad.style.display = esCredito ? 'none' : 'block';
   }
   if(from===2) {
     // No mandatory fields — proceed freely
