@@ -871,6 +871,12 @@
                 <input type="text" id="f-credito-resguardo" placeholder="Dirección del resguardo" />
               </div>
             </div>
+            <div style="margin-top:14px;">
+              <div class="form-group">
+                <label>Gestor asignado</label>
+                <input type="text" id="f-credito-gestor" placeholder="Nombre del gestor" />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1359,6 +1365,9 @@
 
           </div>
         </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:4px;">
+          <button class="btn btn-ghost" onclick="prevStep(3)">← Atrás</button>
           <button class="btn btn-primary" onclick="nextStep(3)">Siguiente →</button>
         </div>
       </div>
@@ -1857,6 +1866,7 @@ const FIELD_MAP = [
   { id:'fp-credito-fecha-fin',    label:'Fecha fin seguimiento',     keys:['fecha fin seguimiento'] },
   { id:'fp-credito-localidad',    label:'Localidad de gestión',      keys:['localidad de gestión','localidad de gestion'] },
   { id:'fp-credito-resguardo',    label:'Lugar de resguardo',        keys:['lugar de resguardo'] },
+  { id:'fp-credito-gestor',       label:'Gestor asignado',           keys:['gestor asignado','gestor'] },
 ];
 
 let creditoExitoso = true;
@@ -2041,6 +2051,7 @@ function parseTemplate(text) {
     'fp-credito-fecha-fin':    ['fecha fin seguimiento'],
     'fp-credito-localidad':    ['localidad de gestión','localidad de gestion'],
     'fp-credito-resguardo':    ['lugar de resguardo'],
+    'fp-credito-gestor':       ['gestor asignado','gestor'],
   };
   const CAJA_TRIGGERS = ['en caso de contar con acoplados','grafica del veh','gráfica del veh'];
   const IGNORE        = ['datos para canalizar evento de inmediato','datos del vehículo','datos del vehiculo','datos del cliente'];
@@ -2207,6 +2218,7 @@ function syncParsedToForm() {
     if(getF('fp-credito-fecha-fin'))    setF('f-credito-fecha-fin',    getF('fp-credito-fecha-fin'));
     if(getF('fp-credito-localidad'))    setF('f-credito-localidad',    getF('fp-credito-localidad'));
     if(getF('fp-credito-resguardo'))    setF('f-credito-resguardo',    getF('fp-credito-resguardo'));
+    if(getF('fp-credito-gestor'))       setF('f-credito-gestor',       getF('fp-credito-gestor'));
   }
 
   // Show visual feedback
@@ -3301,6 +3313,7 @@ async function probarPDF() {
           fecha_fin: document.getElementById('f-credito-fecha-fin')?.value || '—',
           localidad: document.getElementById('f-credito-localidad')?.value || '—',
           lugar_resguardo: document.getElementById('f-credito-resguardo')?.value || '—',
+          gestor: document.getElementById('f-credito-gestor')?.value || '—',
           exitoso: creditoExitoso,
           conclusion: document.getElementById('f-credito-conclusion')?.value || '—'
         }
