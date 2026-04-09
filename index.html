@@ -1113,6 +1113,87 @@
 
           </div>
         </div>
+        <!-- ── Card datos extra del evento (solo CRÉDITO) ── -->
+        <div class="card" id="card-datos-extra-credito" style="margin-bottom:14px;display:none;">
+          <div class="card-header"><div class="card-title">Datos extra del evento</div></div>
+          <div class="card-body">
+
+            <!-- Ubicación y coordenadas -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+              <div class="form-group">
+                <label>Ubicación</label>
+                <input type="text" id="f-credito-ubicacion" placeholder="Dirección o nombre del lugar" />
+              </div>
+              <div class="form-group">
+                <label>Coordenadas</label>
+                <input type="text" id="f-credito-coordenadas" placeholder="Ej. 20.693976, -101.312048" />
+              </div>
+            </div>
+
+            <!-- Imagen del mapa -->
+            <div style="margin-bottom:16px;">
+              <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;">Imagen del mapa (rastreo GPS)</label>
+              <input type="file" id="img-credito-mapa" accept="image/*" style="margin-bottom:6px;" />
+              <div id="preview-credito-mapa" style="display:none;margin-top:8px;">
+                <img id="img-preview-credito-mapa" style="max-width:100%;max-height:200px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
+              </div>
+            </div>
+
+            <!-- Tabla resumen -->
+            <div style="margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <label style="font-size:12px;font-weight:600;color:var(--text);">Resumen de acciones</label>
+                <button type="button" class="btn btn-ghost" style="font-size:11px;padding:4px 10px;" onclick="agregarFilaResumen()">+ Agregar fila</button>
+              </div>
+              <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                <thead>
+                  <tr style="background:var(--accent);color:#fff;">
+                    <th style="padding:8px 10px;text-align:left;width:25%;">Fecha</th>
+                    <th style="padding:8px 10px;text-align:left;">Acción</th>
+                    <th style="padding:4px;width:32px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-resumen-body">
+                  <tr id="resumen-fila-1">
+                    <td style="padding:4px;"><input type="text" class="resumen-fecha" placeholder="DD/MM/YYYY" style="width:100%;font-size:12px;" /></td>
+                    <td style="padding:4px;"><input type="text" class="resumen-accion" placeholder="Descripción de la acción" style="width:100%;font-size:12px;" /></td>
+                    <td style="padding:4px;text-align:center;"><button type="button" onclick="eliminarFilaResumen(this)" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:14px;">✕</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 3 imágenes de evidencia -->
+            <div>
+              <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">Evidencia de la unidad (hasta 3 fotos)</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                <div>
+                  <label style="font-size:11px;color:var(--muted2);">Foto 1</label>
+                  <input type="file" id="img-credito-ev1" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev1')" />
+                  <div id="preview-credito-ev1" style="display:none;margin-top:6px;">
+                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
+                  </div>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--muted2);">Foto 2</label>
+                  <input type="file" id="img-credito-ev2" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev2')" />
+                  <div id="preview-credito-ev2" style="display:none;margin-top:6px;">
+                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
+                  </div>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--muted2);">Foto 3</label>
+                  <input type="file" id="img-credito-ev3" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev3')" />
+                  <div id="preview-credito-ev3" style="display:none;margin-top:6px;">
+                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         <!-- ── Resultado ── -->
         <div class="card" style="margin-bottom:14px;">
           <div class="card-header"><div class="card-title">Resultado</div></div>
@@ -1342,145 +1423,6 @@
           </div>
         </div>
 
-        <!-- ── Card: Datos extra del evento (solo CRÉDITO) ── -->
-        <div class="card" id="card-datos-extra-credito" style="margin-bottom:14px;display:none;">
-          <div class="card-header"><div class="card-title">Datos extra del evento</div></div>
-          <div class="card-body">
-
-            <!-- Ubicación y Coordenadas -->
-            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
-              <div class="form-group">
-                <label>Ubicación</label>
-                <input type="text" id="f-credito-ubicacion" placeholder="Dirección o descripción del lugar" />
-              </div>
-              <div class="form-group">
-                <label>Coordenadas</label>
-                <input type="text" id="f-credito-coordenadas" placeholder="Ej. 20.6938, -101.3120" />
-              </div>
-            </div>
-
-            <!-- Imagen del mapa -->
-            <div class="form-group" style="margin-bottom:18px;">
-              <label>Imagen del mapa</label>
-              <div style="border:2px dashed var(--border2);border-radius:var(--radius);padding:16px;text-align:center;background:var(--card2);">
-                <input type="file" id="img-mapa-credito" accept="image/*" style="display:none;" onchange="previewMapaCredito(this)" />
-                <div id="preview-mapa-credito" style="display:none;margin-bottom:10px;">
-                  <img id="img-preview-mapa-credito" style="max-width:100%;max-height:200px;border-radius:var(--radius-sm);" />
-                </div>
-                <button type="button" class="btn btn-ghost" onclick="document.getElementById('img-mapa-credito').click()" style="margin-bottom:6px;">📎 Seleccionar imagen</button>
-                <div style="font-size:11px;color:var(--muted);">También puedes pegar una imagen con Ctrl+V</div>
-              </div>
-            </div>
-
-            <!-- Tabla de resumen -->
-            <div class="form-group">
-              <label>Resumen de acciones</label>
-              <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
-                <table style="width:100%;border-collapse:collapse;" id="tabla-resumen-credito">
-                  <thead>
-                    <tr style="background:var(--accent);color:white;">
-                      <th style="padding:8px 12px;text-align:left;font-size:12px;width:30%;">Fecha</th>
-                      <th style="padding:8px 12px;text-align:left;font-size:12px;">Acción</th>
-                      <th style="padding:8px 12px;width:40px;"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="resumen-tbody">
-                    <tr class="resumen-fila">
-                      <td style="padding:6px 8px;border-bottom:1px solid var(--border);"><input type="text" placeholder="DD/MM/YYYY" style="width:100%;border:none;background:transparent;font-size:13px;" /></td>
-                      <td style="padding:6px 8px;border-bottom:1px solid var(--border);"><input type="text" placeholder="Descripción de la acción" style="width:100%;border:none;background:transparent;font-size:13px;" /></td>
-                      <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;"><button type="button" onclick="eliminarFilaResumen(this)" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px;">×</button></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div style="padding:8px 12px;">
-                  <button type="button" class="btn btn-ghost" onclick="agregarFilaResumen()" style="font-size:12px;">+ Agregar fila</button>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- ── Card datos extra del evento (solo CRÉDITO) ── -->
-        <div class="card" id="card-datos-extra-credito" style="margin-bottom:14px;display:none;">
-          <div class="card-header"><div class="card-title">Datos extra del evento</div></div>
-          <div class="card-body">
-
-            <!-- Ubicación y coordenadas -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
-              <div class="form-group">
-                <label>Ubicación</label>
-                <input type="text" id="f-credito-ubicacion" placeholder="Dirección o nombre del lugar" />
-              </div>
-              <div class="form-group">
-                <label>Coordenadas</label>
-                <input type="text" id="f-credito-coordenadas" placeholder="Ej. 20.693976, -101.312048" />
-              </div>
-            </div>
-
-            <!-- Imagen del mapa -->
-            <div style="margin-bottom:16px;">
-              <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;">Imagen del mapa (rastreo GPS)</label>
-              <input type="file" id="img-credito-mapa" accept="image/*" style="margin-bottom:6px;" />
-              <div id="preview-credito-mapa" style="display:none;margin-top:8px;">
-                <img id="img-preview-credito-mapa" style="max-width:100%;max-height:200px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
-              </div>
-            </div>
-
-            <!-- Tabla resumen -->
-            <div style="margin-bottom:16px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                <label style="font-size:12px;font-weight:600;color:var(--text);">Resumen de acciones</label>
-                <button type="button" class="btn btn-ghost" style="font-size:11px;padding:4px 10px;" onclick="agregarFilaResumen()">+ Agregar fila</button>
-              </div>
-              <table style="width:100%;border-collapse:collapse;font-size:12px;">
-                <thead>
-                  <tr style="background:var(--accent);color:#fff;">
-                    <th style="padding:8px 10px;text-align:left;width:25%;">Fecha</th>
-                    <th style="padding:8px 10px;text-align:left;">Acción</th>
-                    <th style="padding:4px;width:32px;"></th>
-                  </tr>
-                </thead>
-                <tbody id="tabla-resumen-body">
-                  <tr id="resumen-fila-1">
-                    <td style="padding:4px;"><input type="text" class="resumen-fecha" placeholder="DD/MM/YYYY" style="width:100%;font-size:12px;" /></td>
-                    <td style="padding:4px;"><input type="text" class="resumen-accion" placeholder="Descripción de la acción" style="width:100%;font-size:12px;" /></td>
-                    <td style="padding:4px;text-align:center;"><button type="button" onclick="eliminarFilaResumen(this)" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:14px;">✕</button></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- 3 imágenes de evidencia -->
-            <div>
-              <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">Evidencia de la unidad (hasta 3 fotos)</label>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-                <div>
-                  <label style="font-size:11px;color:var(--muted2);">Foto 1</label>
-                  <input type="file" id="img-credito-ev1" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev1')" />
-                  <div id="preview-credito-ev1" style="display:none;margin-top:6px;">
-                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
-                  </div>
-                </div>
-                <div>
-                  <label style="font-size:11px;color:var(--muted2);">Foto 2</label>
-                  <input type="file" id="img-credito-ev2" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev2')" />
-                  <div id="preview-credito-ev2" style="display:none;margin-top:6px;">
-                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
-                  </div>
-                </div>
-                <div>
-                  <label style="font-size:11px;color:var(--muted2);">Foto 3</label>
-                  <input type="file" id="img-credito-ev3" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev3')" />
-                  <div id="preview-credito-ev3" style="display:none;margin-top:6px;">
-                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
 
         <div style="display:flex;justify-content:space-between;margin-top:4px;">
           <button class="btn btn-ghost" onclick="prevStep(3)">← Atrás</button>
