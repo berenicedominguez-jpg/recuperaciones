@@ -627,7 +627,7 @@
       <!-- ======= PASO 2: VERIFICAR / COMPLETAR DATOS ======= -->
       <div id="form-step-2" style="display:none;">
 
-        <div class="card" style="margin-bottom:16px;">
+        <div class="card" id="card-datos-evento" style="margin-bottom:16px;">
           <div class="card-header">
             <div class="card-title">Datos del evento</div>
             <span style="font-size:11px;color:var(--muted);">Verifica y completa los campos obligatorios <span style="color:var(--danger)">*</span></span>
@@ -787,6 +787,89 @@
           </div>
         </div>
 
+        <!-- ── Card específico CRÉDITO (paso 2) ── -->
+        <div class="card" id="campos-credito-paso2" style="margin-bottom:16px;display:none;">
+          <div class="card-header"><div class="card-title">Datos de recuperación de crédito</div></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label>Razón social</label>
+                <input type="text" id="f-credito-razon" placeholder="Ej. NACIONAL MONTE DE PIEDAD" />
+              </div>
+              <div class="form-group">
+                <label>TK</label>
+                <input type="text" id="f-credito-tk" placeholder="Ej. 72936" />
+              </div>
+              <div class="form-group">
+                <label>Tipo de entrega</label>
+                <input type="text" id="f-credito-tipo-entrega" placeholder="Ej. Voluntaria" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label>Lugar de recuperación</label>
+                <input type="text" id="f-credito-lugar-rec" placeholder="Dirección completa" />
+              </div>
+              <div class="form-group">
+                <label>Fecha de recuperación</label>
+                <input type="text" id="f-credito-fecha-rec" placeholder="DD/MM/YYYY" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label>Marca</label>
+                <input type="text" id="f-marca-credito" placeholder="Ej. PEUGEOT" />
+              </div>
+              <div class="form-group">
+                <label>Modelo</label>
+                <input type="text" id="f-modelo-credito" placeholder="Ej. 301" />
+              </div>
+              <div class="form-group">
+                <label>Año</label>
+                <input type="text" id="f-anio-credito" placeholder="Ej. 2026" />
+              </div>
+              <div class="form-group">
+                <label>Placas</label>
+                <input type="text" id="f-placas-credito" placeholder="Ej. JNX3657" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label>Entidad</label>
+                <input type="text" id="f-credito-entidad" placeholder="Ej. JAL, México" />
+              </div>
+              <div class="form-group">
+                <label>Nombre del cliente</label>
+                <input type="text" id="f-credito-nombre" placeholder="Nombre completo" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label>Motivo</label>
+                <input type="text" id="f-credito-motivo" placeholder="Ej. Impago" />
+              </div>
+              <div class="form-group">
+                <label>Fecha inicio seguimiento</label>
+                <input type="text" id="f-credito-fecha-inicio" placeholder="DD/MM/YYYY" />
+              </div>
+              <div class="form-group">
+                <label>Fecha fin seguimiento</label>
+                <input type="text" id="f-credito-fecha-fin" placeholder="DD/MM/YYYY" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 2fr;gap:14px;">
+              <div class="form-group">
+                <label>Localidad de gestión</label>
+                <input type="text" id="f-credito-localidad" placeholder="Ej. JAL, México" />
+              </div>
+              <div class="form-group">
+                <label>Lugar de resguardo</label>
+                <input type="text" id="f-credito-resguardo" placeholder="Dirección del resguardo" />
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div style="display:flex;justify-content:space-between;margin-top:4px;">
           <button class="btn btn-ghost" onclick="prevStep(2)">← Atrás</button>
           <button class="btn btn-primary" onclick="nextStep(2)">Continuar →</button>
@@ -797,7 +880,7 @@
       <div id="form-step-3" style="display:none;">
 
         <!-- ── Card 1 — Persona que reporta el robo ── -->
-        <div class="card" style="margin-bottom:14px;">
+        <div class="card" id="card-persona-reporta" style="margin-bottom:14px;">
           <div class="card-header"><div class="card-title">Persona que reporta el robo</div></div>
           <div class="card-body">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -1049,6 +1132,26 @@
           <div class="card-header"><div class="card-title">Resultado</div></div>
           <div class="card-body">
 
+            <!-- Panel resultado para CRÉDITO -->
+            <div id="panel-resultado-credito" style="display:none;margin-bottom:16px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                <div id="rec-credito-exitoso" onclick="selectRecuperacionCredito('exitoso')" style="border:2px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;">
+                  <div style="font-size:24px;margin-bottom:6px;">✅</div>
+                  <div style="font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--success);">Recuperación exitosa</div>
+                </div>
+                <div id="rec-credito-no-exitoso" onclick="selectRecuperacionCredito('no-exitoso')" style="border:2px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;">
+                  <div style="font-size:24px;margin-bottom:6px;">🔎</div>
+                  <div style="font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--warning);">No exitosa</div>
+                </div>
+              </div>
+              <div id="panel-conclusion-credito" style="display:none;padding:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);">
+                <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:8px;">Conclusión</div>
+                <textarea id="f-credito-conclusion" style="min-height:100px;" readonly></textarea>
+              </div>
+            </div>
+
+            <!-- Panel resultado normal (ROBO / ABUSO) -->
+            <div id="panel-resultado-normal">
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
               <div id="rec-si" onclick="selectRecuperacion('si')" style="border:2px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;">
                 <div style="font-size:24px;margin-bottom:6px;">✅</div>
@@ -1247,12 +1350,11 @@
                 <div style="font-size:11px;color:var(--muted);">✓ Folio UNR generado desde Sheets &nbsp;·&nbsp; ✓ Registro en tab Cancelados &nbsp;·&nbsp; ✓ Mensaje WhatsApp al grupo</div>
               </div>
             </div>
+            <!-- fin panel-resultado-normal -->
+            </div>
 
           </div>
         </div>
-
-        <div style="display:flex;justify-content:space-between;margin-top:4px;">
-          <button class="btn btn-ghost" onclick="prevStep(3)">← Atrás</button>
           <button class="btn btn-primary" onclick="nextStep(3)">Siguiente →</button>
         </div>
       </div>
@@ -1738,9 +1840,40 @@ const FIELD_MAP = [
   { id:'fp-caja-anio',  label:'Año de caja',             keys:['año de caja','ano de caja'] },
   { id:'fp-caja-placa', label:'Placas de caja',          keys:['placas de caja','placa de caja'] },
   { id:'fp-caja-serie', label:'Serie de caja',           keys:['serie de caja'] },
+  // Campos específicos de CRÉDITO
+  { id:'fp-credito-tk',           label:'TK',                        keys:['tk'] },
+  { id:'fp-credito-razon',        label:'Razón social',              keys:['razón social','razon social'] },
+  { id:'fp-credito-tipo-entrega', label:'Tipo de entrega',           keys:['tipo de entrega'] },
+  { id:'fp-credito-lugar-rec',    label:'Lugar de recuperación',     keys:['lugar de recuperación','lugar de recuperacion'] },
+  { id:'fp-credito-fecha-rec',    label:'Fecha de recuperación',     keys:['fecha de recuperación','fecha de recuperacion'] },
+  { id:'fp-credito-entidad',      label:'Entidad',                   keys:['entidad'] },
+  { id:'fp-credito-nombre',       label:'Nombre del cliente',        keys:['nombre'] },
+  { id:'fp-credito-motivo',       label:'Motivo',                    keys:['motivo'] },
+  { id:'fp-credito-fecha-inicio', label:'Fecha inicio seguimiento',  keys:['fecha inicio seguimiento'] },
+  { id:'fp-credito-fecha-fin',    label:'Fecha fin seguimiento',     keys:['fecha fin seguimiento'] },
+  { id:'fp-credito-localidad',    label:'Localidad de gestión',      keys:['localidad de gestión','localidad de gestion'] },
+  { id:'fp-credito-resguardo',    label:'Lugar de resguardo',        keys:['lugar de resguardo'] },
 ];
 
-let parsedData = {};
+let creditoExitoso = true;
+
+function selectRecuperacionCredito(val) {
+  creditoExitoso = (val === 'exitoso');
+  const btnExitoso = document.getElementById('rec-credito-exitoso');
+  const btnNoExitoso = document.getElementById('rec-credito-no-exitoso');
+  if(btnExitoso) btnExitoso.style.borderColor = val === 'exitoso' ? 'var(--success)' : 'var(--border2)';
+  if(btnNoExitoso) btnNoExitoso.style.borderColor = val === 'no-exitoso' ? 'var(--warning)' : 'var(--border2)';
+
+  const conclusion = val === 'exitoso'
+    ? 'Tras el proceso de notificación y el período de gracia otorgado al propietario, se procedió con la ejecución de la recuperación siguiendo todos los procedimientos pertinentes. El vehículo ha sido asegurado y se encuentra en resguardo para su correcta custodia hasta la resolución final del asunto.\n\nLa recuperación del vehículo no pagado se ha llevado a cabo de manera efectiva y conforme a los procesos establecidos.'
+    : 'Se concluye que el caso deberá ser atendido por el área legal correspondiente de NMDP, derivado de que la unidad se encuentra sin reportar desde hace un tiempo considerable y no ha sido posible visualizarla en las visitas técnicas realizadas.\n\nPor lo anterior, y en conjunto con el personal de NMDP, se determina dar por finalizado el protocolo de recuperación, a fin de que el área correspondiente proceda conforme a sus atribuciones.';
+
+  const textarea = document.getElementById('f-credito-conclusion');
+  if(textarea) textarea.value = conclusion;
+  const panel = document.getElementById('panel-conclusion-credito');
+  if(panel) panel.style.display = 'block';
+  recuperadoSelected = val === 'exitoso' ? 'si' : 'no';
+}
 
 function liveParseTemplate(text) {
   const hint = document.getElementById('parse-hint');
@@ -2027,6 +2160,27 @@ function syncParsedToForm() {
     }
   }
 
+  // Sincronizar campos de CRÉDITO
+  const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
+  if(esCredito) {
+    if(getF('fp-credito-tk'))           setF('f-credito-tk',           getF('fp-credito-tk'));
+    if(getF('fp-credito-razon'))        setF('f-credito-razon',        getF('fp-credito-razon'));
+    if(getF('fp-credito-tipo-entrega')) setF('f-credito-tipo-entrega', getF('fp-credito-tipo-entrega'));
+    if(getF('fp-credito-lugar-rec'))    setF('f-credito-lugar-rec',    getF('fp-credito-lugar-rec'));
+    if(getF('fp-credito-fecha-rec'))    setF('f-credito-fecha-rec',    getF('fp-credito-fecha-rec'));
+    if(getF('fp-marca'))                setF('f-marca',                getF('fp-marca'));
+    if(getF('fp-submarca'))             setF('f-modelo',               getF('fp-submarca'));
+    if(getF('fp-anio'))                 setF('f-anio',                 getF('fp-anio'));
+    if(getF('fp-placas'))               setF('f-placas',               getF('fp-placas'));
+    if(getF('fp-credito-entidad'))      setF('f-credito-entidad',      getF('fp-credito-entidad'));
+    if(getF('fp-credito-nombre'))       setF('f-credito-nombre',       getF('fp-credito-nombre'));
+    if(getF('fp-credito-motivo'))       setF('f-credito-motivo',       getF('fp-credito-motivo'));
+    if(getF('fp-credito-fecha-inicio')) setF('f-credito-fecha-inicio', getF('fp-credito-fecha-inicio'));
+    if(getF('fp-credito-fecha-fin'))    setF('f-credito-fecha-fin',    getF('fp-credito-fecha-fin'));
+    if(getF('fp-credito-localidad'))    setF('f-credito-localidad',    getF('fp-credito-localidad'));
+    if(getF('fp-credito-resguardo'))    setF('f-credito-resguardo',    getF('fp-credito-resguardo'));
+  }
+
   // Show visual feedback
   const filled = ['f-cliente','f-telefono','f-placas','f-modelo','f-operador','f-lugar','f-fecha-robo','f-hora-robo']
     .filter(id=>{ const el=document.getElementById(id); return el&&el.value.trim(); }).length;
@@ -2092,6 +2246,10 @@ function nextStep(from) {
   if(from===1) {
     origenSelected = origenSelected || 'llamada';
     syncParsedToForm();
+    // Para crédito: ocultar persona que reporta en paso 3
+    const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
+    const cardPersona = document.getElementById('card-persona-reporta');
+    if(cardPersona) cardPersona.style.display = esCredito ? 'none' : 'block';
   }
   if(from===2) {
     // No mandatory fields — proceed freely
@@ -2736,14 +2894,18 @@ Modus operandi:\tABUSO DE CONFIANZA
 Razón social:\tSUPERTRACK
 Numero de contacto:\t222 598 7061`,
 
-  'RECUPERACIÓN DE CRÉDITO': `TK:\t
+  'RECUPERACIÓN DE CRÉDITO': `RAZÓN SOCIAL:\t
+TK:\t
 TIPO DE ENTREGA:\t
 LUGAR DE RECUPERACIÓN:\t
 FECHA DE RECUPERACIÓN:\t
+DATOS DEL VEHÍCULO
 Marca:\t
 Modelo:\t
+AÑO:\t
 Placas:\t
 Entidad:\t
+DATOS DEL CLIENTE
 Nombre:\t
 Motivo:\t
 Fecha inicio seguimiento:\t
@@ -2789,40 +2951,25 @@ async function ejecutarTodo() {
 
 // ===== FUNCIONES DE PRUEBA INDIVIDUALES =====
 
-// Redimensiona una imagen manteniendo proporción dentro de maxW x maxH
-function resizeImageToBase64(file, maxW, maxH) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        let w = img.width, h = img.height;
-        const ratio = Math.min(maxW / w, maxH / h);
-        if (ratio < 1) { w = Math.round(w * ratio); h = Math.round(h * ratio); }
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', 0.92).split(',')[1]);
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
 async function imgToBase64(inputId) {
   const input = document.getElementById(inputId);
   if(!input || !input.files || !input.files[0]) return null;
-  // 8709 twips ancho = 15.37cm = 587px a 96dpi — alto máximo para hoja 2
-  return resizeImageToBase64(input.files[0], 875, 500);
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result.split(',')[1]);
+    reader.readAsDataURL(input.files[0]);
+  });
 }
 
 async function imgToBase64Multiple(inputId) {
   const input = document.getElementById(inputId);
   if(!input || !input.files || !input.files.length) return [];
   const files = Array.from(input.files).slice(0,2);
-  // Para evidencias: mismo ancho, alto máximo para que quepan 2 en hoja 4
-  return Promise.all(files.map(file => resizeImageToBase64(file, 875, 420)));
+  return Promise.all(files.map(file => new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result.split(',')[1]);
+    reader.readAsDataURL(file);
+  })));
 }
 
 function formatFecha(v) {
@@ -3106,7 +3253,26 @@ async function probarPDF() {
           })(),
           vehiculo_remitido: document.getElementById('f-abuso-remitido')?.value || document.getElementById('f-abuso-remitido-no')?.value || 'NO',
           lugar_remision: document.getElementById('f-abuso-lugar-remision')?.value || 'N/A',
-          entregado_cliente: document.getElementById('f-abuso-entregado')?.value || document.getElementById('f-abuso-entregado-no')?.value || 'NO'
+          entregado_cliente: document.getElementById('f-abuso-entregado')?.value || document.getElementById('f-abuso-entregado-no')?.value || 'NO',
+          // Campos específicos de CRÉDITO
+          tk: document.getElementById('f-credito-tk')?.value || '—',
+          razon_social: document.getElementById('f-credito-razon')?.value || '—',
+          tipo_entrega: document.getElementById('f-credito-tipo-entrega')?.value || '—',
+          lugar_recuperacion_credito: document.getElementById('f-credito-lugar-rec')?.value || '—',
+          fecha_recuperacion: document.getElementById('f-credito-fecha-rec')?.value || '—',
+          marca: document.getElementById('f-marca-credito')?.value || document.getElementById('f-marca')?.value || '—',
+          modelo: document.getElementById('f-modelo-credito')?.value || document.getElementById('f-modelo')?.value || '—',
+          anio: document.getElementById('f-anio-credito')?.value || document.getElementById('f-anio')?.value || '—',
+          placas: document.getElementById('f-placas-credito')?.value || document.getElementById('f-placas')?.value || '—',
+          entidad: document.getElementById('f-credito-entidad')?.value || '—',
+          nombre: document.getElementById('f-credito-nombre')?.value || '—',
+          motivo: document.getElementById('f-credito-motivo')?.value || '—',
+          fecha_inicio: document.getElementById('f-credito-fecha-inicio')?.value || '—',
+          fecha_fin: document.getElementById('f-credito-fecha-fin')?.value || '—',
+          localidad: document.getElementById('f-credito-localidad')?.value || '—',
+          lugar_resguardo: document.getElementById('f-credito-resguardo')?.value || '—',
+          exitoso: creditoExitoso,
+          conclusion: document.getElementById('f-credito-conclusion')?.value || '—'
         }
       })
     });
@@ -3345,6 +3511,7 @@ function onTipoEventoChange(val) {
   const cardCaja = document.getElementById('card-caja');
   const campoPoliza = document.getElementById('campo-poliza');
   const camposAbuso = document.getElementById('campos-abuso-desc');
+  const esCredito = (val === 'RECUPERACIÓN DE CRÉDITO');
 
   // Limpiar textarea
   if(ta) { ta.value = ''; liveParseTemplate(''); }
@@ -3358,6 +3525,19 @@ function onTipoEventoChange(val) {
   // Mostrar campos extra de descripción para ABUSO DE CONFIANZA
   if(camposAbuso) camposAbuso.style.display = (val === 'ABUSO DE CONFIANZA') ? 'block' : 'none';
 
+  // Ocultar alerta y paro de motor para CRÉDITO
+  const alertaRow = document.querySelector('.card-body > div[style*="background:var(--card2)"]');
+  const cardMonitorista = document.getElementById('card-alerta-paro');
+  if(cardMonitorista) cardMonitorista.style.display = esCredito ? 'none' : 'block';
+
+  // Mostrar/ocultar campos específicos de crédito en paso 2
+  const camposCredito = document.getElementById('campos-credito-paso2');
+  if(camposCredito) camposCredito.style.display = esCredito ? 'block' : 'none';
+
+  // Ocultar campos que no aplican para crédito en paso 2
+  const cardVehiculo = document.getElementById('card-datos-evento');
+  if(cardVehiculo) cardVehiculo.style.display = esCredito ? 'none' : 'block';
+
   // Ocultar escenario de cierre para ABUSO DE CONFIANZA y RECUPERACIÓN DE CRÉDITO
   const esRobo = (val === 'ROBO');
   const escenarioDiv = document.querySelector('#panel-si .form-group:first-child');
@@ -3366,6 +3546,12 @@ function onTipoEventoChange(val) {
   if(escenarioDiv) escenarioDiv.style.display = esRobo ? 'block' : 'none';
   if(camposEscenario && !esRobo) { camposEscenario.style.display = 'none'; }
   if(selectEscenario && !esRobo) { selectEscenario.value = ''; }
+
+  // Mostrar/ocultar panel resultado para crédito
+  const panelResultadoCredito = document.getElementById('panel-resultado-credito');
+  if(panelResultadoCredito) panelResultadoCredito.style.display = esCredito ? 'block' : 'none';
+  const panelResultadoNormal = document.getElementById('panel-resultado-normal');
+  if(panelResultadoNormal) panelResultadoNormal.style.display = esCredito ? 'none' : 'block';
 
   // Cambiar placeholder según tipo
   if(ta) {
