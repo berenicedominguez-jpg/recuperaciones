@@ -3754,32 +3754,6 @@ function autoDetectEmpresa(plataforma) {
 }
 
 // ===== RESUMEN CRÉDITO =====
-function agregarFilaResumen() {
-  const tbody = document.getElementById('resumen-tbody');
-  const fila = document.createElement('tr');
-  fila.className = 'resumen-fila';
-  fila.innerHTML = `
-    <td style="padding:6px 8px;border-bottom:1px solid var(--border);"><input type="text" placeholder="DD/MM/YYYY" style="width:100%;border:none;background:transparent;font-size:13px;" /></td>
-    <td style="padding:6px 8px;border-bottom:1px solid var(--border);"><input type="text" placeholder="Descripción de la acción" style="width:100%;border:none;background:transparent;font-size:13px;" /></td>
-    <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;"><button type="button" onclick="eliminarFilaResumen(this)" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px;">×</button></td>
-  `;
-  tbody.appendChild(fila);
-}
-
-function eliminarFilaResumen(btn) {
-  const fila = btn.closest('tr');
-  const tbody = document.getElementById('resumen-tbody');
-  if(tbody.querySelectorAll('tr').length > 1) fila.remove();
-}
-
-function getResumenData() {
-  const filas = document.querySelectorAll('#resumen-tbody .resumen-fila');
-  return Array.from(filas).map(f => {
-    const inputs = f.querySelectorAll('input');
-    return [inputs[0]?.value || '', inputs[1]?.value || ''];
-  }).filter(([f, a]) => f || a);
-}
-
 function previewMapaCredito(input) {
   if(!input.files || !input.files[0]) return;
   const reader = new FileReader();
