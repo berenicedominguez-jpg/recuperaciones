@@ -2516,7 +2516,16 @@ async function registerEvento() {
   const consecutivoFallback = existentes + 1;
 
   // Mensaje WhatsApp
-  const mensaje = [
+  const mensaje = esCredito ? [
+    `🏦 *RECUPERACIÓN DE CRÉDITO — ${document.getElementById('f-credito-razon')?.value || '—'}*`,
+    `━━━━━━━━━━━━━━━━━━━`,
+    `🔑 *TK:* ${document.getElementById('f-credito-tk')?.value || '—'}`,
+    `🚗 *Unidad:* ${document.getElementById('f-marca-credito')?.value || '—'} ${document.getElementById('f-modelo-credito')?.value || '—'} | Placas: ${document.getElementById('f-placas-credito')?.value || '—'}`,
+    `👤 *Cliente:* ${document.getElementById('f-credito-nombre')?.value || '—'}`,
+    `📋 *Resultado:* ${creditoExitoso ? 'RECUPERACIÓN EXITOSA ✅' : 'NO EXITOSA ❌'}`,
+    `👮 *Monitorista:* ${monitorista}`,
+    `━━━━━━━━━━━━━━━━━━━`,
+  ].join('\n') : [
     `🚨 *${tipoEvento} — ${cliente} — ${plataforma}*`,
     `━━━━━━━━━━━━━━━━━━━`,
     `🚛 *Unidad:* ${nick} | Placas: ${placas}`,
@@ -2533,7 +2542,54 @@ async function registerEvento() {
   // ── sheetData según tipo de resultado ──
   let sheetData = {};
 
-  if(resultado === 'si') {
+  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
+
+  if(esCredito) {
+    // Variables específicas de crédito
+    const creditoTK         = document.getElementById('f-credito-tk')?.value || '—';
+    const creditoRazon      = document.getElementById('f-credito-razon')?.value || '—';
+    const creditoMarca      = document.getElementById('f-marca-credito')?.value || '—';
+    const creditoModelo     = document.getElementById('f-modelo-credito')?.value || '—';
+    const creditoAnio       = document.getElementById('f-anio-credito')?.value || '—';
+    const creditoPlacas     = document.getElementById('f-placas-credito')?.value || '—';
+    const creditoNombre     = document.getElementById('f-credito-nombre')?.value || '—';
+    const creditoMotivo     = document.getElementById('f-credito-motivo')?.value || '—';
+    const creditoFechaInicio = document.getElementById('f-credito-fecha-inicio')?.value || '—';
+    const creditoFechaFin   = document.getElementById('f-credito-fecha-fin')?.value || '—';
+    const creditoLocalidad  = document.getElementById('f-credito-localidad')?.value || '—';
+    const creditoResguardo  = document.getElementById('f-credito-resguardo')?.value || '—';
+    const creditoGestor     = document.getElementById('f-credito-gestor')?.value || '—';
+    const creditoUbicacion  = document.getElementById('f-credito-ubicacion')?.value || '—';
+    const creditoCoordenadas = document.getElementById('f-credito-coordenadas')?.value || '—';
+    const creditoFechaRec   = document.getElementById('f-credito-fecha-rec')?.value || '—';
+    const creditoEstatus    = creditoExitoso ? 'RECUPERACIÓN EXITOSA' : 'NO EXITOSA';
+
+    sheetData = {
+      'MES':                              mes,
+      'TIPO DE EVENTO':                   tipoEvento,
+      'FOLIO':                            '(pendiente)',
+      'RAZÓN SOCIAL':                     creditoRazon,
+      'TK':                               creditoTK,
+      'NICK UNIDAD':                      creditoTK,
+      'NOMBRE CLIENTE':                   creditoNombre,
+      'UNIDAD':                           `${creditoMarca} ${creditoModelo} ${creditoAnio}`,
+      'PLACAS':                           creditoPlacas,
+      'MOTIVO':                           creditoMotivo,
+      'ESTATUS':                          creditoEstatus,
+      'COORDENADAS (REPORTADAS A AUTORIDADES)': creditoCoordenadas,
+      'UBICACIÓN':                        creditoUbicacion,
+      'FOLIO PRE-DENUNCIA':               '—',
+      'FECHA Y HORA DEL ROBO':            '—',
+      'FECHA Y HORA DE RECUPERACIÓN':     creditoFechaRec,
+      'FECHA INICIO SEGUIMIENTO':         creditoFechaInicio,
+      'FECHA FIN SEGUIMIENTO':            creditoFechaFin,
+      'LOCALIDAD DE GESTIÓN':             creditoLocalidad,
+      'LUGAR DE RESGUARDO':               creditoResguardo,
+      'GESTOR ASIGNADO':                  creditoGestor,
+      'NOMBRE':                           monitorista,
+    };
+
+  } else if(resultado === 'si') {
     // RECUPERADAS
     sheetData = {
       'MES':                                    mes,
