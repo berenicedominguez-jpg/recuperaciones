@@ -2789,25 +2789,41 @@ async function ejecutarTodo() {
 
 // ===== FUNCIONES DE PRUEBA INDIVIDUALES =====
 
+// Redimensiona una imagen manteniendo proporción dentro de maxW x maxH
+function resizeImageToBase64(file, maxW, maxH) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        // Escalar manteniendo proporción
+        const ratio = Math.min(maxW / w, maxH / h);
+        if (ratio < 1) { w = Math.round(w * ratio); h = Math.round(h * ratio); }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.92).split(',')[1]);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 async function imgToBase64(inputId) {
   const input = document.getElementById(inputId);
   if(!input || !input.files || !input.files[0]) return null;
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result.split(',')[1]);
-    reader.readAsDataURL(input.files[0]);
-  });
+  // Máximo para imagen de lugar: ancho carta completo ~1600px, alto ~900px
+  return resizeImageToBase64(input.files[0], 1600, 900);
 }
 
 async function imgToBase64Multiple(inputId) {
   const input = document.getElementById(inputId);
   if(!input || !input.files || !input.files.length) return [];
   const files = Array.from(input.files).slice(0,2);
-  return Promise.all(files.map(file => new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result.split(',')[1]);
-    reader.readAsDataURL(file);
-  })));
+  // Máximo para evidencias: ancho carta completo ~1600px, alto ~900px (landscape)
+  return Promise.all(files.map(file => resizeImageToBase64(file, 1600, 900)));
 }
 
 function formatFecha(v) {
@@ -2982,9 +2998,6 @@ async function probarPDF() {
           tel_reportante: document.getElementById('f-tel-reportante')?.value || '—',
           correo_reportante: document.getElementById('f-correo-reportante')?.value || '—',
           estado_rep: p.estadoRep || '—',
-          autoridades: Array.from(document.querySelectorAll('input[id^="aut-"]:checked'))
-            .map(e => e.closest('label')?.textContent?.trim())
-            .filter(Boolean).join(', ') || '—',
           situacion: (() => {
             const nombre = document.getElementById('f-nombre-reportante')?.value || '—';
             const relacion = document.getElementById('f-relacion-unidad')?.value || '—';
