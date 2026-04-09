@@ -2186,19 +2186,19 @@ function syncParsedToForm() {
       const sel = document.getElementById('f-credito-tipo-entrega');
       const val = getF('fp-credito-tipo-entrega');
       if(sel) {
-        // Buscar opción que coincida
         for(const o of sel.options) {
           if(o.value && o.value.toLowerCase() === val.toLowerCase()) { sel.value = o.value; break; }
         }
-        if(!sel.value) sel.value = 'Voluntaria'; // default
+        if(!sel.value) sel.value = 'Voluntaria';
       }
     }
     if(getF('fp-credito-lugar-rec'))    setF('f-credito-lugar-rec',    getF('fp-credito-lugar-rec'));
     if(getF('fp-credito-fecha-rec'))    setF('f-credito-fecha-rec',    getF('fp-credito-fecha-rec'));
-    if(getF('fp-marca'))                setF('f-marca',                getF('fp-marca'));
-    if(getF('fp-submarca'))             setF('f-modelo',               getF('fp-submarca'));
-    if(getF('fp-anio'))                 setF('f-anio',                 getF('fp-anio'));
-    if(getF('fp-placas'))               setF('f-placas',               getF('fp-placas'));
+    // Vehículo — usar fp-marca, fp-submarca, fp-anio, fp-placas
+    if(getF('fp-marca'))                setF('f-marca-credito',        getF('fp-marca'));
+    if(getF('fp-submarca'))             setF('f-modelo-credito',       getF('fp-submarca'));
+    if(getF('fp-anio'))                 setF('f-anio-credito',         getF('fp-anio'));
+    if(getF('fp-placas'))               setF('f-placas-credito',       getF('fp-placas'));
     if(getF('fp-credito-entidad'))      setF('f-credito-entidad',      getF('fp-credito-entidad'));
     if(getF('fp-credito-nombre'))       setF('f-credito-nombre',       getF('fp-credito-nombre'));
     if(getF('fp-credito-motivo'))       setF('f-credito-motivo',       getF('fp-credito-motivo'));
