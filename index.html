@@ -791,7 +791,7 @@
         <div class="card" id="campos-credito-paso2" style="margin-bottom:16px;display:none;">
           <div class="card-header"><div class="card-title">Datos de recuperación de crédito</div></div>
           <div class="card-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label>Razón social</label>
                 <input type="text" id="f-credito-razon" placeholder="Ej. NACIONAL MONTE DE PIEDAD" />
@@ -800,58 +800,36 @@
                 <label>TK</label>
                 <input type="text" id="f-credito-tk" placeholder="Ej. 72936" />
               </div>
-              <div class="form-group">
-                <label>Tipo de entrega</label>
-                <select id="f-credito-tipo-entrega">
-                  <option value="">Seleccionar...</option>
-                  <option>Voluntaria</option>
-                  <option>Sin presencia del cliente</option>
-                </select>
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
-              <div class="form-group">
-                <label>Lugar de recuperación</label>
-                <input type="text" id="f-credito-lugar-rec" placeholder="Dirección completa" />
-              </div>
-              <div class="form-group">
-                <label>Fecha de recuperación</label>
-                <input type="text" id="f-credito-fecha-rec" placeholder="DD/MM/YYYY" />
-              </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label>Marca</label>
-                <input type="text" id="f-marca-credito" placeholder="Ej. PEUGEOT" />
+                <input type="text" id="f-marca-credito" placeholder="Ej. HYUNDAI" />
               </div>
               <div class="form-group">
                 <label>Modelo</label>
-                <input type="text" id="f-modelo-credito" placeholder="Ej. 301" />
+                <input type="text" id="f-modelo-credito" placeholder="Ej. GRAND I10" />
               </div>
               <div class="form-group">
                 <label>Año</label>
-                <input type="text" id="f-anio-credito" placeholder="Ej. 2026" />
+                <input type="text" id="f-anio-credito" placeholder="Ej. 2016" />
               </div>
               <div class="form-group">
                 <label>Placas</label>
-                <input type="text" id="f-placas-credito" placeholder="Ej. JNX3657" />
+                <input type="text" id="f-placas-credito" placeholder="Ej. ZAK256E" />
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Entidad</label>
-                <input type="text" id="f-credito-entidad" placeholder="Ej. JAL, México" />
-              </div>
-              <div class="form-group">
                 <label>Nombre del cliente</label>
                 <input type="text" id="f-credito-nombre" placeholder="Nombre completo" />
               </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label>Motivo</label>
                 <input type="text" id="f-credito-motivo" placeholder="Ej. Impago" />
               </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label>Fecha inicio seguimiento</label>
                 <input type="text" id="f-credito-fecha-inicio" placeholder="DD/MM/YYYY" />
@@ -860,18 +838,16 @@
                 <label>Fecha fin seguimiento</label>
                 <input type="text" id="f-credito-fecha-fin" placeholder="DD/MM/YYYY" />
               </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 2fr;gap:14px;">
               <div class="form-group">
                 <label>Localidad de gestión</label>
-                <input type="text" id="f-credito-localidad" placeholder="Ej. JAL, México" />
+                <input type="text" id="f-credito-localidad" placeholder="Ej. YUC, México" />
               </div>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;">
               <div class="form-group">
                 <label>Lugar de resguardo</label>
                 <input type="text" id="f-credito-resguardo" placeholder="Dirección del resguardo" />
               </div>
-            </div>
-            <div style="margin-top:14px;">
               <div class="form-group">
                 <label>Gestor asignado</label>
                 <input type="text" id="f-credito-gestor" placeholder="Nombre del gestor" />
@@ -1361,6 +1337,146 @@
               </div>
             </div>
             <!-- fin panel-resultado-normal -->
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── Card: Datos extra del evento (solo CRÉDITO) ── -->
+        <div class="card" id="card-datos-extra-credito" style="margin-bottom:14px;display:none;">
+          <div class="card-header"><div class="card-title">Datos extra del evento</div></div>
+          <div class="card-body">
+
+            <!-- Ubicación y Coordenadas -->
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label>Ubicación</label>
+                <input type="text" id="f-credito-ubicacion" placeholder="Dirección o descripción del lugar" />
+              </div>
+              <div class="form-group">
+                <label>Coordenadas</label>
+                <input type="text" id="f-credito-coordenadas" placeholder="Ej. 20.6938, -101.3120" />
+              </div>
+            </div>
+
+            <!-- Imagen del mapa -->
+            <div class="form-group" style="margin-bottom:18px;">
+              <label>Imagen del mapa</label>
+              <div style="border:2px dashed var(--border2);border-radius:var(--radius);padding:16px;text-align:center;background:var(--card2);">
+                <input type="file" id="img-mapa-credito" accept="image/*" style="display:none;" onchange="previewMapaCredito(this)" />
+                <div id="preview-mapa-credito" style="display:none;margin-bottom:10px;">
+                  <img id="img-preview-mapa-credito" style="max-width:100%;max-height:200px;border-radius:var(--radius-sm);" />
+                </div>
+                <button type="button" class="btn btn-ghost" onclick="document.getElementById('img-mapa-credito').click()" style="margin-bottom:6px;">📎 Seleccionar imagen</button>
+                <div style="font-size:11px;color:var(--muted);">También puedes pegar una imagen con Ctrl+V</div>
+              </div>
+            </div>
+
+            <!-- Tabla de resumen -->
+            <div class="form-group">
+              <label>Resumen de acciones</label>
+              <div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+                <table style="width:100%;border-collapse:collapse;" id="tabla-resumen-credito">
+                  <thead>
+                    <tr style="background:var(--accent);color:white;">
+                      <th style="padding:8px 12px;text-align:left;font-size:12px;width:30%;">Fecha</th>
+                      <th style="padding:8px 12px;text-align:left;font-size:12px;">Acción</th>
+                      <th style="padding:8px 12px;width:40px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="resumen-tbody">
+                    <tr class="resumen-fila">
+                      <td style="padding:6px 8px;border-bottom:1px solid var(--border);"><input type="text" placeholder="DD/MM/YYYY" style="width:100%;border:none;background:transparent;font-size:13px;" /></td>
+                      <td style="padding:6px 8px;border-bottom:1px solid var(--border);"><input type="text" placeholder="Descripción de la acción" style="width:100%;border:none;background:transparent;font-size:13px;" /></td>
+                      <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;"><button type="button" onclick="eliminarFilaResumen(this)" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px;">×</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div style="padding:8px 12px;">
+                  <button type="button" class="btn btn-ghost" onclick="agregarFilaResumen()" style="font-size:12px;">+ Agregar fila</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── Card datos extra del evento (solo CRÉDITO) ── -->
+        <div class="card" id="card-datos-extra-credito" style="margin-bottom:14px;display:none;">
+          <div class="card-header"><div class="card-title">Datos extra del evento</div></div>
+          <div class="card-body">
+
+            <!-- Ubicación y coordenadas -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
+              <div class="form-group">
+                <label>Ubicación</label>
+                <input type="text" id="f-credito-ubicacion" placeholder="Dirección o nombre del lugar" />
+              </div>
+              <div class="form-group">
+                <label>Coordenadas</label>
+                <input type="text" id="f-credito-coordenadas" placeholder="Ej. 20.693976, -101.312048" />
+              </div>
+            </div>
+
+            <!-- Imagen del mapa -->
+            <div style="margin-bottom:16px;">
+              <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;">Imagen del mapa (rastreo GPS)</label>
+              <input type="file" id="img-credito-mapa" accept="image/*" style="margin-bottom:6px;" />
+              <div id="preview-credito-mapa" style="display:none;margin-top:8px;">
+                <img id="img-preview-credito-mapa" style="max-width:100%;max-height:200px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
+              </div>
+            </div>
+
+            <!-- Tabla resumen -->
+            <div style="margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <label style="font-size:12px;font-weight:600;color:var(--text);">Resumen de acciones</label>
+                <button type="button" class="btn btn-ghost" style="font-size:11px;padding:4px 10px;" onclick="agregarFilaResumen()">+ Agregar fila</button>
+              </div>
+              <table style="width:100%;border-collapse:collapse;font-size:12px;">
+                <thead>
+                  <tr style="background:var(--accent);color:#fff;">
+                    <th style="padding:8px 10px;text-align:left;width:25%;">Fecha</th>
+                    <th style="padding:8px 10px;text-align:left;">Acción</th>
+                    <th style="padding:4px;width:32px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="tabla-resumen-body">
+                  <tr id="resumen-fila-1">
+                    <td style="padding:4px;"><input type="text" class="resumen-fecha" placeholder="DD/MM/YYYY" style="width:100%;font-size:12px;" /></td>
+                    <td style="padding:4px;"><input type="text" class="resumen-accion" placeholder="Descripción de la acción" style="width:100%;font-size:12px;" /></td>
+                    <td style="padding:4px;text-align:center;"><button type="button" onclick="eliminarFilaResumen(this)" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:14px;">✕</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 3 imágenes de evidencia -->
+            <div>
+              <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">Evidencia de la unidad (hasta 3 fotos)</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                <div>
+                  <label style="font-size:11px;color:var(--muted2);">Foto 1</label>
+                  <input type="file" id="img-credito-ev1" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev1')" />
+                  <div id="preview-credito-ev1" style="display:none;margin-top:6px;">
+                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
+                  </div>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--muted2);">Foto 2</label>
+                  <input type="file" id="img-credito-ev2" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev2')" />
+                  <div id="preview-credito-ev2" style="display:none;margin-top:6px;">
+                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
+                  </div>
+                </div>
+                <div>
+                  <label style="font-size:11px;color:var(--muted2);">Foto 3</label>
+                  <input type="file" id="img-credito-ev3" accept="image/*" onchange="previewCreditoEv(this,'preview-credito-ev3')" />
+                  <div id="preview-credito-ev3" style="display:none;margin-top:6px;">
+                    <img style="max-width:100%;max-height:120px;border-radius:var(--radius-sm);border:1px solid var(--border);" />
+                  </div>
+                </div>
+              </div>
             </div>
 
           </div>
@@ -1869,7 +1985,58 @@ const FIELD_MAP = [
   { id:'fp-credito-gestor',       label:'Gestor asignado',           keys:['gestor asignado','gestor'] },
 ];
 
-let creditoExitoso = true;
+let resumenFilaCount = 1;
+
+function agregarFilaResumen() {
+  resumenFilaCount++;
+  const tbody = document.getElementById('tabla-resumen-body');
+  const tr = document.createElement('tr');
+  tr.id = `resumen-fila-${resumenFilaCount}`;
+  tr.innerHTML = `
+    <td style="padding:4px;"><input type="text" class="resumen-fecha" placeholder="DD/MM/YYYY" style="width:100%;font-size:12px;" /></td>
+    <td style="padding:4px;"><input type="text" class="resumen-accion" placeholder="Descripción de la acción" style="width:100%;font-size:12px;" /></td>
+    <td style="padding:4px;text-align:center;"><button type="button" onclick="eliminarFilaResumen(this)" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:14px;">✕</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function eliminarFilaResumen(btn) {
+  const tr = btn.closest('tr');
+  if(document.querySelectorAll('#tabla-resumen-body tr').length > 1) tr.remove();
+}
+
+function getResumenData() {
+  const filas = document.querySelectorAll('#tabla-resumen-body tr');
+  const result = [];
+  filas.forEach(tr => {
+    const fecha  = tr.querySelector('.resumen-fecha')?.value.trim() || '';
+    const accion = tr.querySelector('.resumen-accion')?.value.trim() || '';
+    if(fecha || accion) result.push([fecha, accion]);
+  });
+  return result;
+}
+
+function previewCreditoEv(input, previewId) {
+  const div = document.getElementById(previewId);
+  if(!input.files || !input.files[0]) { if(div) div.style.display='none'; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    if(div) { div.style.display='block'; div.querySelector('img').src = e.target.result; }
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// Preview imagen mapa crédito
+document.addEventListener('DOMContentLoaded', () => {
+  const mapaInput = document.getElementById('img-credito-mapa');
+  if(mapaInput) mapaInput.addEventListener('change', function() {
+    const div = document.getElementById('preview-credito-mapa');
+    if(!this.files || !this.files[0]) { div.style.display='none'; return; }
+    const reader = new FileReader();
+    reader.onload = e => { div.style.display='block'; document.getElementById('img-preview-credito-mapa').src = e.target.result; };
+    reader.readAsDataURL(this.files[0]);
+  });
+});
 
 function selectRecuperacionCredito(val) {
   creditoExitoso = (val === 'exitoso');
@@ -2192,26 +2359,12 @@ function syncParsedToForm() {
   const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
   if(esCredito) {
     if(getF('fp-credito-tk'))           setF('f-credito-tk',           getF('fp-credito-tk'));
-    if(getF('fp-credito-razon') || getF('fp-razon')) 
+    if(getF('fp-credito-razon') || getF('fp-razon'))
       setF('f-credito-razon', getF('fp-credito-razon') || getF('fp-razon'));
-    if(getF('fp-credito-tipo-entrega')) {
-      const sel = document.getElementById('f-credito-tipo-entrega');
-      const val = getF('fp-credito-tipo-entrega');
-      if(sel) {
-        for(const o of sel.options) {
-          if(o.value && o.value.toLowerCase() === val.toLowerCase()) { sel.value = o.value; break; }
-        }
-        if(!sel.value) sel.value = 'Voluntaria';
-      }
-    }
-    if(getF('fp-credito-lugar-rec'))    setF('f-credito-lugar-rec',    getF('fp-credito-lugar-rec'));
-    if(getF('fp-credito-fecha-rec'))    setF('f-credito-fecha-rec',    getF('fp-credito-fecha-rec'));
-    // Vehículo — usar fp-marca, fp-submarca, fp-anio, fp-placas
     if(getF('fp-marca'))                setF('f-marca-credito',        getF('fp-marca'));
     if(getF('fp-submarca'))             setF('f-modelo-credito',       getF('fp-submarca'));
     if(getF('fp-anio'))                 setF('f-anio-credito',         getF('fp-anio'));
     if(getF('fp-placas'))               setF('f-placas-credito',       getF('fp-placas'));
-    if(getF('fp-credito-entidad'))      setF('f-credito-entidad',      getF('fp-credito-entidad'));
     if(getF('fp-credito-nombre'))       setF('f-credito-nombre',       getF('fp-credito-nombre'));
     if(getF('fp-credito-motivo'))       setF('f-credito-motivo',       getF('fp-credito-motivo'));
     if(getF('fp-credito-fecha-inicio')) setF('f-credito-fecha-inicio', getF('fp-credito-fecha-inicio'));
@@ -2292,6 +2445,8 @@ function nextStep(from) {
     if(cardPersona) cardPersona.style.display = esCredito ? 'none' : 'block';
     const campoNick = document.getElementById('campo-nick-alias');
     if(campoNick) campoNick.style.display = esCredito ? 'none' : 'block';
+    const cardDatosExtra = document.getElementById('card-datos-extra-credito');
+    if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
   }
   if(from===2) {
     // No mandatory fields — proceed freely
@@ -2938,15 +3093,11 @@ Numero de contacto:\t222 598 7061`,
 
   'RECUPERACIÓN DE CRÉDITO': `RAZÓN SOCIAL:\t
 TK:\t
-TIPO DE ENTREGA:\t
-LUGAR DE RECUPERACIÓN:\t
-FECHA DE RECUPERACIÓN:\t
 DATOS DEL VEHÍCULO
 Marca:\t
 Modelo:\t
 AÑO:\t
 Placas:\t
-Entidad:\t
 DATOS DEL CLIENTE
 Nombre:\t
 Motivo:\t
@@ -3299,14 +3450,10 @@ async function probarPDF() {
           // Campos específicos de CRÉDITO
           tk: document.getElementById('f-credito-tk')?.value || '—',
           razon_social: document.getElementById('f-credito-razon')?.value || '—',
-          tipo_entrega: document.getElementById('f-credito-tipo-entrega')?.value || '—',
-          lugar_recuperacion_credito: document.getElementById('f-credito-lugar-rec')?.value || '—',
-          fecha_recuperacion: document.getElementById('f-credito-fecha-rec')?.value || '—',
           marca: document.getElementById('f-marca-credito')?.value || document.getElementById('f-marca')?.value || '—',
           modelo: document.getElementById('f-modelo-credito')?.value || document.getElementById('f-modelo')?.value || '—',
           anio: document.getElementById('f-anio-credito')?.value || document.getElementById('f-anio')?.value || '—',
           placas: document.getElementById('f-placas-credito')?.value || document.getElementById('f-placas')?.value || '—',
-          entidad: document.getElementById('f-credito-entidad')?.value || '—',
           nombre: document.getElementById('f-credito-nombre')?.value || '—',
           motivo: document.getElementById('f-credito-motivo')?.value || '—',
           fecha_inicio: document.getElementById('f-credito-fecha-inicio')?.value || '—',
@@ -3314,6 +3461,19 @@ async function probarPDF() {
           localidad: document.getElementById('f-credito-localidad')?.value || '—',
           lugar_resguardo: document.getElementById('f-credito-resguardo')?.value || '—',
           gestor: document.getElementById('f-credito-gestor')?.value || '—',
+          ubicacion: document.getElementById('f-credito-ubicacion')?.value || '—',
+          coordenadas: document.getElementById('f-credito-coordenadas')?.value || '—',
+          img_mapa_credito: await (async () => {
+            const f = document.getElementById('img-credito-mapa')?.files?.[0];
+            return f ? resizeImageToBase64(f, 875, 500) : null;
+          })(),
+          img_evidencias_credito: await Promise.all(
+            ['img-credito-ev1','img-credito-ev2','img-credito-ev3'].map(async id => {
+              const f = document.getElementById(id)?.files?.[0];
+              return f ? resizeImageToBase64(f, 875, 420) : null;
+            })
+          ).then(arr => arr.filter(Boolean)),
+          resumen: getResumenData(),
           exitoso: creditoExitoso,
           conclusion: document.getElementById('f-credito-conclusion')?.value || '—'
         }
@@ -3626,6 +3786,63 @@ function autoDetectEmpresa(plataforma) {
   const camposInbursa = document.getElementById('campos-inbursa');
   if(camposInbursa) camposInbursa.style.display = plataforma === 'INBURSA' ? 'block' : 'none';
 }
+
+// ===== RESUMEN CRÉDITO =====
+function agregarFilaResumen() {
+  const tbody = document.getElementById('resumen-tbody');
+  const fila = document.createElement('tr');
+  fila.className = 'resumen-fila';
+  fila.innerHTML = `
+    <td style="padding:6px 8px;border-bottom:1px solid var(--border);"><input type="text" placeholder="DD/MM/YYYY" style="width:100%;border:none;background:transparent;font-size:13px;" /></td>
+    <td style="padding:6px 8px;border-bottom:1px solid var(--border);"><input type="text" placeholder="Descripción de la acción" style="width:100%;border:none;background:transparent;font-size:13px;" /></td>
+    <td style="padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;"><button type="button" onclick="eliminarFilaResumen(this)" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px;">×</button></td>
+  `;
+  tbody.appendChild(fila);
+}
+
+function eliminarFilaResumen(btn) {
+  const fila = btn.closest('tr');
+  const tbody = document.getElementById('resumen-tbody');
+  if(tbody.querySelectorAll('tr').length > 1) fila.remove();
+}
+
+function getResumenData() {
+  const filas = document.querySelectorAll('#resumen-tbody .resumen-fila');
+  return Array.from(filas).map(f => {
+    const inputs = f.querySelectorAll('input');
+    return [inputs[0]?.value || '', inputs[1]?.value || ''];
+  }).filter(([f, a]) => f || a);
+}
+
+function previewMapaCredito(input) {
+  if(!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('img-preview-mapa-credito').src = e.target.result;
+    document.getElementById('preview-mapa-credito').style.display = 'block';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// Pegar imagen del mapa con Ctrl+V
+document.addEventListener('paste', e => {
+  const cardExtra = document.getElementById('card-datos-extra-credito');
+  if(!cardExtra || cardExtra.style.display === 'none') return;
+  const items = e.clipboardData?.items;
+  if(!items) return;
+  for(const item of items) {
+    if(item.type.startsWith('image/')) {
+      const file = item.getAsFile();
+      const reader = new FileReader();
+      reader.onload = ev => {
+        document.getElementById('img-preview-mapa-credito').src = ev.target.result;
+        document.getElementById('preview-mapa-credito').style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+      break;
+    }
+  }
+});
 
 // INIT
 document.addEventListener('DOMContentLoaded', ()=>{
