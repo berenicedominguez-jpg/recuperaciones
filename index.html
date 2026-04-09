@@ -3098,6 +3098,26 @@ async function ejecutarTodo() {
 
 // ===== FUNCIONES DE PRUEBA INDIVIDUALES =====
 
+function resizeImageToBase64(file, maxW, maxH) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        const ratio = Math.min(maxW / w, maxH / h);
+        if (ratio < 1) { w = Math.round(w * ratio); h = Math.round(h * ratio); }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.92).split(',')[1]);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 async function imgToBase64(inputId) {
   const input = document.getElementById(inputId);
   if(!input || !input.files || !input.files[0]) return null;
