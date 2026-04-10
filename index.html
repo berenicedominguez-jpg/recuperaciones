@@ -2458,11 +2458,12 @@ function nextStep(from) {
     document.getElementById('confirm-icon').textContent = icons[recuperadoSelected]||'✅';
     document.getElementById('confirm-title').textContent = titles[recuperadoSelected]||'Evento registrado';
     document.getElementById('folio-valor').textContent = '—';
-    // Guardar datos para los botones de prueba
     _lastPayload = null;
     _lastFolio = null;
-  _lastCarpetaId = null;
-    ['wa','sheets','drive','pdf','folio'].forEach(id => setCheck(id, '', '—'));
+    _lastCarpetaId = null;
+    ['wa','sheets','drive','pdf','folio','desk','correo'].forEach(id => setCheck(id, '', '—'));
+    // Ejecutar registro completo
+    registerEvento();
     return;
   }
   document.getElementById('form-step-'+from).style.display='none';
