@@ -852,6 +852,10 @@
                 <label>Gestor asignado</label>
                 <input type="text" id="f-credito-gestor" placeholder="Nombre del gestor" />
               </div>
+              <div class="form-group">
+                <label>Correo del cliente</label>
+                <input type="email" id="f-credito-correo" placeholder="correo@cliente.com" />
+              </div>
             </div>
           </div>
         </div>
@@ -1495,6 +1499,24 @@
               <div style="display:flex;align-items:center;gap:8px;">
                 <div id="check-sheets-icon" style="font-size:18px;"></div>
                 <button class="btn btn-ghost btn-sm" onclick="probarSheets()">Probar</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="font-size:20px;">🎫</div>
+                <div><div style="font-size:13px;font-weight:600;">Ticket Zoho Desk</div><div id="check-desk-status" style="font-size:11px;color:var(--muted);">—</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div id="check-desk-icon" style="font-size:18px;"></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="font-size:20px;">📧</div>
+                <div><div style="font-size:13px;font-weight:600;">Correo de cierre</div><div id="check-correo-status" style="font-size:11px;color:var(--muted);">—</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div id="check-correo-icon" style="font-size:18px;"></div>
               </div>
             </div>
           </div>
@@ -2484,10 +2506,10 @@ async function registerEvento() {
   const tipoAlerta  = getTiposAlerta().join(' + ') || 'N/A';
   const paroMotor   = getParoMotor();
   const coordenadas = document.getElementById('f-coords')?.value || '—';
-  const resultadoLabel = { si:'RECUPERADA', no:'NO RECUPERADA', cancel:'CANCELADO' }[resultado] || '—';
-  const estatusCompleto = paroMotor;
-
-  // Autoridades contactadas
+  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
+  const resultadoLabel = esCredito
+    ? (resultado === 'si' ? 'RECUPERACIÓN EXITOSA' : 'NO EXITOSA')
+    : ({ si:'RECUPERADA', no:'NO RECUPERADA', cancel:'CANCELADO' }[resultado] || '—');
   const autIds = ['municipales','estatales','federales','gn','marina','anerpv','fuerza','emergencias','ssp','recuperadores'];
   const autNombres = ['Municipales','Estatales','Federales','Guardia Nacional','Marina','ANERPV','Fuerza Civil','Emergencias','SSP','Recuperadores'];
   const autoridades = autIds.map((id,i) => document.getElementById('aut-'+id)?.checked ? autNombres[i] : null).filter(Boolean).join(', ') || '—';
@@ -2501,7 +2523,11 @@ async function registerEvento() {
   const horarioReporte = hora >= 7 && hora < 14 ? 'MATUTINO' : hora >= 14 && hora < 20 ? 'VESPERTINO' : 'NOCTURNO';
 
   // Campos según resultado
-  const fechaRecuperacion = document.getElementById('f-fecha-recuperacion')?.value || '—';
+  const escenario = document.getElementById('f-escenario')?.value || '';
+  const fechaRecCampos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica', extranjero:'f-fecha-rec-extranjero'};
+  const fechaRecuperacion = document.getElementById(fechaRecCampos[escenario])?.value || '—';
+  const acciones = document.getElementById('f-acciones-abuso-si')?.value || document.getElementById('f-acciones-abuso-no')?.value || '—';
+  const observaciones = document.getElementById('f-observaciones-no')?.value || acciones;
   const tiempoReporte     = document.getElementById('f-tiempo-reporte')?.value     || '—';
   const tiempoPredenuncia = document.getElementById('f-tiempo-predenuncia')?.value || '—';
   const cancelRecibe      = document.getElementById('f-cancel-recibe')?.value      || monitorista;
@@ -2541,8 +2567,6 @@ async function registerEvento() {
 
   // ── sheetData según tipo de resultado ──
   let sheetData = {};
-
-  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
 
   if(esCredito) {
     // Variables específicas de crédito
@@ -2669,72 +2693,222 @@ async function registerEvento() {
     empresa,
     resultado: resultadoLabel,
     consecutivo: consecutivoFallback,
+    prefijo,
     cliente,
     mensaje,
+    // Campos para test-correo
+    correoCliente: esCredito
+      ? (document.getElementById('f-credito-correo')?.value || '')
+      : (document.getElementById('f-correo-reportante')?.value || document.getElementById('f-correo')?.value || ''),
+    nick,
+    placas,
+    // Datos para PDF y Drive
+    mesNombre: mes.replace(/^\d+\.\s*/, ''),
+    recuperada: resultado === 'si',
     sheetData,
+    datos: esCredito ? {
+      folio: '(pendiente)',
+      tk: document.getElementById('f-credito-tk')?.value || '—',
+      razon_social: document.getElementById('f-credito-razon')?.value || '—',
+      marca: document.getElementById('f-marca-credito')?.value || '—',
+      modelo: document.getElementById('f-modelo-credito')?.value || '—',
+      anio: document.getElementById('f-anio-credito')?.value || '—',
+      placas: document.getElementById('f-placas-credito')?.value || '—',
+      nombre: document.getElementById('f-credito-nombre')?.value || '—',
+      motivo: document.getElementById('f-credito-motivo')?.value || '—',
+      fecha_inicio: document.getElementById('f-credito-fecha-inicio')?.value || '—',
+      fecha_fin: document.getElementById('f-credito-fecha-fin')?.value || '—',
+      localidad: document.getElementById('f-credito-localidad')?.value || '—',
+      lugar_resguardo: document.getElementById('f-credito-resguardo')?.value || '—',
+      gestor: document.getElementById('f-credito-gestor')?.value || '—',
+      ubicacion: document.getElementById('f-credito-ubicacion')?.value || '—',
+      coordenadas: document.getElementById('f-credito-coordenadas')?.value || '—',
+      exitoso: creditoExitoso,
+      conclusion: document.getElementById('f-credito-conclusion')?.value || '—',
+      img_mapa_credito: await (async () => {
+        const f = document.getElementById('img-credito-mapa')?.files?.[0];
+        return f ? resizeImageToBase64(f, 875, 500) : null;
+      })(),
+      img_evidencias_credito: await Promise.all(
+        ['img-credito-ev1','img-credito-ev2','img-credito-ev3'].map(async id => {
+          const f = document.getElementById(id)?.files?.[0];
+          return f ? resizeImageToBase64(f, 875, 420) : null;
+        })
+      ).then(arr => arr.filter(Boolean)),
+    } : {
+      folio: '(pendiente)',
+      nick, placas, esn, plataforma, marca: document.getElementById('f-marca')?.value || '—',
+      modelo: document.getElementById('f-modelo')?.value || '—',
+      anio: document.getElementById('f-anio')?.value || '—',
+      color: document.getElementById('f-color')?.value || '—',
+      serie: document.getElementById('f-serie')?.value || '—',
+      cliente, monitorista, lugar, coordenadas,
+      fecha_robo: fechaRobo, hora_robo: horaRobo,
+      fecha_atencion: fechaAtencion,
+      ultima_senal: document.getElementById('f-ultima-senal')?.value || '—',
+      alertas: tipoAlerta, paro_motor: paroMotor,
+      autoridades, folio911, estadoRep,
+      estado_rep: estadoRep,
+      resultado: resultadoLabel,
+      acciones: acciones,
+      observaciones: observaciones,
+      // Abuso
+      nombre_reportante: document.getElementById('f-nombre-reportante')?.value || '—',
+      relacion_unidad: document.getElementById('f-relacion-unidad')?.value || '—',
+      medio_contacto: document.getElementById('f-medio-contacto')?.value || '—',
+      tel_reportante: document.getElementById('f-tel-reportante')?.value || '—',
+      correo_reportante: document.getElementById('f-correo-reportante')?.value || '—',
+      poliza: document.getElementById('f-poliza')?.value || '—',
+      num_carpeta: document.getElementById('f-num-carpeta')?.value || '—',
+      denuncia_mp: document.getElementById('f-denuncia-mp')?.value || '—',
+      folio_predenuncia: document.getElementById('f-folio911-step1')?.value || '—',
+      lugar_recuperacion: (function() {
+        const escenario = document.getElementById('f-escenario')?.value || '';
+        const campos = {corrralon:'f-lugar-rec-corrralon', cliente:'f-lugar-rec-cliente', mp:'f-lugar-rec-mp', 'no-fisica':'f-lugar-rec-nofisica'};
+        return document.getElementById(campos[escenario])?.value || 'N/A';
+      })(),
+      vehiculo_remitido: document.getElementById('f-abuso-remitido')?.value || 'NO',
+      lugar_remision: document.getElementById('f-abuso-lugar-remision')?.value || 'N/A',
+      entregado_cliente: document.getElementById('f-abuso-entregado')?.value || 'NO',
+      img_lugar: await imgToBase64('img-lugar-robo'),
+      img_evidencia: await imgToBase64Multiple('img-evidencia'),
+    }
   };
 
-  // ── Llamar a n8n: finalizar-caso (WA + Drive + Sheets todo en uno) ──
-  const waStatus = document.getElementById('wa-confirm-status');
-  let folio = resultado === 'cancel' 
-    ? prefijo + '-' + String(consecutivoFallback).padStart(3,'0')
-    : prefijo + String(consecutivoFallback).padStart(3,'0');
-
-  // Guardar payload para botones individuales
+  // ── Guardar payload para botones individuales ──
   _lastPayload = payload;
 
   // Reset checks
-  ['wa','sheets','drive','pdf','folio'].forEach(id => setCheck(id, '', '—'));
+  ['wa','sheets','drive','pdf','folio','desk','correo'].forEach(id => setCheck(id, '', '—'));
+
+  let folio = resultado === 'cancel'
+    ? prefijo + '-' + String(consecutivoFallback).padStart(3,'0')
+    : prefijo + String(consecutivoFallback).padStart(3,'0');
 
   try {
     document.getElementById('folio-valor').textContent = 'Registrando...';
-    console.log('📤 Enviando a n8n:', JSON.stringify(payload).substring(0,200));
-    const res = await fetch('https://ain8n.numaris.com/webhook/finalizar-caso', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
 
-    console.log('📥 Respuesta n8n:', res.status, res.statusText);
-
-    if(res.ok) {
-      const data = await res.json();
-      console.log('✅ Data n8n:', JSON.stringify(data));
-      if(data.codigo) folio = data.codigo;
-      _lastFolio = folio;
-      if(data.folderUrl) _lastPayload.folderUrl = data.folderUrl;
-      payload.sheetData['FOLIO'] = folio;
-      setCheck('wa', 'ok', 'Mensaje enviado al grupo');
-      setCheck('sheets', 'ok', resultado === 'si' ? 'UNIDADES RECUPERADAS' : resultado === 'no' ? 'UNIDADES NO RECUPERADAS' : 'REPORTES CANCELADOS');
-      setCheck('folio', 'ok', 'Folio: ' + folio);
-      if(data.carpetaId) _lastCarpetaId = data.carpetaId;
-      if(data.folderUrl) {
-        setCheck('drive', 'ok', 'Carpeta creada');
-      if(data.carpetaId) _lastCarpetaId = data.carpetaId;
-        const link = document.getElementById('check-drive-link');
-        if(link) { link.href = data.folderUrl; link.style.display = 'inline'; }
-      } else {
-        setCheck('drive', resultado === 'cancel' ? 'ok' : 'error', resultado === 'cancel' ? 'No aplica' : 'Sin URL de carpeta');
-      }
-      if(data.pdfUrl) {
-        setCheck('pdf', 'ok', 'PDF subido a Drive');
-      } else {
-        setCheck('pdf', 'error', 'PDF no generado — verificar Render');
-      }
+    // 1. WhatsApp
+    // ROBO/ABUSO: siempre | CRÉDITO: solo si recuperado
+    const aplicaWA = !esCredito || resultado === 'si';
+    if(aplicaWA) {
+      setCheck('wa', 'pending', 'Enviando...');
+      try {
+        const resWa = await fetch('https://ain8n.numaris.com/webhook/test-wa', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ tipoEvento, mensaje })
+        });
+        setCheck('wa', resWa.ok ? 'ok' : 'error', resWa.ok ? 'Mensaje enviado' : 'Error WA');
+      } catch(e) { setCheck('wa', 'error', e.message); }
     } else {
-      const errText = await res.text();
-      console.error('❌ Error n8n:', res.status, errText);
-      ['wa','sheets','drive','pdf'].forEach(id => setCheck(id, 'error', 'Error ' + res.status));
-      setCheck('folio', 'ok', 'Folio local: ' + folio);
+      setCheck('wa', 'ok', 'No aplica');
     }
+
+    // 2. Folio + Sheets
+    setCheck('sheets', 'pending', 'Registrando...');
+    try {
+      const resF = await fetch('https://ain8n.numaris.com/webhook/test-folio', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ resultado: resultadoLabel, prefijo })
+      });
+      const dataF = await resF.json();
+      if(dataF.folio) {
+        folio = dataF.folio;
+        payload.datos.folio = folio;
+        payload.sheetData['FOLIO'] = folio;
+      }
+      setCheck('folio', 'ok', 'Folio: ' + folio);
+
+      const resSh = await fetch('https://ain8n.numaris.com/webhook/test-sheets', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ ...payload, folio, codigo: folio })
+      });
+      const hoja = resultadoLabel.includes('RECUPERADA') && !resultadoLabel.includes('NO') ? 'UNIDADES RECUPERADAS' : resultadoLabel.includes('CANCELADO') ? 'REPORTES CANCELADOS' : 'UNIDADES NO RECUPERADAS';
+      setCheck('sheets', resSh.ok ? 'ok' : 'error', resSh.ok ? hoja : 'Error Sheets');
+    } catch(e) { setCheck('sheets', 'error', e.message); setCheck('folio', 'ok', 'Folio local: ' + folio); }
+
+    // 3. Drive + PDF
+    if(resultado !== 'cancel') {
+      setCheck('drive', 'pending', 'Creando carpeta...');
+      setCheck('pdf', 'pending', 'Generando PDF...');
+      try {
+        const resDr = await fetch('https://ain8n.numaris.com/webhook/test-drive', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ ...payload, folio, codigo: folio,
+            mesNombre: mes.replace(/^\d+\.\s*/, ''),
+            recuperada: resultado === 'si' })
+        });
+        const dataDr = await resDr.json();
+        if(dataDr.carpetaId) _lastCarpetaId = dataDr.carpetaId;
+        if(dataDr.folderUrl) {
+          const link = document.getElementById('check-drive-link');
+          if(link) { link.href = dataDr.folderUrl; link.style.display = 'inline'; }
+          setCheck('drive', 'ok', 'Carpeta creada');
+        } else {
+          setCheck('drive', resDr.ok ? 'ok' : 'error', resDr.ok ? 'Drive OK' : 'Error Drive');
+        }
+        setCheck('pdf', dataDr.pdfUrl ? 'ok' : 'error', dataDr.pdfUrl ? 'PDF subido' : 'PDF no generado');
+      } catch(e) { setCheck('drive', 'error', e.message); setCheck('pdf', 'error', e.message); }
+    } else {
+      setCheck('drive', 'ok', 'No aplica (cancelado)');
+      setCheck('pdf', 'ok', 'No aplica (cancelado)');
+    }
+
+    // 4. Zoho Desk
+    // Recuperados (cualquier tipo): siempre sube ticket
+    // No recuperados: solo si empresa es EASYTRACK
+    const aplicaDesk = resultado === 'si' || (resultado === 'no' && empresa === 'EASYTRACK');
+    if(aplicaDesk) {
+      setCheck('desk', 'pending', 'Creando ticket...');
+      try {
+        const resDk = await fetch('https://ain8n.numaris.com/webhook/test-desk', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ tipoEvento, folio, cliente: esCredito ? document.getElementById('f-credito-razon')?.value : cliente, mensaje })
+        });
+        setCheck('desk', resDk.ok ? 'ok' : 'error', resDk.ok ? 'Ticket creado en Desk' : 'Error Desk');
+      } catch(e) { setCheck('desk', 'error', e.message); }
+    } else {
+      setCheck('desk', 'ok', 'No aplica');
+    }
+
+    // 5. Correo de cierre / Seguimiento:
+    // RECUPERADO (cualquier tipo): correo inmediato ✅
+    // NO RECUPERADO ROBO: 6 correos seguimiento 48hrs ✅
+    // NO RECUPERADO ABUSO/CRÉDITO: no aplica ❌
+    // CANCELADO: no aplica ❌
+    const aplicaCorreo = resultado === 'si' || (resultado === 'no' && tipoEvento === 'ROBO');
+    if(aplicaCorreo) {
+      setCheck('correo', 'pending', resultado === 'no' ? 'Iniciando seguimiento 48hrs...' : 'Enviando correo...');
+      try {
+        const resCo = await fetch('https://ain8n.numaris.com/webhook/test-correo', {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({
+            resultado: resultadoLabel, folio,
+            cliente: esCredito ? document.getElementById('f-credito-razon')?.value : cliente,
+            nick: esCredito ? document.getElementById('f-credito-tk')?.value : nick,
+            placas: esCredito ? document.getElementById('f-placas-credito')?.value : placas,
+            correoCliente: payload.correoCliente,
+            esCredito,
+            datos: payload.datos
+          })
+        });
+        setCheck('correo', resCo.ok ? 'ok' : 'error', resCo.ok
+          ? (resultado === 'no' ? 'Seguimiento 48hrs iniciado' : 'Correo enviado')
+          : 'Error correo');
+      } catch(e) { setCheck('correo', 'error', e.message); }
+    } else {
+      setCheck('correo', 'ok', 'No aplica');
+    }
+
   } catch(e) {
-    console.error('❌ Excepción:', e.message);
+    console.error('Error general:', e.message);
     ['wa','sheets','drive','pdf'].forEach(id => setCheck(id, 'error', e.message));
     setCheck('folio', 'ok', 'Folio local: ' + folio);
   }
 
   // ── Mostrar folio final ──
   document.getElementById('folio-valor').textContent = folio;
+  _lastFolio = folio;
 
   // ── Registrar en lista local ──
   const estadoMap = { si:'Recuperada', no:'En seguimiento', cancel:'Cancelado' };
@@ -3178,22 +3352,14 @@ function resizeImageToBase64(file, maxW, maxH) {
 async function imgToBase64(inputId) {
   const input = document.getElementById(inputId);
   if(!input || !input.files || !input.files[0]) return null;
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result.split(',')[1]);
-    reader.readAsDataURL(input.files[0]);
-  });
+  return resizeImageToBase64(input.files[0], 875, 500);
 }
 
 async function imgToBase64Multiple(inputId) {
   const input = document.getElementById(inputId);
   if(!input || !input.files || !input.files.length) return [];
   const files = Array.from(input.files).slice(0,2);
-  return Promise.all(files.map(file => new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result.split(',')[1]);
-    reader.readAsDataURL(file);
-  })));
+  return Promise.all(files.map(file => resizeImageToBase64(file, 875, 420)));
 }
 
 function formatFecha(v) {
