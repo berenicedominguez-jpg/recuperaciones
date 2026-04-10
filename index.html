@@ -1517,6 +1517,16 @@
                 <button class="btn btn-ghost btn-sm btn-probar-individual" onclick="probarCorreo()">Probar</button>
               </div>
             </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="font-size:20px;">🔁</div>
+                <div><div style="font-size:13px;font-weight:600;">Seguimiento 48hrs</div><div id="check-seguimiento-status" style="font-size:11px;color:var(--muted);">Solo aplica para ROBO no recuperado</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div id="check-seguimiento-icon" style="font-size:18px;"></div>
+                <button class="btn btn-ghost btn-sm btn-probar-individual" onclick="probarSeguimiento()">Probar</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -3863,6 +3873,35 @@ async function probarCorreo() {
   } catch(e) { setCheck('correo', 'error', e.message); }
 }
 
+async function probarSeguimiento() {
+  const p = buildPayload();
+  const tipoEvento = p.tipoEvento || '';
+  const resultado = p.resultado || '';
+  if(tipoEvento !== 'ROBO' || !resultado.includes('NO RECUPERADA')) {
+    setCheck('seguimiento', 'error', 'Solo aplica para ROBO no recuperado');
+    return;
+  }
+  setCheck('seguimiento', 'pending', 'Iniciando seguimiento 48hrs...');
+  try {
+    const res = await fetch('https://ain8n.numaris.com/webhook/seguimiento-48hrs', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        datos: {
+          nick: document.getElementById('f-nick')?.value || '—',
+          marca: document.getElementById('f-marca')?.value || '—',
+          modelo: document.getElementById('f-modelo')?.value || '—',
+          placas: document.getElementById('f-placas')?.value || '—',
+          ultima_senal: document.getElementById('f-ultima-senal')?.value || '—',
+          lugar: document.getElementById('f-lugar')?.value || '—',
+          folio: _lastFolio || p.folio || '—',
+        },
+        correo_destino: document.getElementById('f-correo-reportante')?.value || ''
+      })
+    });
+    setCheck('seguimiento', res.ok ? 'ok' : 'error', res.ok ? '6 correos programados (48hrs)' : 'Error ' + res.status);
+  } catch(e) { setCheck('seguimiento', 'error', e.message); }
+}
+
 async function probarTodo() {
   await probarWA();
   await probarFolio();
@@ -3871,6 +3910,7 @@ async function probarTodo() {
   await probarPDF();
   await probarDesk();
   await probarCorreo();
+  await probarSeguimiento();
 }
 
 let _evidenciasExtra = [];
