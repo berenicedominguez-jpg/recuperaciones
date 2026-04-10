@@ -2401,6 +2401,7 @@ function showPage(id, btn) {
 let currentStep = 1;
 let origenSelected = null;
 let recuperadoSelected = null;
+let creditoExitoso = false;
 
 function selectOrigen(v) {
   origenSelected = v;
@@ -3462,12 +3463,24 @@ function buildPayload() {
   const paroMotor  = getParoMotor();
   const prefijos   = FOLIO_PREFIJOS[empresa] || { ur:'UR-X', unr:'UNR-X' };
   const prefijo    = resultado === 'si' ? prefijos.ur : resultado === 'cancel' ? 'CANCEL' : prefijos.unr;
-  const resultadoLabel = { si:'RECUPERADA', no:'NO RECUPERADA', cancel:'CANCELADO' }[resultado] || '—';
+  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
+  const resultadoLabel = esCredito
+    ? (creditoExitoso ? 'RECUPERACIÓN EXITOSA' : 'NO EXITOSA')
+    : ({ si:'RECUPERADA', no:'NO RECUPERADA', cancel:'CANCELADO' }[resultado] || '—');
   const consecutivo = (casos.filter(c => c.folio && c.folio.startsWith(prefijo)).length) + 1;
   const folio = resultado === 'cancel'
     ? prefijo + '-' + String(consecutivo).padStart(3,'0')
     : prefijo + String(consecutivo).padStart(3,'0');
-  const mensaje = [
+  const mensaje = esCredito ? [
+    '🏦 *RECUPERACIÓN DE CRÉDITO — ' + (document.getElementById('f-credito-razon')?.value || '—') + '*',
+    '━━━━━━━━━━━━━━━━━━━',
+    '🔑 *TK:* ' + (document.getElementById('f-credito-tk')?.value || '—'),
+    '🚗 *Unidad:* ' + (document.getElementById('f-marca-credito')?.value || '—') + ' ' + (document.getElementById('f-modelo-credito')?.value || '—') + ' | Placas: ' + (document.getElementById('f-placas-credito')?.value || '—'),
+    '👤 *Cliente:* ' + (document.getElementById('f-credito-nombre')?.value || '—'),
+    '📋 *Resultado:* ' + (creditoExitoso ? 'RECUPERACIÓN EXITOSA ✅' : 'NO EXITOSA ❌'),
+    '👮 *Monitorista:* ' + monitorista,
+    '━━━━━━━━━━━━━━━━━━━',
+  ].join('\n') : [
     '🚨 *' + tipoEvento + ' — ' + cliente + ' — ' + plataforma + '*',
     '━━━━━━━━━━━━━━━━━━━',
     '🚛 *Unidad:* ' + nick + ' | Placas: ' + placas,
@@ -3479,7 +3492,7 @@ function buildPayload() {
     '👮 *Monitorista:* ' + monitorista,
     '━━━━━━━━━━━━━━━━━━━',
   ].join('\n');
-  return { tipoEvento, empresa, resultado: resultadoLabel, consecutivo, cliente, nick, placas, esn, plataforma, lugar, coords, estadoRep, monitorista, tipoAlerta, paroMotor, folio, prefijo, mensaje };
+  return { tipoEvento, esCredito, empresa, resultado: resultadoLabel, consecutivo, cliente, nick, placas, esn, plataforma, lugar, coords, estadoRep, monitorista, tipoAlerta, paroMotor, folio, prefijo, mensaje };
 }
 
 async function probarWA() {
