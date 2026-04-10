@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema de Recuperaciones</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>CIM — Recuperaciones</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg:      #eef2f7;
@@ -272,12 +272,12 @@
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
-    <div class="brand">RECUPERACIONES</div>
-    <div class="sub">Sistema de Recuperaciones</div>
+    <div class="brand">CIM · Recuperaciones</div>
+    <div class="sub">Centro de Monitoreo TCV</div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section">Principal</div>
-    
+
     <button class="nav-item active" onclick="showPage('nuevo',this)">
       <span class="icon">＋</span> Nuevo evento
     </button>
@@ -287,8 +287,9 @@
     <button class="nav-item" onclick="showPage('seguimiento',this)">
       <span class="icon">◷</span> Seguimiento
     </button>
-    
-    
+
+    <div class="nav-section">Integraciones</div>
+
   </nav>
   <div class="sidebar-footer">
     <div class="user-pill">
@@ -1745,9 +1746,9 @@
 <script>
 // DATA
 const casos = [
-  { folio:'REC-2025-001', cliente:'Carlos García López', unidad:'UTD-0042', estado:'En seguimiento', origen:'Alerta', correos:2, total:6, recuperado:false, hora:'08:32', estadoMx:'Puebla', tipoEvento:'ROBO', registradoEn: Date.now() - 9*3600000, horarioCorreos: [0,8,16,24,32,48].map(h => Date.now() - 9*3600000 + h*3600000) },
-  { folio:'REC-2025-002', cliente:'Ana Martínez Cruz', unidad:'UTD-0018', estado:'En proceso', origen:'Llamada', correos:0, total:0, recuperado:false, hora:'11:15', estadoMx:'Jalisco', tipoEvento:'ROBO', registradoEn:null, horarioCorreos:[] },
-  { folio:'REC-2025-003', cliente:'Roberto Sánchez', unidad:'UTD-0056', estado:'Recuperada', origen:'Alerta', correos:0, total:0, recuperado:true, hora:'06:45', estadoMx:'CDMX', tipoEvento:'ROBO', registradoEn:null, horarioCorreos:[] },
+  { folio:'REC-2025-001', cliente:'Carlos García López', unidad:'UTD-0042', estado:'En seguimiento', origen:'Alerta', correos:2, total:4, recuperado:false, hora:'08:32', estadoMx:'Puebla' },
+  { folio:'REC-2025-002', cliente:'Ana Martínez Cruz', unidad:'UTD-0018', estado:'En proceso', origen:'Llamada', correos:0, total:4, recuperado:false, hora:'11:15', estadoMx:'Jalisco' },
+  { folio:'REC-2025-003', cliente:'Roberto Sánchez', unidad:'UTD-0056', estado:'Recuperada', origen:'Alerta', correos:0, total:0, recuperado:true, hora:'06:45', estadoMx:'CDMX' },
 ];
 
 
@@ -2390,7 +2391,7 @@ function showPage(id, btn) {
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  const titles = {dashboard:'Dashboard',nuevo:'Nuevo registro',casos:'Casos activos',seguimiento:'Seguimiento 48hrs',reportes:'Reportes',integraciones:'Integraciones'};
+  const titles = {dashboard:'Dashboard',nuevo:'Nuevo evento',casos:'Casos activos',seguimiento:'Seguimiento 48hrs',reportes:'Reportes',integraciones:'Integraciones'};
   document.getElementById('page-title').textContent = titles[id]||id;
   if(id==='casos') renderCasos(casos);
   if(id==='dashboard') renderDashboard();
@@ -2401,7 +2402,6 @@ function showPage(id, btn) {
 let currentStep = 1;
 let origenSelected = null;
 let recuperadoSelected = null;
-let creditoExitoso = false;
 
 function selectOrigen(v) {
   origenSelected = v;
@@ -2458,9 +2458,11 @@ function nextStep(from) {
     document.getElementById('confirm-icon').textContent = icons[recuperadoSelected]||'✅';
     document.getElementById('confirm-title').textContent = titles[recuperadoSelected]||'Evento registrado';
     document.getElementById('folio-valor').textContent = '—';
-    ['wa','sheets','drive','pdf','folio','desk','correo'].forEach(id => setCheck(id, '', '—'));
-    // Ejecutar registro completo
-    registerEvento();
+    // Guardar datos para los botones de prueba
+    _lastPayload = null;
+    _lastFolio = null;
+  _lastCarpetaId = null;
+    ['wa','sheets','drive','pdf','folio'].forEach(id => setCheck(id, '', '—'));
     return;
   }
   document.getElementById('form-step-'+from).style.display='none';
@@ -2500,12 +2502,6 @@ const FOLIO_PREFIJOS = {
 };
 
 async function registerEvento() {
-  // Reset estado previo
-  _lastPayload = null;
-  _lastFolio = null;
-  _lastCarpetaId = null;
-  // Deshabilitar botones de probar mientras registra
-  document.querySelectorAll('.btn-probar-individual').forEach(b => b.disabled = true);
   const resultado   = recuperadoSelected; // 'si', 'no', 'cancel'
   const empresa     = document.getElementById('f-empresa-atiende')?.value || '';
   const tipoEvento  = document.getElementById('f-tipo-evento')?.value     || '—';
@@ -2935,27 +2931,22 @@ async function registerEvento() {
 
   // ── Registrar en lista local ──
   const estadoMap = { si:'Recuperada', no:'En seguimiento', cancel:'Cancelado' };
-  const esRoboNoRec = resultado === 'no' && tipoEvento === 'ROBO';
-  const ahora = Date.now();
-  const horasSeguimiento = [0, 8, 16, 24, 32, 48];
+  const esRoboNoRec2 = resultado === 'no' && tipoEvento === 'ROBO';
+  const ahoraReg = Date.now();
   casos.unshift({
-    folio,
-    cliente,
-    unidad:         nick || '—',
-    estado:         estadoMap[resultado] || 'En proceso',
-    origen:         origenSelected==='alerta' ? 'Alerta' : 'Llamada',
-    correos:        0,
-    total:          esRoboNoRec ? 6 : 0,
-    recuperado:     resultado==='si',
-    hora:           new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}),
-    estadoMx:       estadoRep,
+    folio, cliente,
+    unidad: nick || '—',
+    estado: estadoMap[resultado] || 'En proceso',
+    origen: origenSelected==='alerta' ? 'Alerta' : 'Llamada',
+    correos: 0,
+    total: esRoboNoRec2 ? 6 : 0,
+    recuperado: resultado==='si',
+    hora: new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'}),
+    estadoMx: estadoRep,
     tipoEvento,
-    registradoEn:   esRoboNoRec ? ahora : null,
-    horarioCorreos: esRoboNoRec ? horasSeguimiento.map(h => ahora + h * 3600000) : []
+    registradoEn: esRoboNoRec2 ? ahoraReg : null,
+    horarioCorreos: esRoboNoRec2 ? [0,8,16,24,32,48].map(h=>ahoraReg+h*3600000) : []
   });
-
-  // Habilitar botones de probar
-  document.querySelectorAll('.btn-probar-individual').forEach(b => b.disabled = false);
 }
 
 function resetForm() {
@@ -3382,6 +3373,7 @@ Lugar de resguardo:\t`
 let _lastPayload = null; // guardado al finalizar para reusar en botones
 
 async function ejecutarIntegracion(tipo) {
+  if(!_lastPayload) { notify('Primero registra el evento', 'warning'); return; }
   setCheck(tipo, 'pending', 'Ejecutando...');
 
   try {
@@ -3469,24 +3461,12 @@ function buildPayload() {
   const paroMotor  = getParoMotor();
   const prefijos   = FOLIO_PREFIJOS[empresa] || { ur:'UR-X', unr:'UNR-X' };
   const prefijo    = resultado === 'si' ? prefijos.ur : resultado === 'cancel' ? 'CANCEL' : prefijos.unr;
-  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
-  const resultadoLabel = esCredito
-    ? (creditoExitoso ? 'RECUPERACIÓN EXITOSA' : 'NO EXITOSA')
-    : ({ si:'RECUPERADA', no:'NO RECUPERADA', cancel:'CANCELADO' }[resultado] || '—');
+  const resultadoLabel = { si:'RECUPERADA', no:'NO RECUPERADA', cancel:'CANCELADO' }[resultado] || '—';
   const consecutivo = (casos.filter(c => c.folio && c.folio.startsWith(prefijo)).length) + 1;
   const folio = resultado === 'cancel'
     ? prefijo + '-' + String(consecutivo).padStart(3,'0')
     : prefijo + String(consecutivo).padStart(3,'0');
-  const mensaje = esCredito ? [
-    '🏦 *RECUPERACIÓN DE CRÉDITO — ' + (document.getElementById('f-credito-razon')?.value || '—') + '*',
-    '━━━━━━━━━━━━━━━━━━━',
-    '🔑 *TK:* ' + (document.getElementById('f-credito-tk')?.value || '—'),
-    '🚗 *Unidad:* ' + (document.getElementById('f-marca-credito')?.value || '—') + ' ' + (document.getElementById('f-modelo-credito')?.value || '—') + ' | Placas: ' + (document.getElementById('f-placas-credito')?.value || '—'),
-    '👤 *Cliente:* ' + (document.getElementById('f-credito-nombre')?.value || '—'),
-    '📋 *Resultado:* ' + (creditoExitoso ? 'RECUPERACIÓN EXITOSA ✅' : 'NO EXITOSA ❌'),
-    '👮 *Monitorista:* ' + monitorista,
-    '━━━━━━━━━━━━━━━━━━━',
-  ].join('\n') : [
+  const mensaje = [
     '🚨 *' + tipoEvento + ' — ' + cliente + ' — ' + plataforma + '*',
     '━━━━━━━━━━━━━━━━━━━',
     '🚛 *Unidad:* ' + nick + ' | Placas: ' + placas,
@@ -3498,7 +3478,7 @@ function buildPayload() {
     '👮 *Monitorista:* ' + monitorista,
     '━━━━━━━━━━━━━━━━━━━',
   ].join('\n');
-  return { tipoEvento, esCredito, empresa, resultado: resultadoLabel, consecutivo, cliente, nick, placas, esn, plataforma, lugar, coords, estadoRep, monitorista, tipoAlerta, paroMotor, folio, prefijo, mensaje };
+  return { tipoEvento, empresa, resultado: resultadoLabel, consecutivo, cliente, nick, placas, esn, plataforma, lugar, coords, estadoRep, monitorista, tipoAlerta, paroMotor, folio, prefijo, mensaje };
 }
 
 async function probarWA() {
@@ -3837,10 +3817,11 @@ async function probarSheets() {
   } catch(e) { setCheck('sheets', 'error', e.message); }
 }
 
+
 async function probarDesk() {
-  if(!_lastPayload) { notify('Primero registra el evento', 'warning'); return; }
+  const esCredito = (document.getElementById('f-tipo-evento')?.value || '') === 'RECUPERACIÓN DE CRÉDITO';
+  const p = buildPayload();
   setCheck('desk', 'pending', 'Creando ticket...');
-  const esCredito = _lastPayload.tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
   try {
     const res = await fetch('https://ain8n.numaris.com/webhook/test-desk', {
       method: 'POST', headers: {'Content-Type':'application/json'},
@@ -3873,7 +3854,7 @@ async function probarCorreo() {
         placas: esCredito ? (document.getElementById('f-placas-credito')?.value || '—') : (document.getElementById('f-placas')?.value || '—'),
         correoCliente: document.getElementById('f-correo-reportante')?.value || document.getElementById('f-credito-correo')?.value || '',
         esCredito,
-        datos: _lastPayload?.datos || {}
+        datos: {}
       })
     });
     setCheck('correo', res.ok ? 'ok' : 'error', res.ok
@@ -3892,74 +3873,56 @@ async function probarTodo() {
   await probarCorreo();
 }
 
-// ── Evidencias adicionales ──
 let _evidenciasExtra = [];
-
 function agregarEvidenciasExtra(files) {
   Array.from(files).forEach(file => {
     const reader = new FileReader();
-    reader.onload = e => {
-      _evidenciasExtra.push({ src: e.target.result, file });
-      renderEvidenciasExtra();
-    };
+    reader.onload = e => { _evidenciasExtra.push({ src: e.target.result, file }); renderEvidenciasExtra(); };
     reader.readAsDataURL(file);
   });
 }
-
 function renderEvidenciasExtra() {
   const grid = document.getElementById('evidencias-extra-grid');
   if(!grid) return;
   grid.innerHTML = _evidenciasExtra.map((ev, i) => `
     <div style="position:relative;">
       <img src="${ev.src}" style="width:100%;height:80px;object-fit:cover;border-radius:var(--radius);border:1px solid var(--border);display:block;" />
-      <button onclick="eliminarEvidenciaExtra(${i})" style="position:absolute;top:3px;right:3px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+      <button onclick="eliminarEvidenciaExtra(${i})" style="position:absolute;top:3px;right:3px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;">✕</button>
     </div>`).join('');
 }
-
-function eliminarEvidenciaExtra(i) {
-  _evidenciasExtra.splice(i, 1);
-  renderEvidenciasExtra();
-}
-
-function handleDropEvidenciasExtra(e) {
-  e.preventDefault();
-  const files = e.dataTransfer?.files;
-  if(files?.length) agregarEvidenciasExtra(files);
-}
-
+function eliminarEvidenciaExtra(i) { _evidenciasExtra.splice(i,1); renderEvidenciasExtra(); }
+function handleDropEvidenciasExtra(e) { e.preventDefault(); const f=e.dataTransfer?.files; if(f?.length) agregarEvidenciasExtra(f); }
 async function subirEvidenciasExtra() {
-  if(!_evidenciasExtra.length) { notify('No hay imágenes para subir', 'warning'); return; }
-  if(!_lastCarpetaId) { notify('Primero registra el evento para obtener la carpeta', 'warning'); return; }
+  if(!_evidenciasExtra.length) { notify('No hay imágenes para subir','warning'); return; }
+  if(!_lastCarpetaId) { notify('Primero genera la carpeta Drive','warning'); return; }
   const status = document.getElementById('status-evidencias-extra');
   const btn = document.getElementById('btn-subir-evidencias');
-  if(btn) btn.disabled = true;
-  if(status) status.textContent = 'Subiendo...';
-  let ok = 0, fail = 0;
-  for(let i = 0; i < _evidenciasExtra.length; i++) {
+  if(btn) btn.disabled=true;
+  if(status) status.textContent='Subiendo...';
+  let ok=0, fail=0;
+  for(let i=0;i<_evidenciasExtra.length;i++) {
     try {
-      const b64 = _evidenciasExtra[i].src.split(',')[1];
-      const res = await fetch('https://ain8n.numaris.com/webhook/test-drive', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ soloImagen: true, carpetaId: _lastCarpetaId, imagen: { b64, nombre: `evidencia_extra_${i+1}.jpg`, mime: 'image/jpeg' } })
+      const b64=_evidenciasExtra[i].src.split(',')[1];
+      const res=await fetch('https://ain8n.numaris.com/webhook/test-drive',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({soloImagen:true,carpetaId:_lastCarpetaId,imagen:{b64,nombre:`evidencia_extra_${i+1}.jpg`,mime:'image/jpeg'}})
       });
-      res.ok ? ok++ : fail++;
-    } catch(e) { fail++; }
+      res.ok?ok++:fail++;
+    } catch(e){fail++;}
   }
-  if(status) status.textContent = `✅ ${ok} imagen${ok!==1?'es':''} subida${ok!==1?'s':''}` + (fail ? ` · ❌ ${fail} error${fail!==1?'es':''}` : '');
-  if(btn) btn.disabled = false;
-  if(!fail) { _evidenciasExtra = []; renderEvidenciasExtra(); }
+  if(status) status.textContent=`✅ ${ok} imagen${ok!==1?'es':''} subida${ok!==1?'s':''}${fail?` · ❌ ${fail} error`:''}`;
+  if(btn) btn.disabled=false;
+  if(!fail){_evidenciasExtra=[];renderEvidenciasExtra();}
 }
-
-// Ctrl+V en pantalla de confirmación pega en evidencias extra
 document.addEventListener('paste', function(e) {
-  const confirm = document.getElementById('form-step-4-confirm');
-  if(!confirm || confirm.style.display === 'none') return;
-  const items = e.clipboardData?.items;
+  const conf=document.getElementById('form-step-4-confirm');
+  if(!conf||conf.style.display==='none') return;
+  const items=e.clipboardData?.items;
   if(!items) return;
-  const imgs = Array.from(items).filter(it => it.type.startsWith('image/'));
+  const imgs=Array.from(items).filter(it=>it.type.startsWith('image/'));
   if(!imgs.length) return;
-  const files = imgs.map(it => it.getAsFile()).filter(Boolean);
-  if(files.length) { agregarEvidenciasExtra(files); notify('Imagen pegada', 'success'); }
+  agregarEvidenciasExtra(imgs.map(it=>it.getAsFile()).filter(Boolean));
+  notify('Imagen pegada','success');
 });
 
 function setCheck(id, status, msg) {
