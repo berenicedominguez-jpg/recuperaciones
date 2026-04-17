@@ -2502,7 +2502,8 @@ function nextStep(from) {
   }
   if(from===2) {
     // Guardar campos del paso 2 en variables globales antes de ocultarlo
-    window._lastCoordenadas = document.getElementById('f-coords')?.value || window._lastCoordenadas || '';
+    const _coordsVal = document.getElementById('f-coords')?.value;
+    if(_coordsVal) window._lastCoordenadas = _coordsVal;
     window._lastLugar       = document.getElementById('f-lugar')?.value || window._lastLugar || '';
     window._lastMarca       = document.getElementById('f-marca')?.value || window._lastMarca || '';
     window._lastModelo      = document.getElementById('f-modelo')?.value || window._lastModelo || '';
