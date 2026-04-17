@@ -3765,6 +3765,8 @@ async function probarPDF() {
     });
     if(res.ok) {
       const data = await res.json();
+      if(data.pdfId) window._lastPdfId = data.pdfId;
+      if(data.pdfUrl) window._lastPdfUrl = data.pdfUrl;
       setCheck('pdf', 'ok', 'PDF generado: ' + (data.pdfNombre || 'reporte.pdf'));
     } else setCheck('pdf', 'error', 'Error ' + res.status);
   } catch(e) { setCheck('pdf', 'error', e.message); }
@@ -3876,6 +3878,8 @@ async function probarCorreo() {
         correoCliente,
         esCredito,
         pdfId: window._lastPdfId || '',
+            pdfUrl: window._lastPdfUrl || '',
+            pdfUrl: window._lastPdfUrl || '',
         datos: {
           correo_reportante: correoCliente,
           fechaRobo: document.getElementById('f-fecha-robo')?.value || '—',
