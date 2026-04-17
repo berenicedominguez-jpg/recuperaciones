@@ -3656,7 +3656,7 @@ async function probarPDF() {
           empresa: p.empresa,
           plataforma: p.plataforma,
           lugar: p.lugar,
-          coordenadas: document.getElementById('f-coords')?.value || window._lastCoordenadas || '—',
+          coordenadas: window._lastCoordenadas || document.getElementById('f-coords')?.value || '—',
           fecha_robo: formatFecha(document.getElementById('f-fecha-robo')?.value),
           hora_robo: document.getElementById('f-hora-robo')?.value || '—',
           alertas: p.tipoAlerta || 'N/A',
