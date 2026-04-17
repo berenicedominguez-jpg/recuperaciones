@@ -2298,7 +2298,7 @@ function syncParsedToForm() {
   // Coordenadas — normalizar formato (puede venir con espacio en vez de coma)
   const coordsRaw = getF('fp-coords') || '';
   const coordsNorm = coordsRaw.replace(/\s+(-?\d)/, ', $1');
-  if(coordsRaw)           setF('f-coords',         coordsNorm);
+  if(coordsRaw)           { setF('f-coords', coordsNorm); window._lastCoordenadas = coordsNorm; }
   // NOTA: fecha-robo y hora-robo se sincronizan usando los nuevos pickers
   if(getF('fp-fecha')) setFechaRobo(getF('fp-fecha'));
   if(getF('fp-hora'))  setHoraRobo(getF('fp-hora'));
@@ -3599,7 +3599,7 @@ async function probarPDF() {
           empresa: p.empresa,
           plataforma: p.plataforma,
           lugar: p.lugar,
-          coordenadas: p.coords || '—',
+          coordenadas: document.getElementById('f-coords')?.value || window._lastCoordenadas || p.coords || '—',
           fecha_robo: formatFecha(document.getElementById('f-fecha-robo')?.value),
           hora_robo: document.getElementById('f-hora-robo')?.value || '—',
           alertas: p.tipoAlerta || 'N/A',
