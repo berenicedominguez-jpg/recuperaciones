@@ -1255,14 +1255,37 @@
                   <div class="form-group"><label>Nombre del corralón / depósito</label><input type="text" id="f-nombre-corrralon" placeholder="Ej. Corralón Municipal" /></div>
                   <div class="form-group"><label>Dirección</label><input type="text" id="f-dir-corrralon" placeholder="Calle, número" /></div>
                   <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-corrralon" placeholder="Municipio" /></div>
-                  <div class="form-group"><label>Estado</label><input type="text" id="f-edo-corrralon" placeholder="Estado" /></div>
+                  <div class="form-group"><label>Estado</label><select id="f-edo-corrralon"><option value="">Seleccionar...</option>
+                      <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
+                      <option>Campeche</option><option>Chiapas</option><option>Chihuahua</option>
+                      <option>Ciudad de México</option><option>Coahuila</option><option>Colima</option>
+                      <option>Durango</option><option>Estado de México</option><option>Guanajuato</option>
+                      <option>Guerrero</option><option>Hidalgo</option><option>Jalisco</option>
+                      <option>Michoacán</option><option>Morelos</option><option>Nayarit</option>
+                      <option>Nuevo León</option><option>Oaxaca</option><option>Puebla</option>
+                      <option>Querétaro</option><option>Quintana Roo</option><option>San Luis Potosí</option>
+                      <option>Sinaloa</option><option>Sonora</option><option>Tabasco</option>
+                      <option>Tamaulipas</option><option>Tlaxcala</option><option>Veracruz</option>
+                      <option>Yucatán</option><option>Zacatecas</option></select></div>
                 </div></div>
 
                 <div id="campos-cliente" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                   <div class="form-group"><label>Lugar de recuperación</label><input type="text" id="f-lugar-rec-cliente" placeholder="Calle, colonia, municipio" /></div>
                   <div class="form-group"><label>Fecha de recuperación</label><input type="date" id="f-fecha-rec-cliente" /></div>
                   <div class="form-group"><label>Nombre del representante legal</label><input type="text" id="f-rep-cliente" placeholder="Nombre completo" /></div>
-                  <div class="form-group"><label>Municipio, Estado</label><input type="text" id="f-mun-cliente" placeholder="Ej. Monterrey, Nuevo León" /></div>
+                  <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-cliente" placeholder="Ej. Monterrey" /></div>
+                  <div class="form-group"><label>Estado</label><select id="f-edo-cliente"><option value="">Seleccionar...</option>
+                      <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
+                      <option>Campeche</option><option>Chiapas</option><option>Chihuahua</option>
+                      <option>Ciudad de México</option><option>Coahuila</option><option>Colima</option>
+                      <option>Durango</option><option>Estado de México</option><option>Guanajuato</option>
+                      <option>Guerrero</option><option>Hidalgo</option><option>Jalisco</option>
+                      <option>Michoacán</option><option>Morelos</option><option>Nayarit</option>
+                      <option>Nuevo León</option><option>Oaxaca</option><option>Puebla</option>
+                      <option>Querétaro</option><option>Quintana Roo</option><option>San Luis Potosí</option>
+                      <option>Sinaloa</option><option>Sonora</option><option>Tabasco</option>
+                      <option>Tamaulipas</option><option>Tlaxcala</option><option>Veracruz</option>
+                      <option>Yucatán</option><option>Zacatecas</option></select></div>
                   <div class="form-group full"><label>¿Dónde recoge?</label>
                     <select id="f-donde-cliente" onchange="toggleDependenciaCliente(this.value)">
                       <option value="lugar">En el lugar donde fue encontrada</option>
@@ -1281,7 +1304,18 @@
                   <div class="form-group"><label>Fiscalía / Agencia del MP</label><input type="text" id="f-fiscalia" placeholder="Ej. Fiscalía General del Estado de NL" /></div>
                   <div class="form-group"><label>Dirección</label><input type="text" id="f-dir-mp" placeholder="Calle, número" /></div>
                   <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-mp" placeholder="Municipio" /></div>
-                  <div class="form-group"><label>Estado</label><input type="text" id="f-edo-mp" placeholder="Estado" /></div>
+                  <div class="form-group"><label>Estado</label><select id="f-edo-mp"><option value="">Seleccionar...</option>
+                      <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
+                      <option>Campeche</option><option>Chiapas</option><option>Chihuahua</option>
+                      <option>Ciudad de México</option><option>Coahuila</option><option>Colima</option>
+                      <option>Durango</option><option>Estado de México</option><option>Guanajuato</option>
+                      <option>Guerrero</option><option>Hidalgo</option><option>Jalisco</option>
+                      <option>Michoacán</option><option>Morelos</option><option>Nayarit</option>
+                      <option>Nuevo León</option><option>Oaxaca</option><option>Puebla</option>
+                      <option>Querétaro</option><option>Quintana Roo</option><option>San Luis Potosí</option>
+                      <option>Sinaloa</option><option>Sonora</option><option>Tabasco</option>
+                      <option>Tamaulipas</option><option>Tlaxcala</option><option>Veracruz</option>
+                      <option>Yucatán</option><option>Zacatecas</option></select></div>
                 </div></div>
 
                 <div id="campos-no-fisica" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
@@ -1296,7 +1330,19 @@
                       <option>otro estado</option>
                     </select>
                   </div>
-                  <div class="form-group"><label>Municipio, Estado</label><input type="text" id="f-mun-nofisica" placeholder="Ej. Monterrey, Nuevo León" /></div>
+                  <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-nofisica" placeholder="Ej. Monterrey" /></div>
+                  <div class="form-group"><label>Estado</label><select id="f-edo-nofisica"><option value="">Seleccionar...</option>
+                      <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
+                      <option>Campeche</option><option>Chiapas</option><option>Chihuahua</option>
+                      <option>Ciudad de México</option><option>Coahuila</option><option>Colima</option>
+                      <option>Durango</option><option>Estado de México</option><option>Guanajuato</option>
+                      <option>Guerrero</option><option>Hidalgo</option><option>Jalisco</option>
+                      <option>Michoacán</option><option>Morelos</option><option>Nayarit</option>
+                      <option>Nuevo León</option><option>Oaxaca</option><option>Puebla</option>
+                      <option>Querétaro</option><option>Quintana Roo</option><option>San Luis Potosí</option>
+                      <option>Sinaloa</option><option>Sonora</option><option>Tabasco</option>
+                      <option>Tamaulipas</option><option>Tlaxcala</option><option>Veracruz</option>
+                      <option>Yucatán</option><option>Zacatecas</option></select></div>
                 </div></div>
 
                 <div id="campos-extranjero" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
@@ -2455,7 +2501,18 @@ function nextStep(from) {
     if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
   }
   if(from===2) {
-    // No mandatory fields — proceed freely
+    // Guardar campos del paso 2 en variables globales antes de ocultarlo
+    window._lastCoordenadas = document.getElementById('f-coords')?.value || window._lastCoordenadas || '';
+    window._lastLugar       = document.getElementById('f-lugar')?.value || window._lastLugar || '';
+    window._lastMarca       = document.getElementById('f-marca')?.value || window._lastMarca || '';
+    window._lastModelo      = document.getElementById('f-modelo')?.value || window._lastModelo || '';
+    window._lastAnio        = document.getElementById('f-anio')?.value || window._lastAnio || '';
+    window._lastColor       = document.getElementById('f-color')?.value || window._lastColor || '';
+    window._lastSerie       = document.getElementById('f-serie')?.value || window._lastSerie || '';
+    window._lastPlacas      = document.getElementById('f-placas')?.value || window._lastPlacas || '';
+    window._lastUltimaSenal = document.getElementById('f-ultima-senal')?.value || window._lastUltimaSenal || '';
+    window._lastFechaRobo   = document.getElementById('f-fecha-robo')?.value || window._lastFechaRobo || '';
+    window._lastHoraRobo    = document.getElementById('f-hora-robo')?.value || window._lastHoraRobo || '';
   }
   if(from===3) {
     if(!recuperadoSelected) { notify('Indica el resultado del evento','warning'); return; }
@@ -3289,7 +3346,7 @@ function generarObservaciones() {
     const lugar  = document.getElementById('f-lugar-rec-cliente')?.value || '[LUGAR DE RECUPERACIÓN]';
     const fecha  = document.getElementById('f-fecha-rec-cliente')?.value || '[FECHA DE RECUPERACIÓN]';
     const rep    = document.getElementById('f-rep-cliente')?.value       || '[NOMBRE REPRESENTANTE]';
-    const mun    = document.getElementById('f-mun-cliente')?.value       || '[MUNICIPIO, ESTADO]';
+    const mun    = (document.getElementById('f-mun-cliente')?.value || '[MUNICIPIO]') + ', ' + (document.getElementById('f-edo-cliente')?.value || '[ESTADO]');
     const donde  = document.getElementById('f-donde-cliente')?.value     || 'lugar';
     const dep    = document.getElementById('f-dep-cliente')?.value       || '[NOMBRE DEPENDENCIA]';
     const dondeTexto = donde === 'instalaciones' ? `en las instalaciones de ${dep}` : 'en el lugar';
@@ -3308,7 +3365,7 @@ function generarObservaciones() {
     const lugar  = document.getElementById('f-lugar-rec-nofisica')?.value  || '[LUGAR DE LOCALIZACIÓN]';
     const fecha  = document.getElementById('f-fecha-rec-nofisica')?.value  || '[FECHA DE LOCALIZACIÓN]';
     const motivo = document.getElementById('f-motivo-nofisica')?.value     || '[MOTIVO]';
-    const mun    = document.getElementById('f-mun-nofisica')?.value        || '[MUNICIPIO, ESTADO]';
+    const mun    = (document.getElementById('f-mun-nofisica')?.value || '[MUNICIPIO]') + ', ' + (document.getElementById('f-edo-nofisica')?.value || '[ESTADO]');
     texto = `La unidad fue localizada mediante rastreo GPS en ${lugar} el ${fecha}; sin embargo, no fue posible su recuperación física inmediata debido a ${motivo}. Se realizó coordinación formal con las autoridades de ${mun} para gestionar su recuperación sin éxito alguno. Se mantiene monitoreo activo y se informará al solicitante sobre cualquier avance.`;
 
   } else if(escenario === 'extranjero') {
@@ -3599,7 +3656,7 @@ async function probarPDF() {
           empresa: p.empresa,
           plataforma: p.plataforma,
           lugar: p.lugar,
-          coordenadas: document.getElementById('f-coords')?.value || window._lastCoordenadas || p.coords || '—',
+          coordenadas: document.getElementById('f-coords')?.value || window._lastCoordenadas || '—',
           fecha_robo: formatFecha(document.getElementById('f-fecha-robo')?.value),
           hora_robo: document.getElementById('f-hora-robo')?.value || '—',
           alertas: p.tipoAlerta || 'N/A',
@@ -3681,7 +3738,7 @@ async function probarPDF() {
               const lugar = document.getElementById('f-lugar-rec-cliente')?.value || '[LUGAR]';
               const fecha = formatFecha(document.getElementById('f-fecha-rec-cliente')?.value) || '[FECHA]';
               const rep = document.getElementById('f-rep-cliente')?.value || '[REPRESENTANTE]';
-              const mun = document.getElementById('f-mun-cliente')?.value || '[MUNICIPIO]';
+              const mun = (document.getElementById('f-mun-cliente')?.value || '[MUNICIPIO]') + ', ' + (document.getElementById('f-edo-cliente')?.value || '[ESTADO]');
               const donde = document.getElementById('f-donde-cliente')?.value || 'lugar';
               const dep = document.getElementById('f-dep-cliente')?.value || '[DEPENDENCIA]';
               const dondeTexto = donde === 'instalaciones' ? 'en las instalaciones de '+dep : 'en el lugar';
@@ -3698,7 +3755,7 @@ async function probarPDF() {
               const lugar = document.getElementById('f-lugar-rec-nofisica')?.value || '[LUGAR]';
               const fecha = formatFecha(document.getElementById('f-fecha-rec-nofisica')?.value) || '[FECHA]';
               const motivo = document.getElementById('f-motivo-nofisica')?.value || '[MOTIVO]';
-              const mun = document.getElementById('f-mun-nofisica')?.value || '[MUNICIPIO]';
+              const mun = (document.getElementById('f-mun-nofisica')?.value || '[MUNICIPIO]') + ', ' + (document.getElementById('f-edo-nofisica')?.value || '[ESTADO]');
               return 'La unidad fue localizada mediante rastreo GPS en '+lugar+' el '+fecha+'; sin embargo, no fue posible su recuperación física inmediata debido a '+motivo+'. Se realizó coordinación formal con las autoridades de '+mun+'.';
             } else if(escenario === 'extranjero') {
               return 'La última ubicación registrada de la unidad se encuentra fuera del territorio nacional, por lo que el caso queda fuera de la jurisdicción de las autoridades mexicanas. Se mantiene monitoreo activo en espera de que la unidad regrese al territorio nacional.';
@@ -4130,6 +4187,13 @@ function syncHoraRobo() {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('f-hora-robo-raw')?.addEventListener('change', syncHoraRobo);
   document.getElementById('f-hora-robo-ampm')?.addEventListener('change', syncHoraRobo);
+  // Guardar coordenadas en variable global cada vez que cambia el campo
+  document.getElementById('f-coords')?.addEventListener('input', function() {
+    if(this.value) window._lastCoordenadas = this.value;
+  });
+  document.getElementById('f-coords')?.addEventListener('change', function() {
+    if(this.value) window._lastCoordenadas = this.value;
+  });
 });
 
 function setHoraRobo(horaStr) {
