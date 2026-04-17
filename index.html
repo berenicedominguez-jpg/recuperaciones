@@ -1596,6 +1596,7 @@
             <div id="status-evidencias-extra" style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;"></div>
           </div>
         </div>
+        <input type="hidden" id="f-coords-hidden" />
         <div id="wa-confirm-status" style="display:none;"></div>
         <div id="correo-status" style="display:none;"></div>
         <button class="btn btn-primary" onclick="resetForm()" style="width:100%;">+ Registrar nuevo evento</button>
@@ -2344,7 +2345,7 @@ function syncParsedToForm() {
   // Coordenadas — normalizar formato (puede venir con espacio en vez de coma)
   const coordsRaw = getF('fp-coords') || '';
   const coordsNorm = coordsRaw.replace(/\s+(-?\d)/, ', $1');
-  if(coordsRaw)           { setF('f-coords', coordsNorm); window._lastCoordenadas = coordsNorm; }
+  if(coordsRaw)           { setF('f-coords', coordsNorm); setF('f-coords-hidden', coordsNorm); window._lastCoordenadas = coordsNorm; }
   // NOTA: fecha-robo y hora-robo se sincronizan usando los nuevos pickers
   if(getF('fp-fecha')) setFechaRobo(getF('fp-fecha'));
   if(getF('fp-hora'))  setHoraRobo(getF('fp-hora'));
@@ -2503,7 +2504,7 @@ function nextStep(from) {
   if(from===2) {
     // Guardar campos del paso 2 en variables globales antes de ocultarlo
     const _coordsVal = document.getElementById('f-coords')?.value;
-    if(_coordsVal) window._lastCoordenadas = _coordsVal;
+    if(_coordsVal) { window._lastCoordenadas = _coordsVal; setF('f-coords-hidden', _coordsVal); }
     window._lastLugar       = document.getElementById('f-lugar')?.value || window._lastLugar || '';
     window._lastMarca       = document.getElementById('f-marca')?.value || window._lastMarca || '';
     window._lastModelo      = document.getElementById('f-modelo')?.value || window._lastModelo || '';
@@ -3657,7 +3658,7 @@ async function probarPDF() {
           empresa: p.empresa,
           plataforma: p.plataforma,
           lugar: p.lugar,
-          coordenadas: window._lastCoordenadas || document.getElementById('f-coords')?.value || '—',
+          coordenadas: document.getElementById('f-coords-hidden')?.value || window._lastCoordenadas || document.getElementById('f-coords')?.value || '—',
           fecha_robo: formatFecha(document.getElementById('f-fecha-robo')?.value),
           hora_robo: document.getElementById('f-hora-robo')?.value || '—',
           alertas: p.tipoAlerta || 'N/A',
