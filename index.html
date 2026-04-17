@@ -3526,7 +3526,7 @@ function buildPayload() {
   const plataforma = document.getElementById('f-plataforma')?.value      || '—';
   const lugar      = document.getElementById('f-lugar')?.value           || '—';
   const monitorista= document.getElementById('f-monitorista')?.value     || '—';
-  const coords     = document.getElementById('f-coords')?.value          || '—';
+  const coords     = document.getElementById('f-coords')?.value || window._lastCoordenadas || localStorage.getItem('cim_coords') || '—';
   const estadoRep  = document.getElementById('f-estado-rep')?.value      || '—';
   const tipoAlerta = getTiposAlerta().join(' + ') || 'N/A';
   const paroMotor  = getParoMotor();
