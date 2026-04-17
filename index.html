@@ -3633,14 +3633,13 @@ async function probarDrive() {
 }
 
 async function probarPDF() {
-  // Capturar coordenadas ANTES de cualquier await
-  let _coordsSnapshot = document.getElementById('f-coords-hidden')?.value || window._lastCoordenadas || document.getElementById('f-coords')?.value || '';
-  if(!_coordsSnapshot) { try{_coordsSnapshot = localStorage.getItem('cim_coords') || '—';}catch(e){_coordsSnapshot='—';} }
+  // Capturar TODO antes de cualquier await
+  const p = buildPayload();
+  const _coordsSnapshot = p.coords && p.coords !== '—' ? p.coords : (localStorage.getItem('cim_coords') || '—');
   setCheck('pdf', 'pending', 'Despertando servicio...');
   try { await fetch('https://pdf-service-1-x0dr.onrender.com/health'); } catch(e) {}
   await new Promise(r => setTimeout(r, 3000));
   setCheck('pdf', 'pending', 'Generando reporte...');
-  const p = buildPayload();
   try {
     const res = await fetch('https://ain8n.numaris.com/webhook/generar-reporte', {
       method: 'POST', headers: {'Content-Type':'application/json'},
@@ -3662,7 +3661,7 @@ async function probarPDF() {
           empresa: p.empresa,
           plataforma: p.plataforma,
           lugar: p.lugar,
-          coordenadas: (function(){ const v = localStorage.getItem('cim_coords') || document.getElementById('f-coords-hidden')?.value || window._lastCoordenadas || document.getElementById('f-coords')?.value; return v && v !== '—' ? v : (parsedData && parsedData['fp-coords'] ? parsedData['fp-coords'] : '—'); })(),
+          coordenadas: _coordsSnapshot,
           fecha_robo: formatFecha(document.getElementById('f-fecha-robo')?.value),
           hora_robo: document.getElementById('f-hora-robo')?.value || '—',
           alertas: p.tipoAlerta || 'N/A',
