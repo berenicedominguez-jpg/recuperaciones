@@ -3632,6 +3632,8 @@ async function probarDrive() {
 }
 
 async function probarPDF() {
+  // Capturar coordenadas ANTES de cualquier await
+  const _coordsSnapshot = document.getElementById('f-coords-hidden')?.value || window._lastCoordenadas || document.getElementById('f-coords')?.value || '—';
   setCheck('pdf', 'pending', 'Despertando servicio...');
   try { await fetch('https://pdf-service-1-x0dr.onrender.com/health'); } catch(e) {}
   await new Promise(r => setTimeout(r, 3000));
@@ -3658,7 +3660,7 @@ async function probarPDF() {
           empresa: p.empresa,
           plataforma: p.plataforma,
           lugar: p.lugar,
-          coordenadas: document.getElementById('f-coords-hidden')?.value || window._lastCoordenadas || document.getElementById('f-coords')?.value || '—',
+          coordenadas: _coordsSnapshot,
           fecha_robo: formatFecha(document.getElementById('f-fecha-robo')?.value),
           hora_robo: document.getElementById('f-hora-robo')?.value || '—',
           alertas: p.tipoAlerta || 'N/A',
