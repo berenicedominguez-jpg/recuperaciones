@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CIM — Recuperaciones</title>
+<!-- v20260417214801 -->
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -2345,7 +2346,7 @@ function syncParsedToForm() {
   // Coordenadas — normalizar formato (puede venir con espacio en vez de coma)
   const coordsRaw = getF('fp-coords') || '';
   const coordsNorm = coordsRaw.replace(/\s+(-?\d)/, ', $1');
-  if(coordsRaw)           { setF('f-coords', coordsNorm); setF('f-coords-hidden', coordsNorm); window._lastCoordenadas = coordsNorm; }
+  if(coordsRaw)           { setF('f-coords', coordsNorm); setF('f-coords-hidden', coordsNorm); window._lastCoordenadas = coordsNorm; try{localStorage.setItem('cim_coords',coordsNorm);}catch(e){} }
   // NOTA: fecha-robo y hora-robo se sincronizan usando los nuevos pickers
   if(getF('fp-fecha')) setFechaRobo(getF('fp-fecha'));
   if(getF('fp-hora'))  setHoraRobo(getF('fp-hora'));
@@ -2504,7 +2505,7 @@ function nextStep(from) {
   if(from===2) {
     // Guardar campos del paso 2 en variables globales antes de ocultarlo
     const _coordsVal = document.getElementById('f-coords')?.value;
-    if(_coordsVal) { window._lastCoordenadas = _coordsVal; setF('f-coords-hidden', _coordsVal); }
+    if(_coordsVal) { window._lastCoordenadas = _coordsVal; setF('f-coords-hidden', _coordsVal); try{localStorage.setItem('cim_coords',_coordsVal);}catch(e){} }
     window._lastLugar       = document.getElementById('f-lugar')?.value || window._lastLugar || '';
     window._lastMarca       = document.getElementById('f-marca')?.value || window._lastMarca || '';
     window._lastModelo      = document.getElementById('f-modelo')?.value || window._lastModelo || '';
@@ -3633,7 +3634,8 @@ async function probarDrive() {
 
 async function probarPDF() {
   // Capturar coordenadas ANTES de cualquier await
-  const _coordsSnapshot = document.getElementById('f-coords-hidden')?.value || window._lastCoordenadas || document.getElementById('f-coords')?.value || '—';
+  let _coordsSnapshot = document.getElementById('f-coords-hidden')?.value || window._lastCoordenadas || document.getElementById('f-coords')?.value || '';
+  if(!_coordsSnapshot) { try{_coordsSnapshot = localStorage.getItem('cim_coords') || '—';}catch(e){_coordsSnapshot='—';} }
   setCheck('pdf', 'pending', 'Despertando servicio...');
   try { await fetch('https://pdf-service-1-x0dr.onrender.com/health'); } catch(e) {}
   await new Promise(r => setTimeout(r, 3000));
@@ -3660,7 +3662,7 @@ async function probarPDF() {
           empresa: p.empresa,
           plataforma: p.plataforma,
           lugar: p.lugar,
-          coordenadas: _coordsSnapshot,
+          coordenadas: (function(){ const v = localStorage.getItem('cim_coords') || document.getElementById('f-coords-hidden')?.value || window._lastCoordenadas || document.getElementById('f-coords')?.value; return v && v !== '—' ? v : (parsedData && parsedData['fp-coords'] ? parsedData['fp-coords'] : '—'); })(),
           fecha_robo: formatFecha(document.getElementById('f-fecha-robo')?.value),
           hora_robo: document.getElementById('f-hora-robo')?.value || '—',
           alertas: p.tipoAlerta || 'N/A',
