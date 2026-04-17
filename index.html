@@ -2870,7 +2870,6 @@ async function registerEvento() {
         });
         const dataDr = await resDr.json();
         if(dataDr.carpetaId) _lastCarpetaId = dataDr.carpetaId;
-        const _lastPdfId = dataDr.pdfId || '';
         if(dataDr.folderUrl) {
           const link = document.getElementById('check-drive-link');
           if(link) { link.href = dataDr.folderUrl; link.style.display = 'inline'; }
@@ -2920,7 +2919,7 @@ async function registerEvento() {
             placas: esCredito ? document.getElementById('f-placas-credito')?.value : placas,
             correoCliente: payload.correoCliente,
             esCredito,
-            pdfId: _lastPdfId,
+            pdfId: window._lastPdfId || '',
             datos: payload.datos
           })
         });
@@ -3767,6 +3766,7 @@ async function probarPDF() {
     });
     if(res.ok) {
       const data = await res.json();
+      if(data.pdfId) window._lastPdfId = data.pdfId;
       setCheck('pdf', 'ok', 'PDF generado: ' + (data.pdfNombre || 'reporte.pdf'));
     } else setCheck('pdf', 'error', 'Error ' + res.status);
   } catch(e) { setCheck('pdf', 'error', e.message); }
