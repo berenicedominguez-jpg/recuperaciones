@@ -2919,7 +2919,6 @@ async function registerEvento() {
             placas: esCredito ? document.getElementById('f-placas-credito')?.value : placas,
             correoCliente: payload.correoCliente,
             esCredito,
-            pdfId: window._lastPdfId || '',
             datos: payload.datos
           })
         });
@@ -3766,7 +3765,6 @@ async function probarPDF() {
     });
     if(res.ok) {
       const data = await res.json();
-      if(data.pdfId) window._lastPdfId = data.pdfId;
       setCheck('pdf', 'ok', 'PDF generado: ' + (data.pdfNombre || 'reporte.pdf'));
     } else setCheck('pdf', 'error', 'Error ' + res.status);
   } catch(e) { setCheck('pdf', 'error', e.message); }
@@ -3856,8 +3854,18 @@ async function probarCorreo() {
   const tipoEvento = p.tipoEvento || '';
   const aplicaCorreo = resultado.includes('RECUPERADA') || resultado.includes('EXITOSA') || (resultado.includes('NO RECUPERADA') && tipoEvento === 'ROBO');
   if(!aplicaCorreo) { setCheck('correo', 'ok', 'No aplica para este caso'); return; }
+
+  // Si no hay pdfId, primero generar el PDF
+  if(!window._lastPdfId) {
+    setCheck('correo', 'pending', 'Generando PDF primero...');
+    await probarPDF();
+    await new Promise(r => setTimeout(r, 1000));
+  }
+
   setCheck('correo', 'pending', resultado.includes('NO') ? 'Iniciando seguimiento...' : 'Enviando correo...');
   try {
+    const correoCliente = document.getElementById('f-correo-reportante')?.value
+      || document.getElementById('f-credito-correo')?.value || '';
     const res = await fetch('https://ain8n.numaris.com/webhook/test-correo', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -3865,9 +3873,14 @@ async function probarCorreo() {
         cliente: esCredito ? (document.getElementById('f-credito-razon')?.value || '—') : (document.getElementById('f-cliente')?.value || '—'),
         nick: esCredito ? (document.getElementById('f-credito-tk')?.value || '—') : (document.getElementById('f-nick')?.value || '—'),
         placas: esCredito ? (document.getElementById('f-placas-credito')?.value || '—') : (document.getElementById('f-placas')?.value || '—'),
-        correoCliente: document.getElementById('f-correo-reportante')?.value || document.getElementById('f-credito-correo')?.value || '',
+        correoCliente,
         esCredito,
-        datos: {}
+        pdfId: window._lastPdfId || '',
+        datos: {
+          correo_reportante: correoCliente,
+          fechaRobo: document.getElementById('f-fecha-robo')?.value || '—',
+          cc: 'joselyne.contreras@numaris.com,oscar.alday@numaris.com,berenice.dominguez@numaris.com'
+        }
       })
     });
     setCheck('correo', res.ok ? 'ok' : 'error', res.ok
