@@ -2953,7 +2953,17 @@ async function registerEvento() {
       try {
         const resDk = await fetch('https://ain8n.numaris.com/webhook/test-desk', {
           method: 'POST', headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ tipoEvento, folio, cliente: esCredito ? document.getElementById('f-credito-razon')?.value : cliente, mensaje })
+          body: JSON.stringify({
+            tipoEvento,
+            folio,
+            cliente: esCredito ? document.getElementById('f-credito-razon')?.value : cliente,
+            mensaje,
+            empresa,
+            plataforma,
+            monitorista: document.getElementById('f-monitorista')?.value || '—',
+            tiempo_reporte_robo: document.getElementById('f-tiempo-reporte')?.value || '—',
+            resultado
+          })
         });
         setCheck('desk', resDk.ok ? 'ok' : 'error', resDk.ok ? 'Ticket creado en Desk' : 'Error Desk');
       } catch(e) { setCheck('desk', 'error', e.message); }
@@ -3904,7 +3914,12 @@ async function probarDesk() {
         tipoEvento: p.tipoEvento,
         folio: _lastFolio || p.folio || '—',
         cliente: esCredito ? (document.getElementById('f-credito-razon')?.value || '—') : (document.getElementById('f-cliente')?.value || '—'),
-        mensaje: p.mensaje
+        mensaje: p.mensaje,
+        empresa: p.empresa || document.getElementById('f-empresa')?.value || '—',
+        plataforma: p.plataforma || document.getElementById('f-plataforma')?.value || '—',
+        monitorista: document.getElementById('f-monitorista')?.value || '—',
+        tiempo_reporte_robo: document.getElementById('f-tiempo-reporte')?.value || '—',
+        resultado: p.resultado || '—'
       })
     });
     setCheck('desk', res.ok ? 'ok' : 'error', res.ok ? 'Ticket creado en Desk' : 'Error ' + res.status);
