@@ -2962,7 +2962,9 @@ async function registerEvento() {
             plataforma,
             monitorista: document.getElementById('f-monitorista')?.value || '—',
             tiempo_reporte_robo: document.getElementById('f-tiempo-reporte')?.value || '—',
-            resultado
+            resultado,
+            pdfUrl: window._lastPdfUrl || '',
+            pdfId: window._lastPdfId || ''
           })
         });
         setCheck('desk', resDk.ok ? 'ok' : 'error', resDk.ok ? 'Ticket creado en Desk' : 'Error Desk');
@@ -3919,7 +3921,9 @@ async function probarDesk() {
         plataforma: p.plataforma || document.getElementById('f-plataforma')?.value || '—',
         monitorista: document.getElementById('f-monitorista')?.value || '—',
         tiempo_reporte_robo: document.getElementById('f-tiempo-reporte')?.value || '—',
-        resultado: p.resultado || '—'
+        resultado: p.resultado || '—',
+        pdfUrl: window._lastPdfUrl || '',
+        pdfId: window._lastPdfId || ''
       })
     });
     setCheck('desk', res.ok ? 'ok' : 'error', res.ok ? 'Ticket creado en Desk' : 'Error ' + res.status);
