@@ -2111,11 +2111,25 @@ function liveParseTemplate(text) {
   hint.textContent = found + ' campos detectados';
   empty.style.display = 'none';
   result.style.display = 'block';
-  document.getElementById('parse-score').textContent = found + ' de ' + FIELD_MAP.length + ' campos reconocidos';
+
+  // Chips — filtrar según tipo de evento
+  const tipoEvento = document.getElementById('f-tipo-evento')?.value || '';
+  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
+  const esAbuso   = tipoEvento === 'ABUSO DE CONFIANZA';
+  const esRobo    = tipoEvento === 'ROBO';
+  const camposRobo    = ['fp-razon','fp-marca','fp-submarca','fp-anio','fp-placas','fp-color','fp-serie','fp-lugar','fp-coords','fp-fechahora','fp-fecha','fp-hora','fp-folio911','fp-caja-tipo','fp-caja-marca','fp-caja-color','fp-caja-anio','fp-caja-placa','fp-caja-serie'];
+  const camposAbuso   = ['fp-razon','fp-marca','fp-submarca','fp-anio','fp-placas','fp-color','fp-serie','fp-lugar','fp-coords','fp-fechahora','fp-fecha','fp-hora','fp-folio911'];
+  const camposCredito = ['fp-credito-tk','fp-credito-razon','fp-marca','fp-submarca','fp-anio','fp-placas','fp-credito-entidad','fp-credito-nombre','fp-credito-motivo','fp-credito-fecha-inicio','fp-credito-fecha-fin','fp-credito-localidad','fp-credito-resguardo','fp-credito-gestor','fp-credito-tipo-entrega','fp-credito-lugar-rec','fp-credito-fecha-rec'];
+  let camposFiltrados = FIELD_MAP;
+  if(esRobo)    camposFiltrados = FIELD_MAP.filter(f => camposRobo.includes(f.id));
+  if(esAbuso)   camposFiltrados = FIELD_MAP.filter(f => camposAbuso.includes(f.id));
+  if(esCredito) camposFiltrados = FIELD_MAP.filter(f => camposCredito.includes(f.id));
+
+  document.getElementById('parse-score').textContent = found + ' de ' + camposFiltrados.length + ' campos reconocidos';
 
   // Chips
   const chips = document.getElementById('parse-chips');
-  chips.innerHTML = FIELD_MAP.map(f => {
+  chips.innerHTML = camposFiltrados.map(f => {
     const val = parsedData[f.id];
     const ok = val && val.trim();
     return `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;background:${ok?'rgba(16,185,129,0.12)':'rgba(100,116,139,0.1)'};color:${ok?'var(--success)':'var(--muted)'};">
