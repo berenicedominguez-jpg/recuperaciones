@@ -629,19 +629,11 @@
           </div>
           <div class="card-body">
 
-            <!-- Razón social + teléfono + operador -->
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <!-- Razón social -->
+            <div style="display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Razón social / Cliente</label>
                 <input type="text" id="f-cliente" placeholder="Ej. SUPERTRACK" />
-              </div>
-              <div class="form-group">
-                <label>Teléfono de contacto</label>
-                <input type="tel" id="f-telefono" placeholder="222 598 7061" />
-              </div>
-              <div class="form-group">
-                <label>Nombre del operador</label>
-                <input type="text" id="f-operador" placeholder="Nombre completo" />
               </div>
             </div>
 
@@ -709,29 +701,10 @@
                 <label class="req">Folio 911</label>
                 <input type="text" id="f-folio911-step1" placeholder="TOL26031200155" />
               </div>
-              <div class="form-group">
-                <label>Modus operandi</label>
-                <select id="f-modus">
-                  <option value="">Seleccionar...</option>
-                  <option>ROBO A TRANSPORTE DE CARGA</option>
-                  <option>ROBO CON VIOLENCIA</option>
-                  <option>ROBO SIN VIOLENCIA</option>
-                  <option>ASALTO EN CARRETERA</option>
-                  <option>OTRO</option>
-                </select>
-              </div>
             </div>
 
-            <!-- Mercancía + No. Motor -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-              <div class="form-group">
-                <label>Mercancía transportada</label>
-                <input type="text" id="f-mercancia" placeholder="Tipo de carga (si aplica)" />
-              </div>
-              <div class="form-group">
-                <label>No. de motor</label>
-                <input type="text" id="f-motor" placeholder="Si aplica" />
-              </div>
+            <!-- Última señal GPS -->
+            <div style="display:grid;grid-template-columns:1fr;gap:14px;">
               <div class="form-group">
                 <label class="req">Última señal GPS</label>
                 <input type="text" id="f-ultima-senal" placeholder="Ej. 12/03/2026 12:13 HRS." />
