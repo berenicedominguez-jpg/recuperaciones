@@ -683,7 +683,7 @@
                 <input type="text" id="f-lugar" placeholder="Carretera, municipio, estado..." />
               </div>
               <div class="form-group">
-                <label>Coordenadas GPS</label>
+                <label class="req">Coordenadas GPS</label>
                 <input type="text" id="f-coords" placeholder="20.00814 -99.51108" />
               </div>
             </div>
@@ -695,7 +695,7 @@
                 <input type="date" id="f-fecha-robo" />
               </div>
               <div class="form-group">
-                <label>Hora del robo</label>
+                <label class="req">Hora del robo</label>
                 <div style="display:flex;gap:6px;align-items:center;">
                   <input type="time" id="f-hora-robo-raw" style="flex:1;" />
                   <select id="f-hora-robo-ampm" style="width:80px;">
@@ -733,7 +733,7 @@
                 <input type="text" id="f-motor" placeholder="Si aplica" />
               </div>
               <div class="form-group">
-                <label>Última señal GPS</label>
+                <label class="req">Última señal GPS</label>
                 <input type="text" id="f-ultima-senal" placeholder="Ej. 12/03/2026 12:13 HRS." />
               </div>
             </div>
@@ -2560,6 +2560,9 @@ function nextStep(from) {
       if(!validarCampo('f-plataforma', 'Plataforma')) return;
       if(!validarCampo('f-esn', 'ESN')) return;
       if(!validarCampo('f-lugar', 'Lugar del evento')) return;
+      if(!validarCampo('f-coords', 'Coordenadas GPS')) return;
+      if(!validarCampo('f-hora-robo-raw', 'Hora del robo')) return;
+      if(!validarCampo('f-ultima-senal', 'Última señal GPS')) return;
       if(!validarCampo('f-marca', 'Marca')) return;
       if(!validarCampo('f-modelo', 'Modelo')) return;
       if(!validarCampo('f-anio', 'Año')) return;
