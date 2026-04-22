@@ -158,6 +158,7 @@
   .form-group { display:flex; flex-direction:column; gap:6px; }
   .form-group.full { grid-column:1/-1; }
   label { font-size:12px; font-weight:500; color:var(--muted2); }
+  label.req::after { content:' *'; color:var(--danger); font-weight:700; }
   input, select, textarea {
     background:#f8faff; border:1px solid rgba(37,99,235,0.18); border-radius:var(--radius-sm);
     color:var(--text); font-family:var(--font-body); font-size:13px;
@@ -435,11 +436,11 @@
           <div class="card-body">
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;">
               <div class="form-group">
-                <label>Fecha y hora de reporte</label>
+                <label class="req">Fecha y hora de reporte</label>
                 <input type="datetime-local" id="f-fecha" />
               </div>
               <div class="form-group">
-                <label>Monitorista responsable</label>
+                <label class="req">Monitorista responsable</label>
                 <select id="f-monitorista">
                   <option value="">Seleccionar...</option>
                   <option>BERENICE DOMINGUEZ</option>
@@ -459,7 +460,7 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Tipo de evento</label>
+                <label class="req">Tipo de evento</label>
                 <select id="f-tipo-evento" onchange="onTipoEventoChange(this.value)">
                   <option value="">Seleccionar...</option>
                   <option>ROBO</option>
@@ -492,7 +493,7 @@
               <!-- Row 2: Tipo de alerta (visible solo si alerta = SÍ) — múltiple selección -->
               <div id="tipo-alerta-row" style="display:none;padding:13px 16px;border-bottom:1px solid var(--border);">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                  <div style="font-size:12px;font-weight:600;color:var(--muted2);">Tipo(s) de alerta recibida</div>
+                  <div style="font-size:12px;font-weight:600;color:var(--muted2);">Tipo(s) de alerta recibida <span style="color:var(--danger);font-weight:700;">*</span></div>
                   <div style="font-size:10px;color:var(--muted);background:var(--bg3);padding:2px 8px;border-radius:10px;">Selección múltiple</div>
                 </div>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -516,7 +517,7 @@
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
                   <div style="width:34px;height:34px;border-radius:50%;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;">🔑</div>
                   <div>
-                    <div style="font-size:13px;font-weight:600;color:var(--text);">Paro de motor</div>
+                    <div style="font-size:13px;font-weight:600;color:var(--text);">Paro de motor <span style="color:var(--danger);font-weight:700;">*</span></div>
                     <div style="font-size:11px;color:var(--muted);margin-top:1px;">Indica el estado del comando remoto</div>
                   </div>
                 </div>
@@ -581,7 +582,7 @@
         <div class="card" style="margin-bottom:16px;">
           <div class="card-header">
             <div style="display:flex;align-items:center;gap:8px;">
-              <div class="card-title">Pegar plantilla del evento</div>
+              <div class="card-title">Pegar plantilla del evento <span style="color:var(--danger);font-weight:700;">*</span></div>
               <span style="background:#dbeafe;color:#1d4ed8;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;">Auto-extracción</span>
             </div>
             <span style="font-size:11px;color:var(--muted);">El sistema detecta y llena los campos automáticamente</span>
@@ -631,7 +632,7 @@
             <!-- Razón social + teléfono + operador -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Razón social / Cliente</label>
+                <label class="req">Razón social / Cliente</label>
                 <input type="text" id="f-cliente" placeholder="Ej. SUPERTRACK" />
               </div>
               <div class="form-group">
@@ -647,30 +648,30 @@
             <!-- Marca + submarca + año + color + placa + serie -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Marca</label>
+                <label class="req">Marca</label>
                 <input type="text" id="f-marca" placeholder="Ej. KENWORTH" />
               </div>
               <div class="form-group">
-                <label>Submarca / Modelo</label>
+                <label class="req">Submarca / Modelo</label>
                 <input type="text" id="f-modelo" placeholder="Ej. T680" />
               </div>
               <div class="form-group">
-                <label>Año</label>
+                <label class="req">Año</label>
                 <input type="text" id="f-anio" placeholder="Ej. 2025" />
               </div>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Placa</label>
+                <label class="req">Placa</label>
                 <input type="text" id="f-placas" placeholder="Ej. 01BJ1A" />
               </div>
               <div class="form-group">
-                <label>Color</label>
+                <label class="req">Color</label>
                 <input type="text" id="f-color" placeholder="Ej. ROJO" />
               </div>
               <div class="form-group">
-                <label>No. de serie</label>
+                <label class="req">No. de serie</label>
                 <input type="text" id="f-serie" placeholder="Ej. 3WKYD40X5SF..." />
               </div>
             </div>
@@ -678,7 +679,7 @@
             <!-- Lugar + coords -->
             <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Lugar / Última ubicación GPS</label>
+                <label class="req">Lugar / Última ubicación GPS</label>
                 <input type="text" id="f-lugar" placeholder="Carretera, municipio, estado..." />
               </div>
               <div class="form-group">
@@ -690,7 +691,7 @@
             <!-- Fecha + hora + folio 911 + modus -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Fecha del robo</label>
+                <label class="req">Fecha del robo</label>
                 <input type="date" id="f-fecha-robo" />
               </div>
               <div class="form-group">
@@ -705,7 +706,7 @@
                 <input type="hidden" id="f-hora-robo" />
               </div>
               <div class="form-group">
-                <label>Folio 911</label>
+                <label class="req">Folio 911</label>
                 <input type="text" id="f-folio911-step1" placeholder="TOL26031200155" />
               </div>
               <div class="form-group">
@@ -787,67 +788,67 @@
           <div class="card-body">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Razón social</label>
+                <label class="req">Razón social</label>
                 <input type="text" id="f-credito-razon" placeholder="Ej. NACIONAL MONTE DE PIEDAD" />
               </div>
               <div class="form-group">
-                <label>TK</label>
+                <label class="req">TK</label>
                 <input type="text" id="f-credito-tk" placeholder="Ej. 72936" />
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Marca</label>
+                <label class="req">Marca</label>
                 <input type="text" id="f-marca-credito" placeholder="Ej. HYUNDAI" />
               </div>
               <div class="form-group">
-                <label>Modelo</label>
+                <label class="req">Modelo</label>
                 <input type="text" id="f-modelo-credito" placeholder="Ej. GRAND I10" />
               </div>
               <div class="form-group">
-                <label>Año</label>
+                <label class="req">Año</label>
                 <input type="text" id="f-anio-credito" placeholder="Ej. 2016" />
               </div>
               <div class="form-group">
-                <label>Placas</label>
+                <label class="req">Placas</label>
                 <input type="text" id="f-placas-credito" placeholder="Ej. ZAK256E" />
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Nombre del cliente</label>
+                <label class="req">Nombre del cliente</label>
                 <input type="text" id="f-credito-nombre" placeholder="Nombre completo" />
               </div>
               <div class="form-group">
-                <label>Motivo</label>
+                <label class="req">Motivo</label>
                 <input type="text" id="f-credito-motivo" placeholder="Ej. Impago" />
               </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Fecha inicio seguimiento</label>
+                <label class="req">Fecha inicio seguimiento</label>
                 <input type="text" id="f-credito-fecha-inicio" placeholder="DD/MM/YYYY" />
               </div>
               <div class="form-group">
-                <label>Fecha fin seguimiento</label>
+                <label class="req">Fecha fin seguimiento</label>
                 <input type="text" id="f-credito-fecha-fin" placeholder="DD/MM/YYYY" />
               </div>
               <div class="form-group">
-                <label>Localidad de gestión</label>
+                <label class="req">Localidad de gestión</label>
                 <input type="text" id="f-credito-localidad" placeholder="Ej. YUC, México" />
               </div>
             </div>
             <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;">
               <div class="form-group">
-                <label>Lugar de resguardo</label>
+                <label class="req">Lugar de resguardo</label>
                 <input type="text" id="f-credito-resguardo" placeholder="Dirección del resguardo" />
               </div>
               <div class="form-group">
-                <label>Gestor asignado</label>
+                <label class="req">Gestor asignado</label>
                 <input type="text" id="f-credito-gestor" placeholder="Nombre del gestor" />
               </div>
               <div class="form-group">
-                <label>Correo del cliente</label>
+                <label class="req">Correo del cliente</label>
                 <input type="email" id="f-credito-correo" placeholder="correo@cliente.com" />
               </div>
             </div>
@@ -904,7 +905,7 @@
                 <input type="tel" id="f-tel-reportante" placeholder="Ej. 555 123 4567" />
               </div>
               <div class="form-group">
-                <label>Correo del reportante</label>
+                <label class="req">Correo del reportante</label>
                 <input type="email" id="f-correo-reportante" placeholder="correo@ejemplo.com" />
               </div>
             </div>
@@ -917,7 +918,7 @@
           <div class="card-body">
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Tipo de unidad</label>
+                <label class="req">Tipo de unidad</label>
                 <select id="f-tipo-unidad">
                   <option value="">Seleccionar...</option>
                   <option>PARTICULAR</option>
@@ -926,11 +927,11 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Costo estimado de la unidad</label>
+                <label class="req">Costo estimado de la unidad</label>
                 <input type="text" id="f-costo" placeholder="Ej. $1,500,000 MXN" />
               </div>
               <div class="form-group">
-                <label>Plataforma</label>
+                <label class="req">Plataforma</label>
                 <select id="f-plataforma" onchange="autoDetectEmpresa(this.value)">
                   <option value="">Seleccionar...</option>
                   <option>TECNOMETRICS</option>
@@ -951,11 +952,11 @@
                 <input type="text" id="f-empresa-atiende" readonly placeholder="Se detecta por plataforma" style="background:#f0f5fc;color:var(--muted2);cursor:not-allowed;" />
               </div>
               <div class="form-group">
-                <label>ESN (equipo GPS)</label>
+                <label class="req">ESN (equipo GPS)</label>
                 <input type="text" id="f-esn" placeholder="No. de serie del equipo" />
               </div>
               <div class="form-group" id="campo-nick-alias">
-                <label>Nick / Alias en plataforma</label>
+                <label class="req">Nick / Alias en plataforma</label>
                 <input type="text" id="f-nick" placeholder="Nombre del activo en sistema" />
               </div>
             </div>
@@ -968,7 +969,7 @@
           <div class="card-body">
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
-                <label>Estado de la República</label>
+                <label class="req">Estado de la República</label>
                 <select id="f-estado-rep">
                   <option value="">Seleccionar...</option>
                   <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
@@ -985,7 +986,7 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Tiempo en reportar el robo</label>
+                <label class="req">Tiempo en reportar el robo</label>
                 <select id="f-tiempo-reporte">
                   <option value="">Seleccionar...</option>
                   <option>- 30 minutos</option>
@@ -999,7 +1000,7 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Tiempo en dar predenuncia</label>
+                <label class="req">Tiempo en dar predenuncia</label>
                 <select id="f-tiempo-predenuncia">
                   <option value="">Seleccionar...</option>
                   <option>- 30 minutos</option>
@@ -1078,11 +1079,11 @@
               <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:10px;">Datos adicionales — Abuso de confianza</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                 <div class="form-group">
-                  <label>Número de carpeta</label>
+                  <label class="req">Número de carpeta</label>
                   <input type="text" id="f-num-carpeta" placeholder="Proporcionado por el cliente" />
                 </div>
                 <div class="form-group">
-                  <label>¿Se levanta denuncia en el MP?</label>
+                  <label class="req">¿Se levanta denuncia en el MP?</label>
                   <select id="f-denuncia-mp">
                     <option value="">Seleccionar...</option>
                     <option>SÍ</option>
@@ -1119,11 +1120,11 @@
             <!-- Ubicación y coordenadas -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
               <div class="form-group">
-                <label>Ubicación</label>
+                <label class="req">Ubicación</label>
                 <input type="text" id="f-credito-ubicacion" placeholder="Dirección o nombre del lugar" />
               </div>
               <div class="form-group">
-                <label>Coordenadas</label>
+                <label class="req">Coordenadas</label>
                 <input type="text" id="f-credito-coordenadas" placeholder="Ej. 20.693976, -101.312048" />
               </div>
             </div>
@@ -1442,7 +1443,7 @@
                   <input type="text" id="f-cancel-recibe" readonly style="background:#f0f5fc;color:var(--muted2);cursor:not-allowed;" />
                 </div>
                 <div class="form-group">
-                  <label>Quién autoriza</label>
+                  <label class="req">Quién autoriza</label>
                   <select id="f-cancel-autoriza">
                     <option value="">Seleccionar...</option>
                     <option>JOSELYNE CONTRERAS</option>
@@ -1451,11 +1452,11 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label>Motivo de cancelación</label>
+                  <label class="req">Motivo de cancelación</label>
                   <input type="text" id="f-cancel-motivo" placeholder="Razón del cancelamiento" />
                 </div>
                 <div class="form-group">
-                  <label>Fecha de cancelación</label>
+                  <label class="req">Fecha de cancelación</label>
                   <input type="date" id="f-cancel-fecha" />
                 </div>
               </div>
@@ -2492,10 +2493,12 @@ function selectRecuperacion(v) {
 function validarCampo(id, nombre) {
   const el = document.getElementById(id);
   if(!el) return true;
+  const visible = el.offsetParent !== null || el.closest('[style*="display:none"]') === null;
   const val = el.value ? el.value.trim() : '';
   if(!val) {
     notify('Campo obligatorio: ' + nombre, 'warning');
     el.style.borderColor = 'var(--danger)';
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     el.focus();
     setTimeout(() => { el.style.borderColor = ''; }, 3000);
     return false;
@@ -2503,21 +2506,28 @@ function validarCampo(id, nombre) {
   return true;
 }
 
+function esVisible(id) {
+  const el = document.getElementById(id);
+  if(!el) return false;
+  let node = el;
+  while(node && node !== document.body) {
+    if(node.style && node.style.display === 'none') return false;
+    node = node.parentElement;
+  }
+  return true;
+}
+
 function nextStep(from) {
   if(from===1) {
-    // Validaciones paso 1
     const tipoEvento = document.getElementById('f-tipo-evento')?.value || '';
+    const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
     if(!tipoEvento) { notify('Selecciona el tipo de evento', 'warning'); return; }
-    if(!validarCampo('f-monitorista', 'Monitorista')) return;
-    if(!validarCampo('f-fecha', 'Fecha y hora de atención')) return;
-    if(tipoEvento !== 'RECUPERACIÓN DE CRÉDITO') {
-      if(!validarCampo('f-cliente', 'Cliente')) return;
-      if(!validarCampo('f-fecha-robo', 'Fecha del robo')) return;
-    }
+    if(!validarCampo('f-monitorista', 'Monitorista responsable')) return;
+    if(!validarCampo('f-fecha', 'Fecha y hora de reporte')) return;
+    if(!validarCampo('f-plantilla-raw', 'Plantilla del evento')) return;
     origenSelected = origenSelected || 'llamada';
     syncParsedToForm();
     // Para crédito: ocultar persona que reporta en paso 3
-    const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
     const cardPersona = document.getElementById('card-persona-reporta');
     if(cardPersona) cardPersona.style.display = esCredito ? 'none' : 'block';
     const campoNick = document.getElementById('campo-nick-alias');
@@ -2526,19 +2536,66 @@ function nextStep(from) {
     if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
   }
   if(from===2) {
-    // Validaciones paso 2
     const tipoEvento2 = document.getElementById('f-tipo-evento')?.value || '';
     const esCredito2 = tipoEvento2 === 'RECUPERACIÓN DE CRÉDITO';
     if(esCredito2) {
+      if(!validarCampo('f-credito-razon', 'Razón social')) return;
       if(!validarCampo('f-credito-tk', 'TK')) return;
-      if(!validarCampo('f-credito-razon', 'Razón Social')) return;
       if(!validarCampo('f-marca-credito', 'Marca')) return;
+      if(!validarCampo('f-modelo-credito', 'Modelo')) return;
+      if(!validarCampo('f-anio-credito', 'Año')) return;
       if(!validarCampo('f-placas-credito', 'Placas')) return;
+      if(!validarCampo('f-credito-nombre', 'Nombre del cliente')) return;
+      if(!validarCampo('f-credito-motivo', 'Motivo')) return;
+      if(!validarCampo('f-credito-fecha-inicio', 'Fecha inicio seguimiento')) return;
+      if(!validarCampo('f-credito-fecha-fin', 'Fecha fin seguimiento')) return;
+      if(!validarCampo('f-credito-localidad', 'Localidad de gestión')) return;
+      if(!validarCampo('f-credito-resguardo', 'Lugar de resguardo')) return;
+      if(!validarCampo('f-credito-gestor', 'Gestor asignado')) return;
+      if(!validarCampo('f-credito-ubicacion', 'Ubicación')) return;
+      if(!validarCampo('f-credito-coordenadas', 'Coordenadas')) return;
+      if(!validarCampo('f-credito-correo', 'Correo del cliente')) return;
     } else {
       if(!validarCampo('f-nick', 'Nick / Alias')) return;
       if(!validarCampo('f-plataforma', 'Plataforma')) return;
       if(!validarCampo('f-esn', 'ESN')) return;
       if(!validarCampo('f-lugar', 'Lugar del evento')) return;
+      if(!validarCampo('f-marca', 'Marca')) return;
+      if(!validarCampo('f-modelo', 'Modelo')) return;
+      if(!validarCampo('f-anio', 'Año')) return;
+      if(!validarCampo('f-color', 'Color')) return;
+      if(!validarCampo('f-placas', 'Placas')) return;
+      if(!validarCampo('f-serie', 'Serie')) return;
+      if(!validarCampo('f-fecha-robo', 'Fecha del robo')) return;
+      if(!validarCampo('f-tipo-unidad', 'Tipo de unidad')) return;
+      if(!validarCampo('f-costo', 'Costo estimado')) return;
+      if(!validarCampo('f-estado-rep', 'Estado de la República')) return;
+      if(!validarCampo('f-folio911-step1', 'Folio 911')) return;
+      if(!validarCampo('f-tiempo-reporte', 'Tiempo en reportar el robo')) return;
+      if(!validarCampo('f-tiempo-predenuncia', 'Tiempo en dar predenuncia')) return;
+      // Paro de motor — obligatorio
+      const paroSeleccionado = document.querySelector('input[name="paro-motor"]:checked');
+      if(!paroSeleccionado) {
+        notify('Selecciona una opción de Paro de motor', 'warning');
+        document.getElementById('paro-opciones')?.scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+      }
+      // Alertas — obligatorio solo si toggle está activado
+      const alertaActiva = document.getElementById('toggle-alerta')?.checked;
+      if(alertaActiva) {
+        const algunaTipoAlerta = ['chk-ta-panico','chk-ta-desconexion','chk-ta-jammer'].some(id => document.getElementById(id)?.checked);
+        if(!algunaTipoAlerta) {
+          notify('Selecciona al menos un tipo de alerta', 'warning');
+          document.getElementById('tipo-alerta-row')?.scrollIntoView({ behavior:'smooth', block:'center' });
+          return;
+        }
+      }
+      // Abuso de confianza
+      if(tipoEvento2 === 'ABUSO DE CONFIANZA') {
+        if(!validarCampo('f-num-carpeta', 'Número de carpeta')) return;
+        if(!validarCampo('f-denuncia-mp', '¿Se levanta denuncia en el MP?')) return;
+      }
+      if(!validarCampo('f-correo-reportante', 'Correo del reportante')) return;
     }
     // Guardar campos del paso 2 en variables globales antes de ocultarlo
     const _coordsVal = document.getElementById('f-coords')?.value;
@@ -2611,23 +2668,17 @@ const FOLIO_PREFIJOS = {
 
 async function registerEvento() {
   const resultado   = recuperadoSelected;
-  // Validación resultado
   if(!resultado) { notify('Indica el resultado del evento', 'warning'); return; }
   const tipoEvento  = document.getElementById('f-tipo-evento')?.value     || '—';
   const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
-  // Validaciones finales antes de enviar
-  if(!esCredito) {
-    if(!validarCampo('f-monitorista', 'Monitorista')) return;
-    if(!validarCampo('f-fecha', 'Fecha y hora de atención')) return;
-    if(!validarCampo('f-cliente', 'Cliente')) return;
-    if(!validarCampo('f-nick', 'Nick / Alias')) return;
-    if(!validarCampo('f-plataforma', 'Plataforma')) return;
-    if(!validarCampo('f-esn', 'ESN')) return;
-    if(!validarCampo('f-lugar', 'Lugar del evento')) return;
-  } else {
-    if(!validarCampo('f-credito-tk', 'TK')) return;
-    if(!validarCampo('f-credito-razon', 'Razón Social')) return;
-    if(!validarCampo('f-monitorista', 'Monitorista')) return;
+  // Validar resultado seleccionado con campos visibles del paso 3
+  if(!esCredito && resultado === 'si') {
+    if(!validarCampo('f-escenario', 'Escenario de cierre')) return;
+  }
+  if(!esCredito && resultado === 'cancel') {
+    if(!validarCampo('f-cancel-autoriza', 'Quién autoriza')) return;
+    if(!validarCampo('f-cancel-motivo', 'Motivo de cancelación')) return;
+    if(!validarCampo('f-cancel-fecha', 'Fecha de cancelación')) return;
   }
   const empresa     = document.getElementById('f-empresa-atiende')?.value || '';
   const cliente     = document.getElementById('f-cliente')?.value         || '—';
