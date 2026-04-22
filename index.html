@@ -2489,8 +2489,31 @@ function selectRecuperacion(v) {
   }
 }
 
+function validarCampo(id, nombre) {
+  const el = document.getElementById(id);
+  if(!el) return true;
+  const val = el.value ? el.value.trim() : '';
+  if(!val) {
+    notify('Campo obligatorio: ' + nombre, 'warning');
+    el.style.borderColor = 'var(--danger)';
+    el.focus();
+    setTimeout(() => { el.style.borderColor = ''; }, 3000);
+    return false;
+  }
+  return true;
+}
+
 function nextStep(from) {
   if(from===1) {
+    // Validaciones paso 1
+    const tipoEvento = document.getElementById('f-tipo-evento')?.value || '';
+    if(!tipoEvento) { notify('Selecciona el tipo de evento', 'warning'); return; }
+    if(!validarCampo('f-monitorista', 'Monitorista')) return;
+    if(!validarCampo('f-fecha', 'Fecha y hora de atención')) return;
+    if(tipoEvento !== 'RECUPERACIÓN DE CRÉDITO') {
+      if(!validarCampo('f-cliente', 'Cliente')) return;
+      if(!validarCampo('f-fecha-robo', 'Fecha del robo')) return;
+    }
     origenSelected = origenSelected || 'llamada';
     syncParsedToForm();
     // Para crédito: ocultar persona que reporta en paso 3
@@ -2503,6 +2526,20 @@ function nextStep(from) {
     if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
   }
   if(from===2) {
+    // Validaciones paso 2
+    const tipoEvento2 = document.getElementById('f-tipo-evento')?.value || '';
+    const esCredito2 = tipoEvento2 === 'RECUPERACIÓN DE CRÉDITO';
+    if(esCredito2) {
+      if(!validarCampo('f-credito-tk', 'TK')) return;
+      if(!validarCampo('f-credito-razon', 'Razón Social')) return;
+      if(!validarCampo('f-marca-credito', 'Marca')) return;
+      if(!validarCampo('f-placas-credito', 'Placas')) return;
+    } else {
+      if(!validarCampo('f-nick', 'Nick / Alias')) return;
+      if(!validarCampo('f-plataforma', 'Plataforma')) return;
+      if(!validarCampo('f-esn', 'ESN')) return;
+      if(!validarCampo('f-lugar', 'Lugar del evento')) return;
+    }
     // Guardar campos del paso 2 en variables globales antes de ocultarlo
     const _coordsVal = document.getElementById('f-coords')?.value;
     if(_coordsVal) { window._lastCoordenadas = _coordsVal; setF('f-coords-hidden', _coordsVal); try{localStorage.setItem('cim_coords',_coordsVal);}catch(e){} }
@@ -2573,9 +2610,26 @@ const FOLIO_PREFIJOS = {
 };
 
 async function registerEvento() {
-  const resultado   = recuperadoSelected; // 'si', 'no', 'cancel'
-  const empresa     = document.getElementById('f-empresa-atiende')?.value || '';
+  const resultado   = recuperadoSelected;
+  // Validación resultado
+  if(!resultado) { notify('Indica el resultado del evento', 'warning'); return; }
   const tipoEvento  = document.getElementById('f-tipo-evento')?.value     || '—';
+  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
+  // Validaciones finales antes de enviar
+  if(!esCredito) {
+    if(!validarCampo('f-monitorista', 'Monitorista')) return;
+    if(!validarCampo('f-fecha', 'Fecha y hora de atención')) return;
+    if(!validarCampo('f-cliente', 'Cliente')) return;
+    if(!validarCampo('f-nick', 'Nick / Alias')) return;
+    if(!validarCampo('f-plataforma', 'Plataforma')) return;
+    if(!validarCampo('f-esn', 'ESN')) return;
+    if(!validarCampo('f-lugar', 'Lugar del evento')) return;
+  } else {
+    if(!validarCampo('f-credito-tk', 'TK')) return;
+    if(!validarCampo('f-credito-razon', 'Razón Social')) return;
+    if(!validarCampo('f-monitorista', 'Monitorista')) return;
+  }
+  const empresa     = document.getElementById('f-empresa-atiende')?.value || '';
   const cliente     = document.getElementById('f-cliente')?.value         || '—';
   const placas      = document.getElementById('f-placas')?.value          || '—';
   const nick        = document.getElementById('f-nick')?.value            || '—';
@@ -2596,7 +2650,6 @@ async function registerEvento() {
   const tipoAlerta  = getTiposAlerta().join(' + ') || 'N/A';
   const paroMotor   = getParoMotor();
   const coordenadas = document.getElementById('f-coords')?.value || '—';
-  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
   const resultadoLabel = esCredito
     ? (resultado === 'si' ? 'RECUPERACIÓN EXITOSA' : 'NO EXITOSA')
     : ({ si:'RECUPERADA', no:'NO RECUPERADA', cancel:'CANCELADO' }[resultado] || '—');
