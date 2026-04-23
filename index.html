@@ -2533,12 +2533,13 @@ function nextStep(from) {
     origenSelected = origenSelected || 'llamada';
     syncParsedToForm();
     // Para crédito: ocultar persona que reporta en paso 3
+    const esCredito1 = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
     const cardPersona = document.getElementById('card-persona-reporta');
-    if(cardPersona) cardPersona.style.display = esCredito ? 'none' : 'block';
+    if(cardPersona) cardPersona.style.display = esCredito1 ? 'none' : 'block';
     const campoNick = document.getElementById('campo-nick-alias');
-    if(campoNick) campoNick.style.display = esCredito ? 'none' : 'block';
+    if(campoNick) campoNick.style.display = esCredito1 ? 'none' : 'block';
     const cardDatosExtra = document.getElementById('card-datos-extra-credito');
-    if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
+    if(cardDatosExtra) cardDatosExtra.style.display = esCredito1 ? 'block' : 'none';
   }
   if(from===2) {
     const tipoEvento2 = document.getElementById('f-tipo-evento')?.value || '';
