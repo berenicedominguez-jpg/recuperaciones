@@ -2682,7 +2682,7 @@ function nextStep(from) {
       }
     }
     // Resultado: campos según selección
-    if(!esCredito3 && recuperadoSelected === 'si') {
+    if(!esCredito3 && esRobo3 && recuperadoSelected === 'si') {
       if(!validarCampo('f-escenario', 'Escenario de cierre')) return;
       // Campos según escenario seleccionado
       const esc = document.getElementById('f-escenario')?.value || '';
