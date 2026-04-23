@@ -870,7 +870,7 @@
                 </select>
               </div>
               <div class="form-group" id="campo-poliza" style="display:none;">
-                <label>No. Póliza</label>
+                <label class="req">No. Póliza</label>
                 <input type="text" id="f-poliza" placeholder="Número de póliza" />
               </div>
               <div class="form-group">
@@ -1067,14 +1067,14 @@
               <!-- Imágenes -->
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
                 <div class="form-group">
-                  <label>Imagen — Lugar del robo</label>
+                  <label class="req">Imagen — Lugar del robo</label>
                   <div id="drop-lugar-robo" style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;background:var(--card2);" onclick="document.getElementById('img-lugar-robo').click()" ondragover="event.preventDefault()" ondrop="handleDrop(event,'img-lugar-robo','preview-lugar-robo')">
                     <div id="preview-lugar-robo" style="font-size:11px;color:var(--muted);">📍 Captura de plataforma GPS<br><span style="font-size:10px;">Clic para subir · Arrastra · Ctrl+V</span></div>
                     <input type="file" id="img-lugar-robo" accept="image/*" style="display:none;" onchange="previewImg(this,'preview-lugar-robo')" />
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Imagen — Evidencia</label>
+                  <label class="req">Imagen — Evidencia</label>
                   <div id="drop-evidencia" style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;background:var(--card2);" onclick="document.getElementById('img-evidencia').click()" ondragover="event.preventDefault()" ondrop="handleDropMultiple(event,'img-evidencia','preview-evidencia')">
                     <div id="preview-evidencia" style="font-size:11px;color:var(--muted);">📷 Evidencia (1 o 2 imágenes)<br><span style="font-size:10px;">Clic para subir · Arrastra · Ctrl+V</span></div>
                     <input type="file" id="img-evidencia" accept="image/*" multiple style="display:none;" onchange="previewImgMultiple(this,'preview-evidencia')" />
@@ -1104,7 +1104,7 @@
 
             <!-- Imagen del mapa -->
             <div style="margin-bottom:16px;">
-              <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;">Imagen del mapa (rastreo GPS)</label>
+              <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px;" <span style="color:var(--danger);font-weight:700;">*</span></label>
               <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;background:var(--card2);"
                    onclick="document.getElementById('img-credito-mapa').click()"
                    ondragover="event.preventDefault()"
@@ -1140,7 +1140,7 @@
 
             <!-- 3 imágenes de evidencia -->
             <div>
-              <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">Evidencia de la unidad (hasta 3 fotos)</label>
+              <label style="display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;" <span style="color:var(--danger);font-weight:700;">*</span></label>
               <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
                 <div style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:12px;text-align:center;cursor:pointer;background:var(--card2);"
                      onclick="document.getElementById('img-credito-ev1').click()"
@@ -1336,11 +1336,11 @@
                 <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:10px;">Estatus actual</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                   <div class="form-group">
-                    <label>Lugar de recuperación</label>
+                    <label class="req">Lugar de recuperación</label>
                     <input type="text" id="f-abuso-lugar-rec" placeholder="Dirección o descripción" />
                   </div>
                   <div class="form-group">
-                    <label>¿Vehículo remitido?</label>
+                    <label class="req">¿Vehículo remitido?</label>
                     <select id="f-abuso-remitido" onchange="toggleLugarRemision(this.value)">
                       <option value="">Seleccionar...</option>
                       <option>SÍ</option>
@@ -1348,11 +1348,11 @@
                     </select>
                   </div>
                   <div class="form-group" id="campo-lugar-remision" style="display:none;">
-                    <label>Lugar de remisión</label>
+                    <label class="req">Lugar de remisión</label>
                     <input type="text" id="f-abuso-lugar-remision" placeholder="Lugar donde fue remitido" />
                   </div>
                   <div class="form-group">
-                    <label>¿Entregado al cliente?</label>
+                    <label class="req">¿Entregado al cliente?</label>
                     <select id="f-abuso-entregado">
                       <option value="">Seleccionar...</option>
                       <option>SÍ</option>
@@ -1361,7 +1361,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Acciones realizadas</label>
+                  <label class="req">Acciones realizadas</label>
                   <textarea id="f-acciones-abuso-si" style="min-height:120px;" placeholder="Describe detalladamente las acciones tomadas durante el evento..."></textarea>
                 </div>
               </div>
@@ -1379,22 +1379,22 @@
                 <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:10px;">Estatus actual</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                   <div class="form-group">
-                    <label>Lugar de recuperación</label>
+                    <label class="req">Lugar de recuperación</label>
                     <input type="text" id="f-abuso-lugar-rec-no" placeholder="N/A si no aplica" />
                   </div>
                   <div class="form-group">
-                    <label>¿Vehículo remitido?</label>
+                    <label class="req">¿Vehículo remitido?</label>
                     <select id="f-abuso-remitido-no">
                       <option value="NO">NO</option>
                       <option value="SÍ">SÍ</option>
                     </select>
                   </div>
                   <div class="form-group">
-                    <label>Lugar de remisión</label>
+                    <label class="req">Lugar de remisión</label>
                     <input type="text" id="f-abuso-lugar-remision-no" placeholder="N/A si no aplica" />
                   </div>
                   <div class="form-group">
-                    <label>¿Entregado al cliente?</label>
+                    <label class="req">¿Entregado al cliente?</label>
                     <select id="f-abuso-entregado-no">
                       <option value="NO">NO</option>
                       <option value="SÍ">SÍ</option>
@@ -1402,7 +1402,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Acciones realizadas</label>
+                  <label class="req">Acciones realizadas</label>
                   <textarea id="f-acciones-abuso-no" style="min-height:120px;" placeholder="Describe detalladamente las acciones tomadas durante el evento..."></textarea>
                 </div>
               </div>
@@ -2477,6 +2477,16 @@ function selectRecuperacion(v) {
   }
 }
 
+function validarImagen(id, nombre) {
+  const el = document.getElementById(id);
+  if(!el || !el.files || el.files.length === 0) {
+    notify('Campo obligatorio: ' + nombre, 'warning');
+    el?.closest('div[style*="dashed"]')?.scrollIntoView({ behavior:'smooth', block:'center' });
+    return false;
+  }
+  return true;
+}
+
 function validarCampo(id, nombre) {
   const el = document.getElementById(id);
   if(!el) return true;
@@ -2604,6 +2614,8 @@ function nextStep(from) {
     if(esCredito3) {
       // Campos paso 3 visibles para CRÉDITO
       if(!validarCampo('f-credito-ubicacion', 'Ubicación')) return;
+      if(!validarImagen('img-credito-mapa', 'Imagen del mapa (rastreo GPS)')) return;
+      if(!validarImagen('img-credito-ev1', 'Evidencia de la unidad (foto 1)')) return;
       if(!validarCampo('f-credito-coordenadas', 'Coordenadas')) return;
     } else {
       // Campos paso 3 visibles para ROBO / ABUSO
@@ -2630,8 +2642,25 @@ function nextStep(from) {
       if(!validarCampo('f-tiempo-predenuncia', 'Tiempo en dar predenuncia')) return;
       // Solo ABUSO
       if(esAbuso3) {
+        if(!validarCampo('f-poliza', 'No. Póliza')) return;
+        if(!validarImagen('img-lugar-robo', 'Imagen — Lugar del robo')) return;
+        if(!validarImagen('img-evidencia', 'Imagen — Evidencia')) return;
         if(!validarCampo('f-num-carpeta', 'Número de carpeta')) return;
         if(!validarCampo('f-denuncia-mp', '¿Se levanta denuncia en el MP?')) return;
+        // Campos abuso según resultado
+        if(recuperadoSelected === 'si') {
+          if(!validarCampo('f-abuso-lugar-rec', 'Lugar de recuperación')) return;
+          if(!validarCampo('f-abuso-remitido', '¿Vehículo remitido?')) return;
+          if(!validarCampo('f-abuso-lugar-remision', 'Lugar de remisión')) return;
+          if(!validarCampo('f-abuso-entregado', '¿Entregado al cliente?')) return;
+          if(!validarCampo('f-acciones-abuso-si', 'Acciones realizadas')) return;
+        } else if(recuperadoSelected === 'no') {
+          if(!validarCampo('f-abuso-lugar-rec-no', 'Lugar de recuperación')) return;
+          if(!validarCampo('f-abuso-remitido-no', '¿Vehículo remitido?')) return;
+          if(!validarCampo('f-abuso-lugar-remision-no', 'Lugar de remisión')) return;
+          if(!validarCampo('f-abuso-entregado-no', '¿Entregado al cliente?')) return;
+          if(!validarCampo('f-acciones-abuso-no', 'Acciones realizadas')) return;
+        }
       }
     }
     // Resultado: campos según selección
