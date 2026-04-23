@@ -843,7 +843,7 @@
           <div class="card-body">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
               <div class="form-group">
-                <label>Relación con la unidad</label>
+                <label class="req">Relación con la unidad</label>
                 <select id="f-relacion-unidad">
                   <option value="">Seleccionar...</option>
                   <option>Operador</option>
@@ -857,11 +857,11 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Nombre del reportante</label>
+                <label class="req">Nombre del reportante</label>
                 <input type="text" id="f-nombre-reportante" placeholder="Nombre completo" />
               </div>
               <div class="form-group">
-                <label>Medio de contacto</label>
+                <label class="req">Medio de contacto</label>
                 <select id="f-medio-contacto">
                   <option value="">Seleccionar...</option>
                   <option>WHATSAPP</option>
@@ -874,7 +874,7 @@
                 <input type="text" id="f-poliza" placeholder="Número de póliza" />
               </div>
               <div class="form-group">
-                <label>Teléfono del reportante</label>
+                <label class="req">Teléfono del reportante</label>
                 <input type="tel" id="f-tel-reportante" placeholder="Ej. 555 123 4567" />
               </div>
               <div class="form-group">
@@ -1212,7 +1212,7 @@
             <!-- ══ Panel: RECUPERADA ══ -->
             <div id="panel-si" style="display:none;">
               <div class="form-group" style="margin-bottom:10px;">
-                <label>Escenario de cierre</label>
+                <label class="req">Escenario de cierre</label>
                 <select id="f-escenario" onchange="onEscenarioChange(this.value)">
                   <option value="">Seleccionar...</option>
                   <option value="corrralon">1. Remitida a corralón / depósito</option>
@@ -1225,12 +1225,12 @@
               <div id="campos-escenario" style="display:none;margin-bottom:14px;padding:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);">
 
                 <div id="campos-corrralon" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                  <div class="form-group"><label>Lugar de recuperación</label><input type="text" id="f-lugar-rec-corrralon" placeholder="Calle, colonia, municipio" /></div>
-                  <div class="form-group"><label>Fecha de recuperación</label><input type="date" id="f-fecha-rec-corrralon" /></div>
-                  <div class="form-group"><label>Nombre del corralón / depósito</label><input type="text" id="f-nombre-corrralon" placeholder="Ej. Corralón Municipal" /></div>
-                  <div class="form-group"><label>Dirección</label><input type="text" id="f-dir-corrralon" placeholder="Calle, número" /></div>
-                  <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-corrralon" placeholder="Municipio" /></div>
-                  <div class="form-group"><label>Estado</label><select id="f-edo-corrralon"><option value="">Seleccionar...</option>
+                  <div class="form-group"><label class="req">Lugar de recuperación</label><input type="text" id="f-lugar-rec-corrralon" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label class="req">Fecha de recuperación</label><input type="date" id="f-fecha-rec-corrralon" /></div>
+                  <div class="form-group"><label class="req">Nombre del corralón / depósito</label><input type="text" id="f-nombre-corrralon" placeholder="Ej. Corralón Municipal" /></div>
+                  <div class="form-group"><label class="req">Dirección</label><input type="text" id="f-dir-corrralon" placeholder="Calle, número" /></div>
+                  <div class="form-group"><label class="req">Municipio</label><input type="text" id="f-mun-corrralon" placeholder="Municipio" /></div>
+                  <div class="form-group"><label class="req">Estado</label><select id="f-edo-corrralon"><option value="">Seleccionar...</option>
                       <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
                       <option>Campeche</option><option>Chiapas</option><option>Chihuahua</option>
                       <option>Ciudad de México</option><option>Coahuila</option><option>Colima</option>
@@ -1245,11 +1245,11 @@
                 </div></div>
 
                 <div id="campos-cliente" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                  <div class="form-group"><label>Lugar de recuperación</label><input type="text" id="f-lugar-rec-cliente" placeholder="Calle, colonia, municipio" /></div>
-                  <div class="form-group"><label>Fecha de recuperación</label><input type="date" id="f-fecha-rec-cliente" /></div>
-                  <div class="form-group"><label>Nombre del representante legal</label><input type="text" id="f-rep-cliente" placeholder="Nombre completo" /></div>
-                  <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-cliente" placeholder="Ej. Monterrey" /></div>
-                  <div class="form-group"><label>Estado</label><select id="f-edo-cliente"><option value="">Seleccionar...</option>
+                  <div class="form-group"><label class="req">Lugar de recuperación</label><input type="text" id="f-lugar-rec-cliente" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label class="req">Fecha de recuperación</label><input type="date" id="f-fecha-rec-cliente" /></div>
+                  <div class="form-group"><label class="req">Nombre del representante legal</label><input type="text" id="f-rep-cliente" placeholder="Nombre completo" /></div>
+                  <div class="form-group"><label class="req">Municipio</label><input type="text" id="f-mun-cliente" placeholder="Ej. Monterrey" /></div>
+                  <div class="form-group"><label class="req">Estado</label><select id="f-edo-cliente"><option value="">Seleccionar...</option>
                       <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
                       <option>Campeche</option><option>Chiapas</option><option>Chihuahua</option>
                       <option>Ciudad de México</option><option>Coahuila</option><option>Colima</option>
@@ -1274,12 +1274,12 @@
                 </div></div>
 
                 <div id="campos-mp" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                  <div class="form-group"><label>Lugar de recuperación</label><input type="text" id="f-lugar-rec-mp" placeholder="Calle, colonia, municipio" /></div>
-                  <div class="form-group"><label>Fecha de recuperación</label><input type="date" id="f-fecha-rec-mp" /></div>
-                  <div class="form-group"><label>Fiscalía / Agencia del MP</label><input type="text" id="f-fiscalia" placeholder="Ej. Fiscalía General del Estado de NL" /></div>
-                  <div class="form-group"><label>Dirección</label><input type="text" id="f-dir-mp" placeholder="Calle, número" /></div>
-                  <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-mp" placeholder="Municipio" /></div>
-                  <div class="form-group"><label>Estado</label><select id="f-edo-mp"><option value="">Seleccionar...</option>
+                  <div class="form-group"><label class="req">Lugar de recuperación</label><input type="text" id="f-lugar-rec-mp" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label class="req">Fecha de recuperación</label><input type="date" id="f-fecha-rec-mp" /></div>
+                  <div class="form-group"><label class="req">Fiscalía / Agencia del MP</label><input type="text" id="f-fiscalia" placeholder="Ej. Fiscalía General del Estado de NL" /></div>
+                  <div class="form-group"><label class="req">Dirección</label><input type="text" id="f-dir-mp" placeholder="Calle, número" /></div>
+                  <div class="form-group"><label class="req">Municipio</label><input type="text" id="f-mun-mp" placeholder="Municipio" /></div>
+                  <div class="form-group"><label class="req">Estado</label><select id="f-edo-mp"><option value="">Seleccionar...</option>
                       <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
                       <option>Campeche</option><option>Chiapas</option><option>Chihuahua</option>
                       <option>Ciudad de México</option><option>Coahuila</option><option>Colima</option>
@@ -1294,9 +1294,9 @@
                 </div></div>
 
                 <div id="campos-no-fisica" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                  <div class="form-group"><label>Lugar de localización GPS</label><input type="text" id="f-lugar-rec-nofisica" placeholder="Calle, colonia, municipio" /></div>
-                  <div class="form-group"><label>Fecha de localización</label><input type="date" id="f-fecha-rec-nofisica" /></div>
-                  <div class="form-group"><label>Motivo</label>
+                  <div class="form-group"><label class="req">Lugar de localización GPS</label><input type="text" id="f-lugar-rec-nofisica" placeholder="Calle, colonia, municipio" /></div>
+                  <div class="form-group"><label class="req">Fecha de localización</label><input type="date" id="f-fecha-rec-nofisica" /></div>
+                  <div class="form-group"><label class="req">Motivo</label>
                     <select id="f-motivo-nofisica">
                       <option value="">Seleccionar...</option>
                       <option>propiedad privada</option>
@@ -1305,8 +1305,8 @@
                       <option>otro estado</option>
                     </select>
                   </div>
-                  <div class="form-group"><label>Municipio</label><input type="text" id="f-mun-nofisica" placeholder="Ej. Monterrey" /></div>
-                  <div class="form-group"><label>Estado</label><select id="f-edo-nofisica"><option value="">Seleccionar...</option>
+                  <div class="form-group"><label class="req">Municipio</label><input type="text" id="f-mun-nofisica" placeholder="Ej. Monterrey" /></div>
+                  <div class="form-group"><label class="req">Estado</label><select id="f-edo-nofisica"><option value="">Seleccionar...</option>
                       <option>Aguascalientes</option><option>Baja California</option><option>Baja California Sur</option>
                       <option>Campeche</option><option>Chiapas</option><option>Chihuahua</option>
                       <option>Ciudad de México</option><option>Coahuila</option><option>Colima</option>
@@ -1321,8 +1321,8 @@
                 </div></div>
 
                 <div id="campos-extranjero" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                  <div class="form-group"><label>País</label><input type="text" id="f-pais-extranjero" placeholder="Ej. Estados Unidos" /></div>
-                  <div class="form-group"><label>Fecha de localización</label><input type="date" id="f-fecha-rec-extranjero" /></div>
+                  <div class="form-group"><label class="req">País</label><input type="text" id="f-pais-extranjero" placeholder="Ej. Estados Unidos" /></div>
+                  <div class="form-group"><label class="req">Fecha de localización</label><input type="date" id="f-fecha-rec-extranjero" /></div>
                 </div></div>
 
               </div>
@@ -2608,6 +2608,10 @@ function nextStep(from) {
     } else {
       // Campos paso 3 visibles para ROBO / ABUSO
       if(!validarCampo('f-correo-reportante', 'Correo del reportante')) return;
+      if(!validarCampo('f-relacion-unidad', 'Relación con la unidad')) return;
+      if(!validarCampo('f-nombre-reportante', 'Nombre del reportante')) return;
+      if(!validarCampo('f-medio-contacto', 'Medio de contacto')) return;
+      if(!validarCampo('f-tel-reportante', 'Teléfono del reportante')) return;
       if(!validarCampo('f-plataforma', 'Plataforma')) return;
       if(!validarCampo('f-esn', 'ESN')) return;
       if(!validarCampo('f-nick', 'Nick / Alias')) return;
@@ -2625,6 +2629,38 @@ function nextStep(from) {
     // Resultado: campos según selección
     if(!esCredito3 && recuperadoSelected === 'si') {
       if(!validarCampo('f-escenario', 'Escenario de cierre')) return;
+      // Campos según escenario seleccionado
+      const esc = document.getElementById('f-escenario')?.value || '';
+      if(esc === 'corrralon') {
+        if(!validarCampo('f-lugar-rec-corrralon', 'Lugar de recuperación')) return;
+        if(!validarCampo('f-fecha-rec-corrralon', 'Fecha de recuperación')) return;
+        if(!validarCampo('f-nombre-corrralon', 'Nombre del corralón')) return;
+        if(!validarCampo('f-dir-corrralon', 'Dirección')) return;
+        if(!validarCampo('f-mun-corrralon', 'Municipio')) return;
+        if(!validarCampo('f-edo-corrralon', 'Estado')) return;
+      } else if(esc === 'cliente') {
+        if(!validarCampo('f-lugar-rec-cliente', 'Lugar de recuperación')) return;
+        if(!validarCampo('f-fecha-rec-cliente', 'Fecha de recuperación')) return;
+        if(!validarCampo('f-rep-cliente', 'Nombre del representante legal')) return;
+        if(!validarCampo('f-mun-cliente', 'Municipio')) return;
+        if(!validarCampo('f-edo-cliente', 'Estado')) return;
+      } else if(esc === 'mp') {
+        if(!validarCampo('f-lugar-rec-mp', 'Lugar de recuperación')) return;
+        if(!validarCampo('f-fecha-rec-mp', 'Fecha de recuperación')) return;
+        if(!validarCampo('f-fiscalia', 'Fiscalía / Agencia del MP')) return;
+        if(!validarCampo('f-dir-mp', 'Dirección')) return;
+        if(!validarCampo('f-mun-mp', 'Municipio')) return;
+        if(!validarCampo('f-edo-mp', 'Estado')) return;
+      } else if(esc === 'no-fisica') {
+        if(!validarCampo('f-lugar-rec-nofisica', 'Lugar de localización GPS')) return;
+        if(!validarCampo('f-fecha-rec-nofisica', 'Fecha de localización')) return;
+        if(!validarCampo('f-motivo-nofisica', 'Motivo')) return;
+        if(!validarCampo('f-mun-nofisica', 'Municipio')) return;
+        if(!validarCampo('f-edo-nofisica', 'Estado')) return;
+      } else if(esc === 'extranjero') {
+        if(!validarCampo('f-pais-extranjero', 'País')) return;
+        if(!validarCampo('f-fecha-rec-extranjero', 'Fecha de localización')) return;
+      }
     }
     if(!esCredito3 && recuperadoSelected === 'cancel') {
       if(!validarCampo('f-cancel-autoriza', 'Quién autoriza')) return;
