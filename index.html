@@ -2825,15 +2825,15 @@ async function registerEvento() {
   let mes = '—', hora = 0;
   const meses = ['01. ENERO','02. FEBRERO','03. MARZO','04. ABRIL','05. MAYO','06. JUNIO',
                  '07. JULIO','08. AGOSTO','09. SEPTIEMBRE','10. OCTUBRE','11. NOVIEMBRE','12. DICIEMBRE'];
-  if(fechaAtencion && fechaAtencion !== '—' && fechaAtencion.includes('T')) {
-    // fechaAtencion = "2026-03-12T12:13" — parsear directamente sin new Date()
-    const partes = fechaAtencion.split('T');
-    const fecha = partes[0]; // "2026-03-12"
-    const tiempo = partes[1] || '00:00'; // "12:13" o "12:13:00"
+  // Leer siempre del input raw para evitar problemas de zona horaria
+  const fechaRaw = document.getElementById('f-fecha')?.value || '';
+  if(fechaRaw && fechaRaw.includes('T')) {
+    const partes = fechaRaw.split('T');
+    const fecha = partes[0];
+    const tiempo = partes[1] || '00:00';
     const mesIdx = parseInt(fecha.split('-')[1]) - 1;
     mes = meses[mesIdx] || '—';
     hora = parseInt(tiempo.split(':')[0]);
-    console.log('fechaAtencion:', fechaAtencion, '| hora extraída:', hora, '| horario:', hora >= 7 && hora < 14 ? 'MATUTINO' : hora >= 14 && hora < 20 ? 'VESPERTINO' : 'NOCTURNO');
   } else {
     const ahora = new Date();
     mes = meses[ahora.getMonth()] || '—';
@@ -4108,9 +4108,14 @@ async function probarSheets() {
         fechaAtencion: (function() {
           const v = document.getElementById('f-fecha')?.value || '';
           if(!v) return '—';
-          const d = new Date(v);
-          if(isNaN(d)) return v;
-          return d.toLocaleDateString('es-MX', {day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + d.toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit', hour12:true});
+          // Parsear sin conversión de zona horaria
+          if(v.includes('T')) {
+            const [fecha, tiempo] = v.split('T');
+            const [y, m, d] = fecha.split('-');
+            const [hh, mm] = tiempo.split(':');
+            return d + '/' + m + '/' + y + ' ' + hh + ':' + mm;
+          }
+          return v;
         })(),
         fechaRecuperacion: (function() {
           const escenario = document.getElementById('f-escenario')?.value || '';
