@@ -3918,9 +3918,13 @@ async function probarPDF() {
           fecha_atencion: (function() {
             const v = document.getElementById('f-fecha')?.value || '';
             if(!v) return '—';
-            const d = new Date(v);
-            if(isNaN(d)) return v;
-            return d.toLocaleDateString('es-MX', {day:'2-digit',month:'2-digit',year:'numeric'}) + ' ' + d.toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit', hour12:true});
+            if(v.includes('T')) {
+              const [fecha, tiempo] = v.split('T');
+              const [y, m, d] = fecha.split('-');
+              const [hh, mm] = (tiempo || '00:00').split(':');
+              return d + '/' + m + '/' + y + ' ' + hh + ':' + mm;
+            }
+            return v;
           })(),
           nombre_reportante: document.getElementById('f-nombre-reportante')?.value || '—',
           relacion_unidad: document.getElementById('f-relacion-unidad')?.value || '—',
@@ -4108,16 +4112,22 @@ async function probarSheets() {
         fechaAtencion: (function() {
           const v = document.getElementById('f-fecha')?.value || '';
           if(!v) return '—';
-          // Parsear sin conversión de zona horaria
           if(v.includes('T')) {
             const [fecha, tiempo] = v.split('T');
             const [y, m, d] = fecha.split('-');
-            const [hh, mm] = tiempo.split(':');
+            const [hh, mm] = (tiempo || '00:00').split(':');
             return d + '/' + m + '/' + y + ' ' + hh + ':' + mm;
           }
           return v;
         })(),
         fechaRecuperacion: (function() {
+          const tipoEv = document.getElementById('f-tipo-evento')?.value || '';
+          if(tipoEv === 'ABUSO DE CONFIANZA') {
+            const valSi = document.getElementById('f-abuso-fecha-rec')?.value || '';
+            const valNo = document.getElementById('f-abuso-fecha-rec-no')?.value || '';
+            console.log('abuso fecha rec si:', valSi, '| no:', valNo);
+            return formatFecha(valSi || valNo) || '—';
+          }
           const escenario = document.getElementById('f-escenario')?.value || '';
           const campos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica'};
           return formatFecha(document.getElementById(campos[escenario])?.value) || '—';
@@ -4129,6 +4139,13 @@ async function probarSheets() {
         reporteRobo: document.getElementById('f-tiempo-reporte')?.value || '—',
         reportePreDenuncia: document.getElementById('f-tiempo-predenuncia')?.value || '—',
         fechaRecuperacion: (function() {
+          const tipoEv = document.getElementById('f-tipo-evento')?.value || '';
+          if(tipoEv === 'ABUSO DE CONFIANZA') {
+            const valSi = document.getElementById('f-abuso-fecha-rec')?.value || '';
+            const valNo = document.getElementById('f-abuso-fecha-rec-no')?.value || '';
+            console.log('abuso fecha rec si:', valSi, '| no:', valNo);
+            return formatFecha(valSi || valNo) || '—';
+          }
           const escenario = document.getElementById('f-escenario')?.value || '';
           const campos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica'};
           return formatFecha(document.getElementById(campos[escenario])?.value) || '—';
