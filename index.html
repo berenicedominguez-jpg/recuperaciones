@@ -989,7 +989,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label style="margin-bottom:8px;display:block;">Autoridades contactadas</label>
+              <label style="margin-bottom:8px;display:block;">Autoridades contactadas <span style="color:var(--danger);font-weight:700;">*</span></label>
               <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
                 <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
                   <input type="checkbox" id="aut-municipales" style="accent-color:var(--accent);width:13px;height:13px;"> Municipales
@@ -2618,6 +2618,14 @@ function nextStep(from) {
       if(!validarCampo('f-tipo-unidad', 'Tipo de unidad')) return;
       if(!validarCampo('f-costo', 'Costo estimado')) return;
       if(!validarCampo('f-estado-rep', 'Estado de la República')) return;
+      // Autoridades — al menos una obligatoria
+      const autIds = ['aut-municipales','aut-estatales','aut-federales','aut-gn','aut-marina','aut-anerpv','aut-fuerza','aut-emergencias','aut-ssp','aut-recuperadores'];
+      const algunaAutoridad = autIds.some(id => document.getElementById(id)?.checked);
+      if(!algunaAutoridad) {
+        notify('Selecciona al menos una autoridad contactada', 'warning');
+        document.querySelector('[id^="aut-"]')?.closest('div')?.scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+      }
       if(!validarCampo('f-tiempo-reporte', 'Tiempo en reportar el robo')) return;
       if(!validarCampo('f-tiempo-predenuncia', 'Tiempo en dar predenuncia')) return;
       // Solo ABUSO
