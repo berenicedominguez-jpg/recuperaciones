@@ -2642,23 +2642,41 @@ function nextStep(from) {
       if(!validarCampo('f-tiempo-predenuncia', 'Tiempo en dar predenuncia')) return;
       // Solo ABUSO
       if(esAbuso3) {
-        if(!validarCampo('f-poliza', 'No. Póliza')) return;
+        // f-poliza visible solo si campo-poliza está visible
+        const campoPolizaEl = document.getElementById('campo-poliza');
+        if(campoPolizaEl && campoPolizaEl.style.display !== 'none') {
+          if(!validarCampo('f-poliza', 'No. Póliza')) return;
+        }
         if(!validarImagen('img-lugar-robo', 'Imagen — Lugar del robo')) return;
         if(!validarImagen('img-evidencia', 'Imagen — Evidencia')) return;
         if(!validarCampo('f-num-carpeta', 'Número de carpeta')) return;
         if(!validarCampo('f-denuncia-mp', '¿Se levanta denuncia en el MP?')) return;
         // Campos abuso según resultado
         if(recuperadoSelected === 'si') {
-          if(!validarCampo('f-abuso-lugar-rec', 'Lugar de recuperación')) return;
-          if(!validarCampo('f-abuso-remitido', '¿Vehículo remitido?')) return;
-          if(!validarCampo('f-abuso-lugar-remision', 'Lugar de remisión')) return;
-          if(!validarCampo('f-abuso-entregado', '¿Entregado al cliente?')) return;
+          // campos-abuso-estatus-si solo visible si recuperado
+          const estatusSi = document.getElementById('campos-abuso-estatus-si');
+          if(estatusSi && estatusSi.style.display !== 'none') {
+            if(!validarCampo('f-abuso-lugar-rec', 'Lugar de recuperación')) return;
+            if(!validarCampo('f-abuso-remitido', '¿Vehículo remitido?')) return;
+            // f-abuso-lugar-remision solo visible si remitido = SÍ
+            const lugarRemision = document.getElementById('campo-lugar-remision');
+            if(lugarRemision && lugarRemision.style.display !== 'none') {
+              if(!validarCampo('f-abuso-lugar-remision', 'Lugar de remisión')) return;
+            }
+            if(!validarCampo('f-abuso-entregado', '¿Entregado al cliente?')) return;
+          }
           if(!validarCampo('f-acciones-abuso-si', 'Acciones realizadas')) return;
         } else if(recuperadoSelected === 'no') {
-          if(!validarCampo('f-abuso-lugar-rec-no', 'Lugar de recuperación')) return;
-          if(!validarCampo('f-abuso-remitido-no', '¿Vehículo remitido?')) return;
-          if(!validarCampo('f-abuso-lugar-remision-no', 'Lugar de remisión')) return;
-          if(!validarCampo('f-abuso-entregado-no', '¿Entregado al cliente?')) return;
+          const estatusNo = document.getElementById('campos-abuso-estatus-no');
+          if(estatusNo && estatusNo.style.display !== 'none') {
+            if(!validarCampo('f-abuso-lugar-rec-no', 'Lugar de recuperación')) return;
+            if(!validarCampo('f-abuso-remitido-no', '¿Vehículo remitido?')) return;
+            const lugarRemisionNo = document.getElementById('campo-lugar-remision-no');
+            if(lugarRemisionNo && lugarRemisionNo.style.display !== 'none') {
+              if(!validarCampo('f-abuso-lugar-remision-no', 'Lugar de remisión')) return;
+            }
+            if(!validarCampo('f-abuso-entregado-no', '¿Entregado al cliente?')) return;
+          }
           if(!validarCampo('f-acciones-abuso-no', 'Acciones realizadas')) return;
         }
       }
