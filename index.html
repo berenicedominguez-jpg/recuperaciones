@@ -2812,7 +2812,7 @@ async function registerEvento() {
   const costo       = document.getElementById('f-costo')?.value           || '—';
   const tipoAlerta  = getTiposAlerta().join(' + ') || 'N/A';
   const paroMotor   = getParoMotor();
-  const coordenadas = document.getElementById('f-coords')?.value || '—';
+  const coordenadas = document.getElementById('f-coords')?.value || window._lastCoordenadas || localStorage.getItem('cim_coords') || '—';
   const resultadoLabel = esCredito
     ? (resultado === 'si' ? 'RECUPERACIÓN EXITOSA' : 'NO EXITOSA')
     : ({ si:'RECUPERADA', no:'NO RECUPERADA', cancel:'CANCELADO' }[resultado] || '—');
