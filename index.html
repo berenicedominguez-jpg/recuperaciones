@@ -2507,7 +2507,6 @@ function esVisible(id) {
 function nextStep(from) {
   if(from===1) {
     const tipoEvento = document.getElementById('f-tipo-evento')?.value || '';
-    const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
     if(!tipoEvento) { notify('Selecciona el tipo de evento', 'warning'); return; }
     if(!validarCampo('f-monitorista', 'Monitorista responsable')) return;
     if(!validarCampo('f-fecha', 'Fecha y hora de reporte')) return;
@@ -2525,7 +2524,10 @@ function nextStep(from) {
   if(from===2) {
     const tipoEvento2 = document.getElementById('f-tipo-evento')?.value || '';
     const esCredito2 = tipoEvento2 === 'RECUPERACIÓN DE CRÉDITO';
+    const esRobo2    = tipoEvento2 === 'ROBO';
+
     if(esCredito2) {
+      // Campos del paso 2 para CRÉDITO
       if(!validarCampo('f-credito-razon', 'Razón social')) return;
       if(!validarCampo('f-credito-tk', 'TK')) return;
       if(!validarCampo('f-marca-credito', 'Marca')) return;
@@ -2539,53 +2541,24 @@ function nextStep(from) {
       if(!validarCampo('f-credito-localidad', 'Localidad de gestión')) return;
       if(!validarCampo('f-credito-resguardo', 'Lugar de resguardo')) return;
       if(!validarCampo('f-credito-gestor', 'Gestor asignado')) return;
-      if(!validarCampo('f-credito-ubicacion', 'Ubicación')) return;
-      if(!validarCampo('f-credito-coordenadas', 'Coordenadas')) return;
       if(!validarCampo('f-credito-correo', 'Correo del cliente')) return;
     } else {
-      if(!validarCampo('f-nick', 'Nick / Alias')) return;
-      if(!validarCampo('f-plataforma', 'Plataforma')) return;
-      if(!validarCampo('f-esn', 'ESN')) return;
-      if(!validarCampo('f-lugar', 'Lugar del evento')) return;
-      if(!validarCampo('f-coords', 'Coordenadas GPS')) return;
-      if(!validarCampo('f-hora-robo-raw', 'Hora del robo')) return;
-      if(!validarCampo('f-ultima-senal', 'Última señal GPS')) return;
+      // Campos del paso 2 para ROBO / ABUSO
+      if(!validarCampo('f-cliente', 'Razón social / Cliente')) return;
       if(!validarCampo('f-marca', 'Marca')) return;
       if(!validarCampo('f-modelo', 'Modelo')) return;
       if(!validarCampo('f-anio', 'Año')) return;
       if(!validarCampo('f-color', 'Color')) return;
       if(!validarCampo('f-placas', 'Placas')) return;
-      if(!validarCampo('f-serie', 'Serie')) return;
+      if(!validarCampo('f-serie', 'No. de serie')) return;
+      if(!validarCampo('f-lugar', 'Lugar del evento')) return;
+      if(!validarCampo('f-coords', 'Coordenadas GPS')) return;
       if(!validarCampo('f-fecha-robo', 'Fecha del robo')) return;
-      if(!validarCampo('f-tipo-unidad', 'Tipo de unidad')) return;
-      if(!validarCampo('f-costo', 'Costo estimado')) return;
-      if(!validarCampo('f-estado-rep', 'Estado de la República')) return;
-      if(!validarCampo('f-folio911-step1', 'Folio 911')) return;
-      if(!validarCampo('f-tiempo-reporte', 'Tiempo en reportar el robo')) return;
-      if(!validarCampo('f-tiempo-predenuncia', 'Tiempo en dar predenuncia')) return;
-      // Paro de motor — obligatorio
-      const paroSeleccionado = document.querySelector('input[name="paro-motor"]:checked');
-      if(!paroSeleccionado) {
-        notify('Selecciona una opción de Paro de motor', 'warning');
-        document.getElementById('paro-opciones')?.scrollIntoView({ behavior:'smooth', block:'center' });
-        return;
+      if(!validarCampo('f-hora-robo-raw', 'Hora del robo')) return;
+      if(!validarCampo('f-ultima-senal', 'Última señal GPS')) return;
+      if(esRobo2) {
+        if(!validarCampo('f-folio911-step1', 'Folio 911')) return;
       }
-      // Alertas — obligatorio solo si toggle está activado
-      const alertaActiva = document.getElementById('toggle-alerta')?.checked;
-      if(alertaActiva) {
-        const algunaTipoAlerta = ['chk-ta-panico','chk-ta-desconexion','chk-ta-jammer'].some(id => document.getElementById(id)?.checked);
-        if(!algunaTipoAlerta) {
-          notify('Selecciona al menos un tipo de alerta', 'warning');
-          document.getElementById('tipo-alerta-row')?.scrollIntoView({ behavior:'smooth', block:'center' });
-          return;
-        }
-      }
-      // Abuso de confianza
-      if(tipoEvento2 === 'ABUSO DE CONFIANZA') {
-        if(!validarCampo('f-num-carpeta', 'Número de carpeta')) return;
-        if(!validarCampo('f-denuncia-mp', '¿Se levanta denuncia en el MP?')) return;
-      }
-      if(!validarCampo('f-correo-reportante', 'Correo del reportante')) return;
     }
     // Guardar campos del paso 2 en variables globales antes de ocultarlo
     const _coordsVal = document.getElementById('f-coords')?.value;
@@ -2603,6 +2576,58 @@ function nextStep(from) {
   }
   if(from===3) {
     if(!recuperadoSelected) { notify('Indica el resultado del evento','warning'); return; }
+    const tipoEvento3 = document.getElementById('f-tipo-evento')?.value || '';
+    const esCredito3 = tipoEvento3 === 'RECUPERACIÓN DE CRÉDITO';
+    const esAbuso3   = tipoEvento3 === 'ABUSO DE CONFIANZA';
+    const esRobo3    = tipoEvento3 === 'ROBO';
+
+    if(esCredito3) {
+      // Campos paso 3 visibles para CRÉDITO
+      if(!validarCampo('f-credito-ubicacion', 'Ubicación')) return;
+      if(!validarCampo('f-credito-coordenadas', 'Coordenadas')) return;
+    } else {
+      // Campos paso 3 visibles para ROBO / ABUSO
+      if(!validarCampo('f-correo-reportante', 'Correo del reportante')) return;
+      if(!validarCampo('f-plataforma', 'Plataforma')) return;
+      if(!validarCampo('f-esn', 'ESN')) return;
+      if(!validarCampo('f-nick', 'Nick / Alias')) return;
+      if(!validarCampo('f-tipo-unidad', 'Tipo de unidad')) return;
+      if(!validarCampo('f-costo', 'Costo estimado')) return;
+      if(!validarCampo('f-estado-rep', 'Estado de la República')) return;
+      if(!validarCampo('f-tiempo-reporte', 'Tiempo en reportar el robo')) return;
+      if(!validarCampo('f-tiempo-predenuncia', 'Tiempo en dar predenuncia')) return;
+      // Paro de motor
+      const paroSeleccionado = document.querySelector('input[name="paro-motor"]:checked');
+      if(!paroSeleccionado) {
+        notify('Selecciona una opción de Paro de motor', 'warning');
+        document.getElementById('paro-opciones')?.scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+      }
+      // Alertas — solo si toggle activado
+      const alertaActiva = document.getElementById('toggle-alerta')?.checked;
+      if(alertaActiva) {
+        const algunaTipoAlerta = ['chk-ta-panico','chk-ta-desconexion','chk-ta-jammer'].some(id => document.getElementById(id)?.checked);
+        if(!algunaTipoAlerta) {
+          notify('Selecciona al menos un tipo de alerta', 'warning');
+          document.getElementById('tipo-alerta-row')?.scrollIntoView({ behavior:'smooth', block:'center' });
+          return;
+        }
+      }
+      // Solo ABUSO
+      if(esAbuso3) {
+        if(!validarCampo('f-num-carpeta', 'Número de carpeta')) return;
+        if(!validarCampo('f-denuncia-mp', '¿Se levanta denuncia en el MP?')) return;
+      }
+    }
+    // Resultado: campos según selección
+    if(!esCredito3 && recuperadoSelected === 'si') {
+      if(!validarCampo('f-escenario', 'Escenario de cierre')) return;
+    }
+    if(!esCredito3 && recuperadoSelected === 'cancel') {
+      if(!validarCampo('f-cancel-autoriza', 'Quién autoriza')) return;
+      if(!validarCampo('f-cancel-motivo', 'Motivo de cancelación')) return;
+      if(!validarCampo('f-cancel-fecha', 'Fecha de cancelación')) return;
+    }
     // Ocultar paso, mostrar pantalla de verificación
     document.getElementById('form-step-3').style.display='none';
     const conf = document.getElementById('form-step-4-confirm');
@@ -2661,7 +2686,26 @@ async function registerEvento() {
   if(!resultado) { notify('Indica el resultado del evento', 'warning'); return; }
   const tipoEvento  = document.getElementById('f-tipo-evento')?.value     || '—';
   const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
-  // Validar resultado seleccionado con campos visibles del paso 3
+  const esRobo    = tipoEvento === 'ROBO';
+  const esAbuso   = tipoEvento === 'ABUSO DE CONFIANZA';
+
+  // Validaciones campos físicamente en PASO 3
+  if(!esCredito) {
+    if(!validarCampo('f-nick', 'Nick / Alias')) return;
+    if(!validarCampo('f-plataforma', 'Plataforma')) return;
+    if(!validarCampo('f-esn', 'ESN')) return;
+    if(!validarCampo('f-tipo-unidad', 'Tipo de unidad')) return;
+    if(!validarCampo('f-costo', 'Costo estimado')) return;
+    if(!validarCampo('f-estado-rep', 'Estado de la República')) return;
+    if(!validarCampo('f-tiempo-reporte', 'Tiempo en reportar el robo')) return;
+    if(!validarCampo('f-tiempo-predenuncia', 'Tiempo en dar predenuncia')) return;
+    if(!validarCampo('f-correo-reportante', 'Correo del reportante')) return;
+    if(esAbuso) {
+      if(!validarCampo('f-num-carpeta', 'Número de carpeta')) return;
+      if(!validarCampo('f-denuncia-mp', '¿Se levanta denuncia en el MP?')) return;
+    }
+  }
+  // Validaciones según resultado
   if(!esCredito && resultado === 'si') {
     if(!validarCampo('f-escenario', 'Escenario de cierre')) return;
   }
@@ -2670,6 +2714,7 @@ async function registerEvento() {
     if(!validarCampo('f-cancel-motivo', 'Motivo de cancelación')) return;
     if(!validarCampo('f-cancel-fecha', 'Fecha de cancelación')) return;
   }
+
   const empresa     = document.getElementById('f-empresa-atiende')?.value || '';
   const cliente     = document.getElementById('f-cliente')?.value         || '—';
   const placas      = document.getElementById('f-placas')?.value          || '—';
