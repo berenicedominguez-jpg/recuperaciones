@@ -2511,6 +2511,25 @@ function nextStep(from) {
     if(!validarCampo('f-monitorista', 'Monitorista responsable')) return;
     if(!validarCampo('f-fecha', 'Fecha y hora de reporte')) return;
     if(!validarCampo('f-plantilla-raw', 'Plantilla del evento')) return;
+    // Paro de motor — en paso 1, solo para ROBO y ABUSO
+    if(tipoEvento !== 'RECUPERACIÓN DE CRÉDITO') {
+      const paroSeleccionado = document.querySelector('input[name="paro-motor"]:checked');
+      if(!paroSeleccionado) {
+        notify('Selecciona una opción de Paro de motor', 'warning');
+        document.getElementById('paro-opciones')?.scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+      }
+      // Alertas — solo si toggle activado
+      const alertaActiva = document.getElementById('toggle-alerta')?.checked;
+      if(alertaActiva) {
+        const algunaTipoAlerta = ['chk-ta-panico','chk-ta-desconexion','chk-ta-jammer'].some(id => document.getElementById(id)?.checked);
+        if(!algunaTipoAlerta) {
+          notify('Selecciona al menos un tipo de alerta', 'warning');
+          document.getElementById('tipo-alerta-row')?.scrollIntoView({ behavior:'smooth', block:'center' });
+          return;
+        }
+      }
+    }
     origenSelected = origenSelected || 'llamada';
     syncParsedToForm();
     // Para crédito: ocultar persona que reporta en paso 3
@@ -2596,23 +2615,6 @@ function nextStep(from) {
       if(!validarCampo('f-estado-rep', 'Estado de la República')) return;
       if(!validarCampo('f-tiempo-reporte', 'Tiempo en reportar el robo')) return;
       if(!validarCampo('f-tiempo-predenuncia', 'Tiempo en dar predenuncia')) return;
-      // Paro de motor
-      const paroSeleccionado = document.querySelector('input[name="paro-motor"]:checked');
-      if(!paroSeleccionado) {
-        notify('Selecciona una opción de Paro de motor', 'warning');
-        document.getElementById('paro-opciones')?.scrollIntoView({ behavior:'smooth', block:'center' });
-        return;
-      }
-      // Alertas — solo si toggle activado
-      const alertaActiva = document.getElementById('toggle-alerta')?.checked;
-      if(alertaActiva) {
-        const algunaTipoAlerta = ['chk-ta-panico','chk-ta-desconexion','chk-ta-jammer'].some(id => document.getElementById(id)?.checked);
-        if(!algunaTipoAlerta) {
-          notify('Selecciona al menos un tipo de alerta', 'warning');
-          document.getElementById('tipo-alerta-row')?.scrollIntoView({ behavior:'smooth', block:'center' });
-          return;
-        }
-      }
       // Solo ABUSO
       if(esAbuso3) {
         if(!validarCampo('f-num-carpeta', 'Número de carpeta')) return;
@@ -2686,34 +2688,7 @@ async function registerEvento() {
   if(!resultado) { notify('Indica el resultado del evento', 'warning'); return; }
   const tipoEvento  = document.getElementById('f-tipo-evento')?.value     || '—';
   const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
-  const esRobo    = tipoEvento === 'ROBO';
-  const esAbuso   = tipoEvento === 'ABUSO DE CONFIANZA';
-
-  // Validaciones campos físicamente en PASO 3
-  if(!esCredito) {
-    if(!validarCampo('f-nick', 'Nick / Alias')) return;
-    if(!validarCampo('f-plataforma', 'Plataforma')) return;
-    if(!validarCampo('f-esn', 'ESN')) return;
-    if(!validarCampo('f-tipo-unidad', 'Tipo de unidad')) return;
-    if(!validarCampo('f-costo', 'Costo estimado')) return;
-    if(!validarCampo('f-estado-rep', 'Estado de la República')) return;
-    if(!validarCampo('f-tiempo-reporte', 'Tiempo en reportar el robo')) return;
-    if(!validarCampo('f-tiempo-predenuncia', 'Tiempo en dar predenuncia')) return;
-    if(!validarCampo('f-correo-reportante', 'Correo del reportante')) return;
-    if(esAbuso) {
-      if(!validarCampo('f-num-carpeta', 'Número de carpeta')) return;
-      if(!validarCampo('f-denuncia-mp', '¿Se levanta denuncia en el MP?')) return;
-    }
-  }
-  // Validaciones según resultado
-  if(!esCredito && resultado === 'si') {
-    if(!validarCampo('f-escenario', 'Escenario de cierre')) return;
-  }
-  if(!esCredito && resultado === 'cancel') {
-    if(!validarCampo('f-cancel-autoriza', 'Quién autoriza')) return;
-    if(!validarCampo('f-cancel-motivo', 'Motivo de cancelación')) return;
-    if(!validarCampo('f-cancel-fecha', 'Fecha de cancelación')) return;
-  }
+  // Todas las validaciones del paso 3 ya se hicieron en nextStep(from===3)
 
   const empresa     = document.getElementById('f-empresa-atiende')?.value || '';
   const cliente     = document.getElementById('f-cliente')?.value         || '—';
