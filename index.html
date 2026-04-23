@@ -3880,7 +3880,7 @@ async function probarDrive() {
 async function probarPDF() {
   // Capturar TODO antes de cualquier await
   const p = buildPayload();
-  const _coordsSnapshot = p.coords && p.coords !== '—' ? p.coords : (localStorage.getItem('cim_coords') || '—');
+  const _coordsSnapshot = document.getElementById('f-coords')?.value || p.coords || window._lastCoordenadas || localStorage.getItem('cim_coords') || '—';
   setCheck('pdf', 'pending', 'Despertando servicio...');
   try { await fetch('https://pdf-service-1-x0dr.onrender.com/health'); } catch(e) {}
   await new Promise(r => setTimeout(r, 3000));
@@ -4125,7 +4125,6 @@ async function probarSheets() {
           if(tipoEv === 'ABUSO DE CONFIANZA') {
             const valSi = document.getElementById('f-abuso-fecha-rec')?.value || '';
             const valNo = document.getElementById('f-abuso-fecha-rec-no')?.value || '';
-            console.log('abuso fecha rec si:', valSi, '| no:', valNo);
             return formatFecha(valSi || valNo) || '—';
           }
           const escenario = document.getElementById('f-escenario')?.value || '';
@@ -4143,7 +4142,6 @@ async function probarSheets() {
           if(tipoEv === 'ABUSO DE CONFIANZA') {
             const valSi = document.getElementById('f-abuso-fecha-rec')?.value || '';
             const valNo = document.getElementById('f-abuso-fecha-rec-no')?.value || '';
-            console.log('abuso fecha rec si:', valSi, '| no:', valNo);
             return formatFecha(valSi || valNo) || '—';
           }
           const escenario = document.getElementById('f-escenario')?.value || '';
