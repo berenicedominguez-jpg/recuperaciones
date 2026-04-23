@@ -1340,6 +1340,10 @@
                     <input type="text" id="f-abuso-lugar-rec" placeholder="Dirección o descripción" />
                   </div>
                   <div class="form-group">
+                    <label class="req">Fecha de recuperación</label>
+                    <input type="date" id="f-abuso-fecha-rec" />
+                  </div>
+                  <div class="form-group">
                     <label class="req">¿Vehículo remitido?</label>
                     <select id="f-abuso-remitido" onchange="toggleLugarRemision(this.value)">
                       <option value="">Seleccionar...</option>
@@ -1381,6 +1385,10 @@
                   <div class="form-group">
                     <label class="req">Lugar de recuperación</label>
                     <input type="text" id="f-abuso-lugar-rec-no" placeholder="N/A si no aplica" />
+                  </div>
+                  <div class="form-group">
+                    <label class="req">Fecha de recuperación</label>
+                    <input type="date" id="f-abuso-fecha-rec-no" />
                   </div>
                   <div class="form-group">
                     <label class="req">¿Vehículo remitido?</label>
@@ -2657,6 +2665,7 @@ function nextStep(from) {
           const estatusSi = document.getElementById('campos-abuso-estatus-si');
           if(estatusSi && estatusSi.style.display !== 'none') {
             if(!validarCampo('f-abuso-lugar-rec', 'Lugar de recuperación')) return;
+            if(!validarCampo('f-abuso-fecha-rec', 'Fecha de recuperación')) return;
             if(!validarCampo('f-abuso-remitido', '¿Vehículo remitido?')) return;
             // f-abuso-lugar-remision solo visible si remitido = SÍ
             const lugarRemision = document.getElementById('campo-lugar-remision');
@@ -2670,6 +2679,7 @@ function nextStep(from) {
           const estatusNo = document.getElementById('campos-abuso-estatus-no');
           if(estatusNo && estatusNo.style.display !== 'none') {
             if(!validarCampo('f-abuso-lugar-rec-no', 'Lugar de recuperación')) return;
+            if(!validarCampo('f-abuso-fecha-rec-no', 'Fecha de recuperación')) return;
             if(!validarCampo('f-abuso-remitido-no', '¿Vehículo remitido?')) return;
             const lugarRemisionNo = document.getElementById('campo-lugar-remision-no');
             if(lugarRemisionNo && lugarRemisionNo.style.display !== 'none') {
@@ -2811,17 +2821,34 @@ async function registerEvento() {
   const autoridades = autIds.map((id,i) => document.getElementById('aut-'+id)?.checked ? autNombres[i] : null).filter(Boolean).join(', ') || '—';
 
   // Calcular MES y HORARIO desde fecha de reporte
-  const fechaObj = fechaAtencion ? new Date(fechaAtencion) : new Date();
+  // Parsear fecha sin conversión de zona horaria (datetime-local es hora local)
+  let mes = '—', hora = 0;
   const meses = ['01. ENERO','02. FEBRERO','03. MARZO','04. ABRIL','05. MAYO','06. JUNIO',
                  '07. JULIO','08. AGOSTO','09. SEPTIEMBRE','10. OCTUBRE','11. NOVIEMBRE','12. DICIEMBRE'];
-  const mes = meses[fechaObj.getMonth()] || '—';
-  const hora = fechaObj.getHours();
+  if(fechaAtencion && fechaAtencion !== '—' && fechaAtencion.includes('T')) {
+    // fechaAtencion = "2026-03-12T12:13" — parsear directamente sin new Date()
+    const partes = fechaAtencion.split('T');
+    const fecha = partes[0]; // "2026-03-12"
+    const tiempo = partes[1] || '00:00'; // "12:13" o "12:13:00"
+    const mesIdx = parseInt(fecha.split('-')[1]) - 1;
+    mes = meses[mesIdx] || '—';
+    hora = parseInt(tiempo.split(':')[0]);
+    console.log('fechaAtencion:', fechaAtencion, '| hora extraída:', hora, '| horario:', hora >= 7 && hora < 14 ? 'MATUTINO' : hora >= 14 && hora < 20 ? 'VESPERTINO' : 'NOCTURNO');
+  } else {
+    const ahora = new Date();
+    mes = meses[ahora.getMonth()] || '—';
+    hora = ahora.getHours();
+  }
   const horarioReporte = hora >= 7 && hora < 14 ? 'MATUTINO' : hora >= 14 && hora < 20 ? 'VESPERTINO' : 'NOCTURNO';
+  const fechaObj = fechaAtencion && fechaAtencion !== '—' ? (() => { const [d,t] = fechaAtencion.split('T'); const [y,m,day] = d.split('-'); return new Date(+y,+m-1,+day,hora); })() : new Date();
 
   // Campos según resultado
   const escenario = document.getElementById('f-escenario')?.value || '';
   const fechaRecCampos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica', extranjero:'f-fecha-rec-extranjero'};
-  const fechaRecuperacion = document.getElementById(fechaRecCampos[escenario])?.value || '—';
+  const esAbuso = tipoEvento === 'ABUSO DE CONFIANZA';
+  const fechaRecuperacion = esAbuso
+    ? (document.getElementById('f-abuso-fecha-rec')?.value || document.getElementById('f-abuso-fecha-rec-no')?.value || '—')
+    : (document.getElementById(fechaRecCampos[escenario])?.value || '—');
   const acciones = document.getElementById('f-acciones-abuso-si')?.value || document.getElementById('f-acciones-abuso-no')?.value || '—';
   const observaciones = document.getElementById('f-observaciones-no')?.value || acciones;
   const tiempoReporte     = document.getElementById('f-tiempo-reporte')?.value     || '—';
