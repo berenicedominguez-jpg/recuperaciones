@@ -1220,6 +1220,7 @@
                   <option value="mp">3. Puesta a disposición del Ministerio Público</option>
                   <option value="no-fisica">4. Localizada pero no recuperada físicamente</option>
                   <option value="extranjero">5. Localizada en el extranjero</option>
+                  <option value="otro">6. Otro</option>
                 </select>
               </div>
               <div id="campos-escenario" style="display:none;margin-bottom:14px;padding:14px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);">
@@ -1324,6 +1325,12 @@
                   <div class="form-group"><label class="req">País</label><input type="text" id="f-pais-extranjero" placeholder="Ej. Estados Unidos" /></div>
                   <div class="form-group"><label class="req">Fecha de localización</label><input type="date" id="f-fecha-rec-extranjero" /></div>
                 </div></div>
+
+                <div id="campos-otro" style="display:none;">
+                <div class="form-group">
+                  <label class="req">Descripción del cierre</label>
+                  <textarea id="f-desc-otro" style="min-height:100px;" placeholder="Describe el escenario de cierre..."></textarea>
+                </div>
 
               </div>
               <div style="padding:10px 14px;background:#f0fdf9;border:1px solid #99f6e4;border-radius:var(--radius-sm);">
@@ -2725,6 +2732,8 @@ function nextStep(from) {
       } else if(esc === 'extranjero') {
         if(!validarCampo('f-pais-extranjero', 'País')) return;
         if(!validarCampo('f-fecha-rec-extranjero', 'Fecha de localización')) return;
+      } else if(esc === 'otro') {
+        if(!validarCampo('f-desc-otro', 'Descripción del cierre')) return;
       }
     }
     if(!esCredito3 && recuperadoSelected === 'cancel') {
@@ -2844,7 +2853,7 @@ async function registerEvento() {
 
   // Campos según resultado
   const escenario = document.getElementById('f-escenario')?.value || '';
-  const fechaRecCampos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica', extranjero:'f-fecha-rec-extranjero'};
+  const fechaRecCampos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica', extranjero:'f-fecha-rec-extranjero', otro:'f-fecha-rec-otro'};
   const esAbuso = tipoEvento === 'ABUSO DE CONFIANZA';
   const fechaRecuperacion = esAbuso
     ? (document.getElementById('f-abuso-fecha-rec')?.value || document.getElementById('f-abuso-fecha-rec-no')?.value || '—')
@@ -3091,7 +3100,7 @@ async function registerEvento() {
           return document.getElementById('f-abuso-lugar-rec')?.value || document.getElementById('f-abuso-lugar-rec-no')?.value || 'N/A';
         }
         const escenario = document.getElementById('f-escenario')?.value || '';
-        const campos = {corrralon:'f-lugar-rec-corrralon', cliente:'f-lugar-rec-cliente', mp:'f-lugar-rec-mp', 'no-fisica':'f-lugar-rec-nofisica'};
+        const campos = {corrralon:'f-lugar-rec-corrralon', cliente:'f-lugar-rec-cliente', mp:'f-lugar-rec-mp', 'no-fisica':'f-lugar-rec-nofisica', otro:'f-lugar-rec-otro'};
         return document.getElementById(campos[escenario])?.value || 'N/A';
       })(),
       vehiculo_remitido: (function() {
@@ -3523,7 +3532,7 @@ function exportSheets() { notify('Exportando a Google Sheets...','info'); setTim
 function onEscenarioChange(val) {
   const wrap = document.getElementById('campos-escenario');
   wrap.style.display = val ? 'block' : 'none';
-  ['corrralon','cliente','mp','no-fisica','extranjero','no-recuperada'].forEach(s => {
+  ['corrralon','cliente','mp','no-fisica','extranjero','otro','no-recuperada'].forEach(s => {
     const el = document.getElementById('campos-'+s);
     if(el) el.style.display = (s === val) ? 'block' : 'none';
   });
@@ -3638,8 +3647,16 @@ function generarObservaciones() {
   } else if(escenario === 'extranjero') {
     texto = `La última ubicación registrada de la unidad se encuentra fuera del territorio nacional, por lo que el caso queda fuera de la jurisdicción de las autoridades mexicanas. Se mantiene monitoreo activo en espera de que la unidad regrese al territorio nacional para reactivar los protocolos correspondientes.`;
 
+  } else if(escenario === 'otro') {
+    const lugarOtro = document.getElementById('f-lugar-rec-otro')?.value || '[LUGAR]';
+    const fechaOtro = formatFecha(document.getElementById('f-fecha-rec-otro')?.value) || '[FECHA]';
+    const descOtro  = document.getElementById('f-desc-otro')?.value || '[DESCRIPCIÓN]';
+    texto = `La unidad fue localizada en ${lugarOtro} el ${fechaOtro}. ${descOtro}`;
+
   } else if(escenario === 'no-recuperada') {
     texto = `La unidad ha sido debidamente boletinada ante las instancias de seguridad y organismos especializados correspondientes. En caso de que las autoridades establezcan comunicación directa con el representante legal para informar avances sobre su localización, solicitamos notificarnos de inmediato para dar seguimiento coordinado al caso. De no recibir novedades, nuestro equipo se pondrá en contacto a la brevedad para mantenerle informado sobre los avances del evento.`;
+  } else if(escenario === 'otro') {
+    texto = document.getElementById('f-desc-otro')?.value || '';
   }
 
   const el = document.getElementById('f-observaciones');
@@ -4036,6 +4053,8 @@ async function probarPDF() {
               return 'La unidad fue localizada mediante rastreo GPS en '+lugar+' el '+fecha+'; sin embargo, no fue posible su recuperación física inmediata debido a '+motivo+'. Se realizó coordinación formal con las autoridades de '+mun+'.';
             } else if(escenario === 'extranjero') {
               return 'La última ubicación registrada de la unidad se encuentra fuera del territorio nacional, por lo que el caso queda fuera de la jurisdicción de las autoridades mexicanas. Se mantiene monitoreo activo en espera de que la unidad regrese al territorio nacional.';
+            } else if(escenario === 'otro') {
+              return document.getElementById('f-desc-otro')?.value || '—';
             } else {
               return document.getElementById('f-observaciones-no')?.value || '—';
             }
@@ -4063,7 +4082,7 @@ async function probarPDF() {
               return document.getElementById('f-abuso-lugar-rec')?.value || document.getElementById('f-abuso-lugar-rec-no')?.value || 'N/A';
             }
             const escenario = document.getElementById('f-escenario')?.value || '';
-            const campos = {corrralon:'f-lugar-rec-corrralon', cliente:'f-lugar-rec-cliente', mp:'f-lugar-rec-mp', 'no-fisica':'f-lugar-rec-nofisica'};
+            const campos = {corrralon:'f-lugar-rec-corrralon', cliente:'f-lugar-rec-cliente', mp:'f-lugar-rec-mp', 'no-fisica':'f-lugar-rec-nofisica', otro:'f-lugar-rec-otro'};
             return document.getElementById(campos[escenario])?.value || 'N/A';
           })(),
           vehiculo_remitido: (function() {
@@ -4176,7 +4195,7 @@ async function probarSheets() {
             return formatFecha(valSi || valNo) || '—';
           }
           const escenario = document.getElementById('f-escenario')?.value || '';
-          const campos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica'};
+          const campos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica', otro:'f-fecha-rec-otro'};
           return formatFecha(document.getElementById(campos[escenario])?.value) || '—';
         })(),
         quienRecibe: document.getElementById('f-cancel-recibe')?.value || '—',
@@ -4193,7 +4212,7 @@ async function probarSheets() {
             return formatFecha(valSi || valNo) || '—';
           }
           const escenario = document.getElementById('f-escenario')?.value || '';
-          const campos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica'};
+          const campos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica', otro:'f-fecha-rec-otro'};
           return formatFecha(document.getElementById(campos[escenario])?.value) || '—';
         })()
       })
