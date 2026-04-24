@@ -1326,8 +1326,9 @@
                   <div class="form-group"><label class="req">Fecha de localización</label><input type="date" id="f-fecha-rec-extranjero" /></div>
                 </div></div>
 
-                <div id="campos-otro" style="display:none;"><div style="display:grid;grid-template-columns:1fr;gap:12px;">
-                  <div class="form-group"><label class="req">Descripción del cierre</label><textarea id="f-desc-otro" style="min-height:100px;" placeholder="Describe el escenario de cierre..."></textarea></div>
+                <div id="campos-otro" style="display:none;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                  <div class="form-group"><label class="req">Fecha de recuperación</label><input type="date" id="f-fecha-rec-otro" /></div>
+                  <div class="form-group full"><label class="req">Descripción del cierre</label><textarea id="f-desc-otro" style="min-height:100px;" placeholder="Describe el escenario de cierre..."></textarea></div>
                 </div></div>
               </div>
               <div style="padding:10px 14px;background:#f0fdf9;border:1px solid #99f6e4;border-radius:var(--radius-sm);">
@@ -2730,6 +2731,7 @@ function nextStep(from) {
         if(!validarCampo('f-pais-extranjero', 'País')) return;
         if(!validarCampo('f-fecha-rec-extranjero', 'Fecha de localización')) return;
       } else if(esc === 'otro') {
+        if(!validarCampo('f-fecha-rec-otro', 'Fecha de recuperación')) return;
         if(!validarCampo('f-desc-otro', 'Descripción del cierre')) return;
       }
     }
