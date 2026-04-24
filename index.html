@@ -4160,7 +4160,7 @@ async function probarSheets() {
         resultado: p.resultado,
         folio: _lastFolio || p.folio,
         cliente: p.cliente,
-        nick: p.nick,
+        nick: (function(){ const esC = (document.getElementById('f-tipo-evento')?.value||'') === 'RECUPERACIÓN DE CRÉDITO'; return esC ? (document.getElementById('f-credito-tk')?.value||'—') : p.nick; })(),
         esn: p.esn,
         plataforma: p.plataforma,
         empresa: p.empresa,
@@ -4173,8 +4173,8 @@ async function probarSheets() {
         tipoUnidad: document.getElementById('f-tipo-unidad')?.value || '—',
         costoEstimado: document.getElementById('f-costo-estimado')?.value || document.getElementById('f-costo')?.value || '—',
         folio911: document.getElementById('f-folio911-step1')?.value || '—',
-        fechaRobo: formatFecha(document.getElementById('f-fecha-robo')?.value),
-        horaRobo: document.getElementById('f-hora-robo')?.value || '—',
+        fechaRobo: (function(){ const esC = (document.getElementById('f-tipo-evento')?.value||'') === 'RECUPERACIÓN DE CRÉDITO'; return esC ? (document.getElementById('f-credito-fecha-inicio')?.value||'—') : formatFecha(document.getElementById('f-fecha-robo')?.value); })(),
+        horaRobo: (function(){ const esC = (document.getElementById('f-tipo-evento')?.value||'') === 'RECUPERACIÓN DE CRÉDITO'; return esC ? '—' : (document.getElementById('f-hora-robo')?.value||'—'); })(),
         fechaAtencion: (function() {
           const v = document.getElementById('f-fecha')?.value || '';
           if(!v) return '—';
@@ -4188,6 +4188,9 @@ async function probarSheets() {
         })(),
         fechaRecuperacion: (function() {
           const tipoEv = document.getElementById('f-tipo-evento')?.value || '';
+          if(tipoEv === 'RECUPERACIÓN DE CRÉDITO') {
+            return document.getElementById('f-credito-fecha-fin')?.value || '—';
+          }
           if(tipoEv === 'ABUSO DE CONFIANZA') {
             const valSi = document.getElementById('f-abuso-fecha-rec')?.value || '';
             const valNo = document.getElementById('f-abuso-fecha-rec-no')?.value || '';
