@@ -3932,6 +3932,7 @@ async function probarPDF() {
           tel_reportante: document.getElementById('f-tel-reportante')?.value || '—',
           correo_reportante: document.getElementById('f-correo-reportante')?.value || '—',
           estado_rep: p.estadoRep || '—',
+          autoridades: p.autoridades || '—',
           situacion: (() => {
             const nombre = document.getElementById('f-nombre-reportante')?.value || '—';
             const relacion = document.getElementById('f-relacion-unidad')?.value || '—';
