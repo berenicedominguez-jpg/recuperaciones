@@ -3086,13 +3086,32 @@ async function registerEvento() {
       denuncia_mp: document.getElementById('f-denuncia-mp')?.value || '—',
       folio_predenuncia: document.getElementById('f-folio911-step1')?.value || '—',
       lugar_recuperacion: (function() {
+        const tipoEv = document.getElementById('f-tipo-evento')?.value || '';
+        if(tipoEv === 'ABUSO DE CONFIANZA') {
+          return document.getElementById('f-abuso-lugar-rec')?.value || document.getElementById('f-abuso-lugar-rec-no')?.value || 'N/A';
+        }
         const escenario = document.getElementById('f-escenario')?.value || '';
         const campos = {corrralon:'f-lugar-rec-corrralon', cliente:'f-lugar-rec-cliente', mp:'f-lugar-rec-mp', 'no-fisica':'f-lugar-rec-nofisica'};
         return document.getElementById(campos[escenario])?.value || 'N/A';
       })(),
-      vehiculo_remitido: document.getElementById('f-abuso-remitido')?.value || 'NO',
-      lugar_remision: document.getElementById('f-abuso-lugar-remision')?.value || 'N/A',
-      entregado_cliente: document.getElementById('f-abuso-entregado')?.value || 'NO',
+      vehiculo_remitido: (function() {
+        const res = recuperadoSelected;
+        if(res === 'si') return document.getElementById('f-abuso-remitido')?.value || 'NO';
+        if(res === 'no') return document.getElementById('f-abuso-remitido-no')?.value || 'NO';
+        return 'NO';
+      })(),
+      lugar_remision: (function() {
+        const res = recuperadoSelected;
+        if(res === 'si') return document.getElementById('f-abuso-lugar-remision')?.value || 'N/A';
+        if(res === 'no') return document.getElementById('f-abuso-lugar-remision-no')?.value || 'N/A';
+        return 'N/A';
+      })(),
+      entregado_cliente: (function() {
+        const res = recuperadoSelected;
+        if(res === 'si') return document.getElementById('f-abuso-entregado')?.value || 'NO';
+        if(res === 'no') return document.getElementById('f-abuso-entregado-no')?.value || 'NO';
+        return document.getElementById('f-abuso-entregado')?.value || 'NO';
+      })(),
       img_lugar: await imgToBase64('img-lugar-robo'),
       img_evidencia: await imgToBase64Multiple('img-evidencia'),
     }
@@ -3794,7 +3813,7 @@ function buildPayload() {
     '👮 *Monitorista:* ' + monitorista,
     '━━━━━━━━━━━━━━━━━━━',
   ].join('\n');
-  return { tipoEvento, empresa, resultado: resultadoLabel, consecutivo, cliente, nick, placas, esn, plataforma, lugar, coords, estadoRep, monitorista, tipoAlerta, paroMotor, folio, prefijo, mensaje };
+  return { tipoEvento, empresa, resultado: resultadoLabel, consecutivo, cliente, nick, placas, esn, plataforma, lugar, coords, estadoRep, monitorista, tipoAlerta, paroMotor, folio, prefijo, mensaje, autoridades };
 }
 
 async function probarWA() {
