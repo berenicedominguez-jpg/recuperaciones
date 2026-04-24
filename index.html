@@ -4058,13 +4058,38 @@ async function probarPDF() {
           num_carpeta: document.getElementById('f-num-carpeta')?.value || '—',
           denuncia_mp: document.getElementById('f-denuncia-mp')?.value || '—',
           lugar_recuperacion: (function() {
+            const tipoEv = document.getElementById('f-tipo-evento')?.value || '';
+            if(tipoEv === 'ABUSO DE CONFIANZA') {
+              return document.getElementById('f-abuso-lugar-rec')?.value || document.getElementById('f-abuso-lugar-rec-no')?.value || 'N/A';
+            }
             const escenario = document.getElementById('f-escenario')?.value || '';
             const campos = {corrralon:'f-lugar-rec-corrralon', cliente:'f-lugar-rec-cliente', mp:'f-lugar-rec-mp', 'no-fisica':'f-lugar-rec-nofisica'};
             return document.getElementById(campos[escenario])?.value || 'N/A';
           })(),
-          vehiculo_remitido: document.getElementById('f-abuso-remitido')?.value || document.getElementById('f-abuso-remitido-no')?.value || 'NO',
-          lugar_remision: document.getElementById('f-abuso-lugar-remision')?.value || 'N/A',
-          entregado_cliente: document.getElementById('f-abuso-entregado')?.value || document.getElementById('f-abuso-entregado-no')?.value || 'NO',
+          vehiculo_remitido: (function() {
+            const tipoEv = document.getElementById('f-tipo-evento')?.value || '';
+            if(tipoEv !== 'ABUSO DE CONFIANZA') return 'N/A';
+            const res = recuperadoSelected;
+            if(res === 'si') return document.getElementById('f-abuso-remitido')?.value || 'NO';
+            if(res === 'no') return document.getElementById('f-abuso-remitido-no')?.value || 'NO';
+            return 'NO';
+          })(),
+          lugar_remision: (function() {
+            const tipoEv = document.getElementById('f-tipo-evento')?.value || '';
+            if(tipoEv !== 'ABUSO DE CONFIANZA') return 'N/A';
+            const res = recuperadoSelected;
+            if(res === 'si') return document.getElementById('f-abuso-lugar-remision')?.value || 'N/A';
+            if(res === 'no') return document.getElementById('f-abuso-lugar-remision-no')?.value || 'N/A';
+            return 'N/A';
+          })(),
+          entregado_cliente: (function() {
+            const tipoEv = document.getElementById('f-tipo-evento')?.value || '';
+            if(tipoEv !== 'ABUSO DE CONFIANZA') return 'N/A';
+            const res = recuperadoSelected;
+            if(res === 'si') return document.getElementById('f-abuso-entregado')?.value || 'NO';
+            if(res === 'no') return document.getElementById('f-abuso-entregado-no')?.value || 'NO';
+            return 'NO';
+          })(),
           // Campos específicos de CRÉDITO
           tk: document.getElementById('f-credito-tk')?.value || '—',
           razon_social: document.getElementById('f-credito-razon')?.value || '—',
