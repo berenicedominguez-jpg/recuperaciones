@@ -3813,6 +3813,9 @@ function buildPayload() {
     '👮 *Monitorista:* ' + monitorista,
     '━━━━━━━━━━━━━━━━━━━',
   ].join('\n');
+  const autIds2 = ['municipales','estatales','federales','gn','marina','anerpv','fuerza','emergencias','ssp','recuperadores'];
+  const autNombres2 = ['Municipales','Estatales','Federales','Guardia Nacional','Marina','ANERPV','Fuerza Civil','Emergencias','SSP','Recuperadores'];
+  const autoridades = autIds2.map((id,i) => document.getElementById('aut-'+id)?.checked ? autNombres2[i] : null).filter(Boolean).join(', ') || '—';
   return { tipoEvento, empresa, resultado: resultadoLabel, consecutivo, cliente, nick, placas, esn, plataforma, lugar, coords, estadoRep, monitorista, tipoAlerta, paroMotor, folio, prefijo, mensaje, autoridades };
 }
 
