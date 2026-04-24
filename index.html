@@ -4174,7 +4174,7 @@ async function probarSheets() {
         costoEstimado: document.getElementById('f-costo-estimado')?.value || document.getElementById('f-costo')?.value || '—',
         folio911: document.getElementById('f-folio911-step1')?.value || '—',
         fechaRobo: (function(){ const esC = (document.getElementById('f-tipo-evento')?.value||'') === 'RECUPERACIÓN DE CRÉDITO'; return esC ? (document.getElementById('f-credito-fecha-inicio')?.value||'—') : formatFecha(document.getElementById('f-fecha-robo')?.value); })(),
-        horaRobo: (function(){ const esC = (document.getElementById('f-tipo-evento')?.value||'') === 'RECUPERACIÓN DE CRÉDITO'; return esC ? '—' : (document.getElementById('f-hora-robo')?.value||'—'); })(),
+        horaRobo: (function(){ const esC = (document.getElementById('f-tipo-evento')?.value||'') === 'RECUPERACIÓN DE CRÉDITO'; return esC ? '' : (document.getElementById('f-hora-robo')?.value||'—'); })(),
         fechaAtencion: (function() {
           const v = document.getElementById('f-fecha')?.value || '';
           if(!v) return '—';
@@ -4205,18 +4205,7 @@ async function probarSheets() {
         motivoCancelacion: document.getElementById('f-cancel-motivo')?.value || '—',
         fechaCancelacion: formatFecha(document.getElementById('f-cancel-fecha')?.value) || '—',
         reporteRobo: document.getElementById('f-tiempo-reporte')?.value || '—',
-        reportePreDenuncia: document.getElementById('f-tiempo-predenuncia')?.value || '—',
-        fechaRecuperacion: (function() {
-          const tipoEv = document.getElementById('f-tipo-evento')?.value || '';
-          if(tipoEv === 'ABUSO DE CONFIANZA') {
-            const valSi = document.getElementById('f-abuso-fecha-rec')?.value || '';
-            const valNo = document.getElementById('f-abuso-fecha-rec-no')?.value || '';
-            return formatFecha(valSi || valNo) || '—';
-          }
-          const escenario = document.getElementById('f-escenario')?.value || '';
-          const campos = {corrralon:'f-fecha-rec-corrralon', cliente:'f-fecha-rec-cliente', mp:'f-fecha-rec-mp', 'no-fisica':'f-fecha-rec-nofisica', otro:'f-fecha-rec-otro'};
-          return formatFecha(document.getElementById(campos[escenario])?.value) || '—';
-        })()
+        reportePreDenuncia: document.getElementById('f-tiempo-predenuncia')?.value || '—'
       })
     });
     if(res.ok) {
