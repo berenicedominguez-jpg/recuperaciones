@@ -3804,7 +3804,7 @@ function buildPayload() {
   const nick       = document.getElementById('f-nick')?.value            || '—';
   const esn        = document.getElementById('f-esn')?.value             || '—';
   const plataforma = document.getElementById('f-plataforma')?.value      || '—';
-  const lugar      = document.getElementById('f-lugar')?.value           || '—';
+  const lugar      = (document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO') ? (document.getElementById('f-credito-ubicacion')?.value || '—') : (document.getElementById('f-lugar')?.value || '—');
   const monitorista= document.getElementById('f-monitorista')?.value     || '—';
   const coords     = document.getElementById('f-coords')?.value || window._lastCoordenadas || localStorage.getItem('cim_coords') || '—';
   const estadoRep  = document.getElementById('f-estado-rep')?.value      || '—';
