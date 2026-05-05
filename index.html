@@ -3669,18 +3669,22 @@ async function cerrarCaso(folio, resultado) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-title').textContent = 'Nuevo evento';
 
-  // Ocultar paso 1 y 2, mostrar paso 3
-  const s1 = document.getElementById('form-step-1');
-  const s2 = document.getElementById('form-step-2');
-  const s3 = document.getElementById('form-step-3');
-  const conf = document.getElementById('form-step-4-confirm');
-  if(s1) s1.style.display = 'none';
-  if(s2) s2.style.display = 'none';
-  if(s3) s3.style.display = 'block';
-  if(conf) conf.style.display = 'none';
-  markStep(1,'done');
-  markStep(2,'active');
-  currentStep = 2;
+  // Usar requestAnimationFrame para asegurar que el browser procese display:block antes de mostrar step-3
+  requestAnimationFrame(() => {
+    const s1 = document.getElementById('form-step-1');
+    const s2 = document.getElementById('form-step-2');
+    const s3 = document.getElementById('form-step-3');
+    const conf = document.getElementById('form-step-4-confirm');
+    if(s1) s1.style.display = 'none';
+    if(s2) s2.style.display = 'none';
+    if(s3) { s3.style.display = 'block'; s3.style.visibility = 'visible'; }
+    if(conf) conf.style.display = 'none';
+    markStep(1,'done');
+    markStep(2,'active');
+    currentStep = 2;
+    selectRecuperacion(recuperadoSelected);
+    window.scrollTo(0, 0);
+  });
 
   // Preseleccionar tipo de evento
   const tipoEvento = caso.tipoEvento || '';
@@ -3754,9 +3758,7 @@ async function cerrarCaso(folio, resultado) {
     }
   }
 
-  // Activar resultado
-  selectRecuperacion(recuperadoSelected);
-  window.scrollTo(0, 0);
+  // Activar resultado y scroll se ejecutan dentro del requestAnimationFrame de arriba
 }
 
 function irAlCierre(folio) {
