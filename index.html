@@ -1604,9 +1604,8 @@
             <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Folio</th>
             <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Cliente</th>
             <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Unidad</th>
-            <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Estado</th>
-            <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Tipo evento</th>
-            <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Hora</th>
+            <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Tipo de evento</th>
+            <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Fecha y hora del robo</th>
             <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Acciones</th>
           </tr>
         </thead>
@@ -2698,16 +2697,13 @@ async function registrarEnProceso() {
     cliente:     payload.cliente     || '—',
     unidad:      payload.nick        || '—',
     estado:      'En proceso',
+    tipoEvento:  payload.tipo_evento || '—',
+    fechaRobo:   payload.fecha_robo  ? payload.fecha_robo + ' ' + (payload.hora_robo||'') : '—',
     origen:      document.getElementById('toggle-alerta')?.checked ? 'Alerta' : 'Llamada',
     correos:     0,
     total:       0,
     recuperado:  false,
     hora:        new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'}),
-    estadoMx:    document.getElementById('f-estado-rep')?.value || '—',
-    tipoEvento:  payload.tipo_evento || '—',
-    placas:      payload.placas      || '—',
-    esn:         payload.esn         || '—',
-    plataforma:  payload.plataforma  || '—',
     enProceso:   true
   });
 }
@@ -3568,10 +3564,21 @@ async function cargarCasosDesdeSheets() {
     if(!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     if(Array.isArray(data) && data.length > 0) {
-      // Reemplazar casos EN PROCESO con los de Sheets
       const sinProceso = casos.filter(c => !c.enProceso);
       casos.length = 0;
-      data.forEach(c => casos.push(c));
+      data.forEach(c => casos.push({
+        folio:      c.folio      || c.FOLIO_TEMP  || '—',
+        cliente:    c.cliente    || c.CLIENTE      || '—',
+        unidad:     c.unidad     || c.NICK         || '—',
+        tipoEvento: c.tipoEvento || c.TIPO_EVENTO  || '—',
+        fechaRobo:  c.fechaRobo  || ((c.FECHA_ROBO||'') + ' ' + (c.HORA_ROBO||'')).trim() || '—',
+        estado:     'En proceso',
+        origen:     c.origen     || '—',
+        recuperado: false,
+        correos:    0,
+        total:      0,
+        enProceso:  true
+      }));
       sinProceso.forEach(c => casos.push(c));
     }
     renderCasos(casos);
@@ -3590,29 +3597,36 @@ function renderCasos(data) {
   const tb = document.getElementById('casos-tbody');
   if(!tb) return;
   tb.innerHTML = filtered.length ? filtered.map(c=>`
-    <tr onclick="openModal('${c.folio}')">
-      <td class="main-col">${c.folio}</td>
-      <td>${c.cliente}</td>
-      <td>${c.unidad}</td>
-      <td>${estadoBadge(c.estado)}</td>
-      <td><span class="badge badge-gray">${c.origen}</span></td>
-      <td>
-        <div style="display:flex;gap:3px;align-items:center">
-          ${[...Array(c.total)].map((_,i)=>`<div style="width:8px;height:8px;border-radius:50%;background:${i<c.correos?'var(--success)':'var(--border2)'}"></div>`).join('')}
-          <span style="font-size:11px;color:var(--muted);margin-left:4px">${c.correos}/${c.total}</span>
-        </div>
+    <tr style="border-bottom:1px solid rgba(37,99,235,0.07);transition:background 0.15s;" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''">
+      <td style="padding:12px 20px;font-weight:600;font-size:13px;color:#1e3a5f;">${c.folio}</td>
+      <td style="padding:12px 20px;font-size:13px;">${c.cliente}</td>
+      <td style="padding:12px 20px;font-size:13px;">${c.unidad}</td>
+      <td style="padding:12px 20px;">
+        <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;
+          background:${c.tipoEvento==='ROBO'?'#fee2e2':c.tipoEvento==='ABUSO DE CONFIANZA'?'#fef3c7':'#dbeafe'};
+          color:${c.tipoEvento==='ROBO'?'#991b1b':c.tipoEvento==='ABUSO DE CONFIANZA'?'#92400e':'#1e40af'};">
+          ${c.tipoEvento==='ROBO'?'Robo':c.tipoEvento==='ABUSO DE CONFIANZA'?'Abuso':c.tipoEvento==='RECUPERACIÓN DE CRÉDITO'?'Crédito':c.tipoEvento||'—'}
+        </span>
       </td>
-      <td>
-        <div style="display:flex;gap:6px;">
-          ${c.enProceso
-            ? `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();irAlCierre('${c.folio}')">Cerrar caso →</button>`
-            : `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openModal('${c.folio}')">Ver</button>`
-          }
-          ${!c.recuperado && !c.enProceso ?`<button class="btn btn-success btn-sm" onclick="event.stopPropagation();marcarRecuperado('${c.folio}')">Recuperada</button>`:''}
+      <td style="padding:12px 20px;font-size:13px;color:#3a517a;">${c.fechaRobo||c.hora||'—'}</td>
+      <td style="padding:12px 20px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button onclick="cerrarCaso('${c.folio}','RECUPERADA')"
+            style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#d1fae5;color:#065f46;">
+            ✓ Recuperada
+          </button>
+          <button onclick="cerrarCaso('${c.folio}','NO RECUPERADA')"
+            style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#fee2e2;color:#991b1b;">
+            ✗ No recuperada
+          </button>
+          <button onclick="cerrarCaso('${c.folio}','CANCELADO')"
+            style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#f1f5f9;color:#475569;">
+            Cancelado
+          </button>
         </div>
       </td>
     </tr>`).join('')
-  : '<tr><td colspan="7" style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;">Sin casos registrados</td></tr>';
+  : '<tr><td colspan="6" style="text-align:center;padding:48px 20px;color:#5e7399;font-size:13px;">Sin casos registrados</td></tr>';
 }
 
 function filterCasos(f, btn) {
@@ -3625,6 +3639,27 @@ function filterCasos(f, btn) {
 function searchCasos(q) {
   const filtered = casos.filter(c=>c.folio.toLowerCase().includes(q.toLowerCase())||c.cliente.toLowerCase().includes(q.toLowerCase()));
   renderCasos(filtered);
+}
+
+async function cerrarCaso(folio, resultado) {
+  const labels = {'RECUPERADA':'recuperada','NO RECUPERADA':'no recuperada','CANCELADO':'cancelado'};
+  if(!confirm(`¿Marcar este caso como ${labels[resultado]}?`)) return;
+
+  // Actualizar en Sheets — eliminar de EN PROCESO
+  window._folioTemp = folio;
+  try {
+    await fetch('https://ain8n.numaris.com/webhook/eliminar-en-proceso', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ folio_temp: folio, resultado, fecha_cierre: new Date().toLocaleString('es-MX',{hour12:false}) })
+    });
+  } catch(e) { console.error('Error eliminando EN PROCESO:', e); }
+
+  // Quitar del array local y refrescar tabla
+  const idx = casos.findIndex(c => c.folio === folio);
+  if(idx > -1) casos.splice(idx, 1);
+  renderCasos(casos);
+  notify(`Caso ${folio} marcado como ${labels[resultado]} ✓`, 'success');
 }
 
 function irAlCierre(folio) {
