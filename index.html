@@ -1585,7 +1585,7 @@
 
     </div><!-- /max-width wrapper -->
   </div><!-- /page-nuevo -->
-  <div id="page-casos" style="display:block; padding:28px; margin-left:0;">
+  <div class="page active" id="page-casos">
     <div style="display:flex;gap:2px;background:#d5dfee;border-radius:8px;padding:3px;margin-bottom:20px;">
       <button style="flex:1;padding:7px;text-align:center;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:#fff;color:#2563eb;border:none;" onclick="filterCasos('todos',this)">Todos</button>
       <button style="flex:1;padding:7px;text-align:center;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:none;color:#5e7399;border:none;" onclick="filterCasos('proceso',this)">En proceso</button>
@@ -2445,9 +2445,17 @@ function setF(id, val) {
 let filterActive = 'todos';
 function showPage(id, btn) {
   try {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => {
+      p.classList.remove('active');
+      p.style.display = 'none';
+    });
+    // Show target page
     const page = document.getElementById('page-'+id);
-    if(page) page.classList.add('active');
+    if(page) {
+      page.classList.add('active');
+      page.style.display = 'block';
+    }
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     if(btn) btn.classList.add('active');
     const titles = {dashboard:'Dashboard',nuevo:'Nuevo evento',casos:'Casos activos',seguimiento:'Seguimiento 48hrs',reportes:'Reportes',integraciones:'Integraciones'};
@@ -4915,8 +4923,10 @@ document.addEventListener('paste', e => {
 
 // INIT
 document.addEventListener('DOMContentLoaded', ()=>{
-  try { renderDashboard(); } catch(e) { console.error('renderDashboard:', e); }
-  try { renderCasos(casos); } catch(e) { console.error('renderCasos:', e); }
+  try { renderDashboard(); } catch(e) {}
+  try { renderCasos(casos); } catch(e) {}
+  const navCasos = document.querySelector('[onclick*="casos"]');
+  showPage('casos', navCasos);
 });
 </script>
 </body>
