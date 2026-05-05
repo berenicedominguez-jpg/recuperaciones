@@ -4769,14 +4769,13 @@ async function finalizarTodo() {
   const btn = document.getElementById('btn-finalizar-todo');
   if(btn) { btn.disabled = true; btn.textContent = 'Procesando...'; }
 
-  // Bloquear evidencias hasta que Drive sea exitoso
+  // Bloquear evidencias
   const cardEvidencias = document.getElementById('card-evidencias');
   if(cardEvidencias) cardEvidencias.style.opacity = '0.4';
   const btnEvidencias = document.getElementById('btn-subir-evidencias');
   if(btnEvidencias) btnEvidencias.disabled = true;
 
   // 1. Folio
-  setCheck('folio', 'pending', 'Consultando folio...');
   await probarFolio();
   if(document.getElementById('check-folio-icon')?.textContent !== '✅') {
     notify('Error al obtener folio — proceso detenido', 'warning');
@@ -4785,7 +4784,6 @@ async function finalizarTodo() {
   }
 
   // 2. Registrar en hoja
-  setCheck('sheets', 'pending', 'Registrando en hoja...');
   await probarSheets();
   if(document.getElementById('check-sheets-icon')?.textContent !== '✅') {
     notify('Error al registrar en Sheets — proceso detenido', 'warning');
@@ -4793,14 +4791,10 @@ async function finalizarTodo() {
     return;
   }
 
-  // 3. Eliminar de EN PROCESO
-  setCheck('enproceso', 'pending', 'Eliminando de EN PROCESO...');
+  // 3. Eliminar de EN PROCESO (no detiene si falla)
   await eliminarEnProceso();
-  // No detenemos si falla — continuar
 
-  // 4. Crear carpeta Drive + PDF
-  setCheck('drive', 'pending', 'Creando carpeta...');
-  setCheck('pdf', 'pending', 'Generando PDF...');
+  // 4. Crear carpeta Drive
   await probarDrive();
   if(document.getElementById('check-drive-icon')?.textContent !== '✅') {
     notify('Error al crear carpeta Drive — proceso detenido', 'warning');
@@ -4808,15 +4802,23 @@ async function finalizarTodo() {
     return;
   }
 
-  // Habilitar evidencias si Drive fue exitoso
+  // ✅ Drive listo — habilitar evidencias inmediatamente
   if(cardEvidencias) cardEvidencias.style.opacity = '1';
   if(btnEvidencias) btnEvidencias.disabled = false;
+  notify('Carpeta Drive creada — puedes subir evidencias ahora', 'success');
 
-  // 5. Ticket Zoho Desk
-  setCheck('desk', 'pending', 'Creando ticket...');
+  // 5. Generar PDF (esperar completamente antes de continuar)
+  await probarPDF();
+  if(document.getElementById('check-pdf-icon')?.textContent !== '✅') {
+    notify('Error al generar PDF — ticket no se creará', 'warning');
+    if(btn) { btn.disabled = false; btn.textContent = 'Reintentar ticket'; }
+    return;
+  }
+
+  // 6. Ticket Zoho Desk (solo después de que PDF esté listo)
   await probarDesk();
 
-  // Terminado
+  // Completado
   if(btn) { btn.disabled = true; btn.textContent = '✓ Completado'; btn.style.background = 'var(--success)'; }
   notify('Caso finalizado correctamente ✓', 'success');
 }
