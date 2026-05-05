@@ -2803,9 +2803,10 @@ async function nextStep(from) {
       notify('Error al registrar: ' + e.message, 'warning');
     }
     if(btn) { btn.disabled = false; btn.textContent = 'Registrar →'; }
-    // Redirigir a Casos activos
+    // Redirigir a Casos activos y actualizar tabla
     const navCasos = document.querySelector('[onclick*="casos"]');
     showPage('casos', navCasos);
+    renderCasos(casos);
     return;
   }
   if(from===2) {
