@@ -2804,6 +2804,7 @@ async function nextStep(from) {
     }
     if(btn) { btn.disabled = false; btn.textContent = 'Registrar →'; }
     // Redirigir a Casos activos y actualizar tabla
+    console.log('casos array after registrar:', JSON.stringify(casos));
     const navCasos = document.querySelector('[onclick*="casos"]');
     showPage('casos', navCasos);
     renderCasos(casos);
