@@ -701,6 +701,39 @@
               </div>
             </div>
 
+            <!-- Plataforma + ESN + Nick -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px;">
+              <div class="form-group">
+                <label class="req">Plataforma</label>
+                <select id="f-plataforma" onchange="autoDetectEmpresa(this.value)">
+                  <option value="">Seleccionar...</option>
+                  <option>TECNOMETRICS</option>
+                  <option>UTRAX</option>
+                  <option>FT VISION</option>
+                  <option>RECUPERAMOVIL</option>
+                  <option>EASYTRACK</option>
+                  <option>SFLEET</option>
+                  <option>TRAFFILOG</option>
+                  <option>INBURSA</option>
+                  <option>OTRO PROVEEDOR</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="req">ESN (equipo GPS)</label>
+                <input type="text" id="f-esn" placeholder="No. de serie del equipo" />
+              </div>
+              <div class="form-group" id="campo-nick-alias">
+                <label class="req">Nick / Alias en plataforma</label>
+                <input type="text" id="f-nick" placeholder="Nombre del activo en sistema" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px;">
+              <div class="form-group">
+                <label>Empresa que atiende</label>
+                <input type="text" id="f-empresa-atiende" readonly placeholder="Se detecta por plataforma" style="background:#f0f5fc;color:var(--muted2);cursor:not-allowed;" />
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -874,11 +907,11 @@
           </div>
         </div>
 
-        <!-- ── Card 2 — Unidad, plataforma y equipo GPS ── -->
+        <!-- ── Card 2 — Unidad ── -->
         <div class="card" id="card-unidad-plataforma" style="margin-bottom:14px;">
-          <div class="card-header"><div class="card-title">Unidad, plataforma y equipo GPS</div></div>
+          <div class="card-header"><div class="card-title">Datos de la unidad</div></div>
           <div class="card-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
               <div class="form-group">
                 <label class="req">Tipo de unidad</label>
                 <select id="f-tipo-unidad">
@@ -891,35 +924,6 @@
               <div class="form-group">
                 <label class="req">Costo estimado de la unidad</label>
                 <input type="text" id="f-costo" placeholder="Ej. $1,500,000 MXN" />
-              </div>
-              <div class="form-group">
-                <label class="req">Plataforma</label>
-                <select id="f-plataforma" onchange="autoDetectEmpresa(this.value)">
-                  <option value="">Seleccionar...</option>
-                  <option>TECNOMETRICS</option>
-                  <option>UTRAX</option>
-                  <option>FT VISION</option>
-                  <option>RECUPERAMOVIL</option>
-                  <option>EASYTRACK</option>
-                  <option>SFLEET</option>
-                  <option>TRAFFILOG</option>
-                  <option>INBURSA</option>
-                  <option>OTRO PROVEEDOR</option>
-                </select>
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
-              <div class="form-group">
-                <label>Empresa que atiende</label>
-                <input type="text" id="f-empresa-atiende" readonly placeholder="Se detecta por plataforma" style="background:#f0f5fc;color:var(--muted2);cursor:not-allowed;" />
-              </div>
-              <div class="form-group">
-                <label class="req">ESN (equipo GPS)</label>
-                <input type="text" id="f-esn" placeholder="No. de serie del equipo" />
-              </div>
-              <div class="form-group" id="campo-nick-alias">
-                <label class="req">Nick / Alias en plataforma</label>
-                <input type="text" id="f-nick" placeholder="Nombre del activo en sistema" />
               </div>
             </div>
           </div>
