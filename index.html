@@ -3682,15 +3682,12 @@ async function cerrarCaso(folio, resultado) {
   recuperadoSelected = mapResultado[resultado];
   window._folioTemp = folio;
 
-  // Inyectar form-step-3 en page-cierre
+  // Mover form-step-3 a page-cierre (no clonar — evita IDs duplicados)
   const step3 = document.getElementById('form-step-3');
   const container = document.getElementById('cierre-form-container');
   if(step3 && container) {
-    container.innerHTML = '';
-    const clone = step3.cloneNode(true);
-    clone.style.display = 'block';
-    clone.id = 'form-step-3-cierre';
-    container.appendChild(clone);
+    container.appendChild(step3);
+    step3.style.display = 'block';
   }
 
   // Navegar a page-cierre
@@ -3740,22 +3737,9 @@ async function cerrarCaso(folio, resultado) {
   // Activar resultado — mostrar panel correcto y ocultar botones de selección
   selectRecuperacion(recuperadoSelected);
 
-  // Ocultar los 3 botones de selección de resultado
+  // Ocultar los 3 botones de selección — el resultado ya está definido
   const selectorGrid = document.querySelector('#panel-resultado-normal > div:first-child');
   if(selectorGrid) selectorGrid.style.display = 'none';
-
-  // También ocultar en el clon dentro de page-cierre
-  const cloneSelectorGrid = document.querySelector('#form-step-3-cierre #panel-resultado-normal > div:first-child');
-  if(cloneSelectorGrid) cloneSelectorGrid.style.display = 'none';
-
-  // Mostrar el panel correcto en el clon
-  const v = recuperadoSelected;
-  const clonePanelSi     = document.querySelector('#form-step-3-cierre #panel-si');
-  const clonePanelNo     = document.querySelector('#form-step-3-cierre #panel-no');
-  const clonePanelCancel = document.querySelector('#form-step-3-cierre #panel-cancel');
-  if(clonePanelSi)     clonePanelSi.style.display     = v === 'si'     ? 'block' : 'none';
-  if(clonePanelNo)     clonePanelNo.style.display      = v === 'no'     ? 'block' : 'none';
-  if(clonePanelCancel) clonePanelCancel.style.display  = v === 'cancel' ? 'block' : 'none';
 
   window.scrollTo(0, 0);
 }
