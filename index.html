@@ -2167,6 +2167,9 @@ function liveParseTemplate(text) {
       </div>
     </div>`;
   }
+
+  // Auto-sincronizar campos del formulario en tiempo real
+  syncParsedToForm();
 }
 
 function parseTemplate(text) {
@@ -2417,10 +2420,9 @@ function syncParsedToForm() {
     if(getF('fp-credito-gestor'))       setF('f-credito-gestor',       getF('fp-credito-gestor'));
   }
 
-  // Show visual feedback
+  // Show visual feedback — solo si fue llamado manualmente desde nextStep
   const filled = ['f-cliente','f-telefono','f-placas','f-modelo','f-operador','f-lugar','f-fecha-robo','f-hora-robo']
     .filter(id=>{ const el=document.getElementById(id); return el&&el.value.trim(); }).length;
-  notify('Plantilla aplicada — ' + filled + ' campos rellenados en el Paso 1', 'success');
 }
 
 function getF(id) {
