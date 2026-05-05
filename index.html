@@ -1606,6 +1606,7 @@
             <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Unidad</th>
             <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Tipo de evento</th>
             <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Fecha y hora del robo</th>
+            <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Monitorista</th>
             <th style="padding:10px 20px;text-align:left;font-size:11px;font-weight:600;color:#3a517a;text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid rgba(37,99,235,0.10);">Acciones</th>
           </tr>
         </thead>
@@ -2697,8 +2698,9 @@ async function registrarEnProceso() {
     cliente:     payload.cliente     || '—',
     unidad:      payload.nick        || '—',
     estado:      'En proceso',
-    tipoEvento:  payload.tipo_evento || '—',
+    tipoEvento:  payload.tipo_evento  || '—',
     fechaRobo:   payload.fecha_robo  ? payload.fecha_robo + ' ' + (payload.hora_robo||'') : '—',
+    monitorista: payload.monitorista  || '—',
     origen:      document.getElementById('toggle-alerta')?.checked ? 'Alerta' : 'Llamada',
     correos:     0,
     total:       0,
@@ -3572,6 +3574,7 @@ async function cargarCasosDesdeSheets() {
         unidad:     c.unidad     || c.NICK         || '—',
         tipoEvento: c.tipoEvento || c.TIPO_EVENTO  || '—',
         fechaRobo:  c.fechaRobo  || ((c.FECHA_ROBO||'') + ' ' + (c.HORA_ROBO||'')).trim() || '—',
+        monitorista:c.monitorista|| c.MONITORISTA  || '—',
         estado:     'En proceso',
         origen:     c.origen     || '—',
         recuperado: false,
@@ -3609,6 +3612,7 @@ function renderCasos(data) {
         </span>
       </td>
       <td style="padding:12px 20px;font-size:13px;color:#3a517a;">${c.fechaRobo||c.hora||'—'}</td>
+      <td style="padding:12px 20px;font-size:13px;">${c.monitorista||'—'}</td>
       <td style="padding:12px 20px;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <button onclick="cerrarCaso('${c.folio}','RECUPERADA')"
