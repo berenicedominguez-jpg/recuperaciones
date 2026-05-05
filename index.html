@@ -2572,7 +2572,6 @@ async function registrarEnProceso() {
     tipo_evento:    tipoEvento,
     fecha_reporte:  fechaReporte,
     monitorista:    document.getElementById('f-monitorista')?.value || '—',
-    alerta_sistema: alertaActiva ? 'SÍ' : 'NO',
     tipo_alerta:    tiposAlerta.length ? tiposAlerta.join(', ') : 'N/A',
     paro_motor:     paroMotor,
     cliente:        esCredito ? (document.getElementById('f-credito-razon')?.value||'—') : (document.getElementById('f-cliente')?.value||'—'),
@@ -2658,14 +2657,28 @@ async function registrarEnProceso() {
   const sheetsOk = resSheets.status === 'fulfilled' && resSheets.value?.ok;
   const slackOk  = resSlack.status  === 'fulfilled' && resSlack.value?.ok;
 
+  // Log detallado para debug
+  if(resSheets.status === 'fulfilled') {
+    console.log('Sheets status:', resSheets.value.status);
+    resSheets.value.text().then(t => console.log('Sheets response:', t));
+  } else {
+    console.error('Sheets error:', resSheets.reason);
+  }
+  if(resSlack.status === 'fulfilled') {
+    console.log('Slack status:', resSlack.value.status);
+  } else {
+    console.error('Slack error:', resSlack.reason);
+  }
+
   if(sheetsOk && slackOk) {
     notify('Caso registrado en Sheets y Slack ✓', 'success');
   } else if(sheetsOk) {
     notify('Guardado en Sheets. Error al enviar Slack.', 'warning');
   } else if(slackOk) {
-    notify('Slack enviado. Error al guardar en Sheets.', 'warning');
+    notify('Slack enviado. Error al guardar en Sheets — revisa n8n (webhook registrar-en-proceso).', 'warning');
   } else {
-    notify('Error al registrar en Sheets y Slack', 'warning');
+    const sheetsStatus = resSheets.status === 'fulfilled' ? 'HTTP ' + resSheets.value.status : resSheets.reason?.message || 'sin respuesta';
+    notify('Sheets: ' + sheetsStatus + ' | Revisa que el webhook registrar-en-proceso esté activo en n8n', 'warning');
   }
 }
 
