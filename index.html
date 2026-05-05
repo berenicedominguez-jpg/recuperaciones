@@ -3655,7 +3655,9 @@ function searchCasos(q) {
 }
 
 async function cerrarCaso(folio, resultado) {
+  console.log('cerrarCaso llamado:', folio, resultado);
   const caso = casos.find(c => c.folio === folio);
+  console.log('caso encontrado:', caso);
   if(!caso) return;
 
   // Mapear resultado al valor interno
