@@ -3646,24 +3646,47 @@ function searchCasos(q) {
 }
 
 async function cerrarCaso(folio, resultado) {
-  const labels = {'RECUPERADA':'recuperada','NO RECUPERADA':'no recuperada','CANCELADO':'cancelado'};
-  if(!confirm(`¿Marcar este caso como ${labels[resultado]}?`)) return;
+  const caso = casos.find(c => c.folio === folio);
+  if(!caso) return;
 
-  // Actualizar en Sheets — eliminar de EN PROCESO
+  // Mapear resultado al valor interno
+  const mapResultado = {'RECUPERADA':'si', 'NO RECUPERADA':'no', 'CANCELADO':'cancel'};
+  recuperadoSelected = mapResultado[resultado];
   window._folioTemp = folio;
-  try {
-    await fetch('https://ain8n.numaris.com/webhook/eliminar-en-proceso', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ folio_temp: folio, resultado, fecha_cierre: new Date().toLocaleString('es-MX',{hour12:false}) })
-    });
-  } catch(e) { console.error('Error eliminando EN PROCESO:', e); }
 
-  // Quitar del array local y refrescar tabla
-  const idx = casos.findIndex(c => c.folio === folio);
-  if(idx > -1) casos.splice(idx, 1);
-  renderCasos(casos);
-  notify(`Caso ${folio} marcado como ${labels[resultado]} ✓`, 'success');
+  // Navegar a Nuevo evento mostrando el Paso 2 (Cierre)
+  const navNuevo = document.querySelector('[onclick*="nuevo"]');
+  showPage('nuevo', navNuevo);
+
+  // Ocultar paso 1, mostrar paso 3
+  document.getElementById('form-step-1').style.display = 'none';
+  document.getElementById('form-step-2').style.display = 'none';
+  document.getElementById('form-step-3').style.display = 'block';
+  const conf = document.getElementById('form-step-4-confirm');
+  if(conf) conf.style.display = 'none';
+  markStep(1,'done');
+  markStep(2,'active');
+  currentStep = 2;
+
+  // Preseleccionar tipo de evento para mostrar/ocultar cards correctamente
+  const tipoEvento = caso.tipoEvento || '';
+  const sel = document.getElementById('f-tipo-evento');
+  if(sel && tipoEvento) sel.value = tipoEvento;
+
+  // Mostrar/ocultar card persona según tipo
+  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
+  const cardPersona = document.getElementById('card-persona-reporta');
+  if(cardPersona) cardPersona.style.display = esCredito ? 'none' : 'block';
+  const campoNick = document.getElementById('campo-nick-alias');
+  if(campoNick) campoNick.style.display = esCredito ? 'none' : 'block';
+  const cardDatosExtra = document.getElementById('card-datos-extra-credito');
+  if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
+
+  // Activar visualmente el botón de resultado correcto
+  selectRecuperado(recuperadoSelected);
+
+  // Scroll al inicio
+  window.scrollTo(0, 0);
 }
 
 function irAlCierre(folio) {
