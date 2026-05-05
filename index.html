@@ -3564,12 +3564,26 @@ async function cargarCasosDesdeSheets() {
       const sinProceso = casos.filter(c => !c.enProceso);
       casos.length = 0;
       data.forEach(c => casos.push({
-        folio:      c.folio      || c.FOLIO_TEMP  || '—',
-        cliente:    c.cliente    || c.CLIENTE      || '—',
-        unidad:     c.unidad     || c.NICK         || '—',
-        tipoEvento: c.tipoEvento || c.TIPO_EVENTO  || '—',
-        fechaRobo:  c.fechaRobo  || ((c.FECHA_ROBO||'') + ' ' + (c.HORA_ROBO||'')).trim() || '—',
-        monitorista:c.monitorista|| c.MONITORISTA  || '—',
+        folio:       c.folio       || c.FOLIO_TEMP   || '—',
+        cliente:     c.cliente     || c.CLIENTE       || '—',
+        unidad:      c.unidad      || c.NICK          || '—',
+        tipoEvento:  c.tipoEvento  || c.TIPO_EVENTO   || '—',
+        fechaRobo:   c.fechaRobo   || ((c.FECHA_ROBO||'') + ' ' + (c.HORA_ROBO||'')).trim() || '—',
+        monitorista: c.monitorista || c.MONITORISTA   || '—',
+        nick:        c.unidad      || c.NICK          || '—',
+        placas:      c.placas      || c.PLACAS        || '—',
+        esn:         c.esn         || c.ESN           || '—',
+        plataforma:  c.plataforma  || c.PLATAFORMA    || '—',
+        marca:       c.marca       || c.MARCA         || '—',
+        modelo:      c.modelo      || c.MODELO        || '—',
+        anio:        c.anio        || c.ANIO          || '—',
+        color:       c.color       || c.COLOR         || '—',
+        serie:       c.serie       || c.SERIE         || '—',
+        lugar:       c.lugar       || c.LUGAR         || '—',
+        coordenadas: c.coordenadas || c.COORDENADAS   || '—',
+        folio911:    c.folio911    || c.FOLIO_911     || '—',
+        tipoAlerta:  c.tipoAlerta  || c.TIPO_ALERTA   || '—',
+        paroMotor:   c.paroMotor   || c.PARO_MOTOR    || '—',
         estado:     'En proceso',
         origen:     c.origen     || '—',
         recuperado: false,
@@ -3682,6 +3696,64 @@ async function cerrarCaso(folio, resultado) {
   if(campoNick) campoNick.style.display = esCredito ? 'none' : 'block';
   const cardDatosExtra = document.getElementById('card-datos-extra-credito');
   if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
+
+  // Inyectar datos del caso en los campos del formulario para buildPayload
+  const setVal = (id, val) => { const el = document.getElementById(id); if(el && val && val !== '—') el.value = val; };
+  setVal('f-tipo-evento',    caso.tipoEvento);
+  setVal('f-cliente',        caso.cliente);
+  setVal('f-nick',           caso.nick || caso.unidad);
+  setVal('f-placas',         caso.placas);
+  setVal('f-esn',            caso.esn);
+  setVal('f-plataforma',     caso.plataforma);
+  setVal('f-marca',          caso.marca);
+  setVal('f-modelo',         caso.modelo);
+  setVal('f-anio',           caso.anio);
+  setVal('f-color',          caso.color);
+  setVal('f-serie',          caso.serie);
+  setVal('f-lugar',          caso.lugar);
+  setVal('f-coords',         caso.coordenadas);
+  setVal('f-monitorista',    caso.monitorista);
+  setVal('f-folio911-step1', caso.folio911);
+  setVal('f-ultima-senal',   caso.fechaRobo);
+  if(caso.coordenadas && caso.coordenadas !== '—') {
+    window._lastCoordenadas = caso.coordenadas;
+    setVal('f-coords-hidden', caso.coordenadas);
+  }
+
+  // Auto-detectar empresa por plataforma
+  if(caso.plataforma && caso.plataforma !== '—') {
+    if(typeof autoDetectEmpresa === 'function') autoDetectEmpresa(caso.plataforma);
+  }
+
+  // Restaurar alertas desde TIPO_ALERTA
+  if(caso.tipoAlerta && caso.tipoAlerta !== 'N/A' && caso.tipoAlerta !== '—') {
+    const toggle = document.getElementById('toggle-alerta');
+    if(toggle) toggle.checked = true;
+    const ta = caso.tipoAlerta.toLowerCase();
+    const chkPanico = document.getElementById('chk-ta-panico');
+    const chkDescon = document.getElementById('chk-ta-desconexion');
+    const chkJammer = document.getElementById('chk-ta-jammer');
+    if(chkPanico) chkPanico.checked = ta.includes('pánico') || ta.includes('panico');
+    if(chkDescon) chkDescon.checked = ta.includes('desconex');
+    if(chkJammer) chkJammer.checked = ta.includes('jammer');
+  }
+
+  // Restaurar paro de motor
+  if(caso.paroMotor && caso.paroMotor !== '—') {
+    const paroMap = {
+      'Enviado y ejecutado':          'enviado',
+      'Autorizado, sin respuesta':    'autorizado',
+      'No enviado — desconexión':     'desconexion',
+      'No enviado — sin reporte':     'sinreporte',
+      'No autorizado por cliente':    'noautorizado',
+      'No aplica':                    'noaplicar'
+    };
+    const paroVal = paroMap[caso.paroMotor];
+    if(paroVal) {
+      const radio = document.querySelector(`input[name="paro-motor"][value="${paroVal}"]`);
+      if(radio) radio.checked = true;
+    }
+  }
 
   // Activar resultado
   selectRecuperacion(recuperadoSelected);
@@ -4532,24 +4604,35 @@ async function probarSheets() {
 
 
 async function probarDesk() {
-  const esCredito = (document.getElementById('f-tipo-evento')?.value || '') === 'RECUPERACIÓN DE CRÉDITO';
   const p = buildPayload();
+  const resultado = recuperadoSelected; // 'si', 'no', 'cancel'
+  const empresa = p.empresa || '';
+
+  // Regla: Recuperado (siempre) | No recuperado (solo si NO es Tecnocontrol ni Smart Tracker) | Cancelado (no aplica)
+  const empresasExcluidas = ['TECNOCONTROL VEHICULAR', 'SMART TRACKER'];
+  const aplicaDesk = resultado === 'si' || (resultado === 'no' && !empresasExcluidas.includes(empresa.toUpperCase()));
+  if(!aplicaDesk) {
+    setCheck('desk', 'ok', 'No aplica');
+    return;
+  }
+
+  const esCredito = (document.getElementById('f-tipo-evento')?.value || '') === 'RECUPERACIÓN DE CRÉDITO';
   setCheck('desk', 'pending', 'Creando ticket...');
   try {
     const res = await fetch('https://ain8n.numaris.com/webhook/test-desk', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({
-        tipoEvento: p.tipoEvento,
-        folio: _lastFolio || p.folio || '—',
-        cliente: esCredito ? (document.getElementById('f-credito-razon')?.value || '—') : (document.getElementById('f-cliente')?.value || '—'),
-        mensaje: p.mensaje,
-        empresa: p.empresa || document.getElementById('f-empresa')?.value || '—',
-        plataforma: p.plataforma || document.getElementById('f-plataforma')?.value || '—',
-        monitorista: document.getElementById('f-monitorista')?.value || '—',
+        tipoEvento:          p.tipoEvento,
+        folio:               _lastFolio || p.folio || '—',
+        cliente:             esCredito ? (document.getElementById('f-credito-razon')?.value || '—') : (document.getElementById('f-cliente')?.value || '—'),
+        mensaje:             p.mensaje,
+        empresa:             empresa,
+        plataforma:          p.plataforma || '—',
+        monitorista:         document.getElementById('f-monitorista')?.value || '—',
         tiempo_reporte_robo: document.getElementById('f-tiempo-reporte')?.value || '—',
-        resultado: p.resultado || '—',
-        pdfUrl: window._lastPdfUrl || '',
-        pdfId: window._lastPdfId || ''
+        resultado:           p.resultado || '—',
+        pdfUrl:              window._lastPdfUrl || '',
+        pdfId:               window._lastPdfId  || ''
       })
     });
     setCheck('desk', res.ok ? 'ok' : 'error', res.ok ? 'Ticket creado en Desk' : 'Error ' + res.status);
@@ -4654,14 +4737,12 @@ async function eliminarEnProceso() {
 }
 
 async function probarTodo() {
-  await probarWA();
   await probarFolio();
-  await eliminarEnProceso(); // eliminar de EN PROCESO una vez que ya tenemos folio final
+  await eliminarEnProceso();
   await probarSheets();
   await probarDrive();
   await probarPDF();
   await probarDesk();
-  await probarCorreo();
   await probarSeguimiento();
 }
 
