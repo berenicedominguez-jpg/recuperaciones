@@ -410,16 +410,11 @@
       <div class="stepper" id="stepper">
         <div class="step active" id="step-1">
           <div class="step-circle">1</div>
-          <div class="step-label">Plantilla</div>
+          <div class="step-label">Plantilla y datos</div>
           <div class="step-line"></div>
         </div>
         <div class="step" id="step-2">
           <div class="step-circle">2</div>
-          <div class="step-label">Verificar datos</div>
-          <div class="step-line"></div>
-        </div>
-        <div class="step" id="step-3">
-          <div class="step-circle">3</div>
           <div class="step-label">Cierre</div>
         </div>
       </div>
@@ -614,13 +609,8 @@
           </div>
         </div>
 
-        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:4px;">
-          <button class="btn btn-primary" onclick="nextStep(1)">Ver y completar datos →</button>
-        </div>
-      </div>
-
-      <!-- ======= PASO 2: VERIFICAR / COMPLETAR DATOS ======= -->
-      <div id="form-step-2" style="display:none;">
+      <!-- ======= (CONTINUACIÓN PASO 1) VERIFICAR / COMPLETAR DATOS ======= -->
+      <div id="form-step-2">
 
         <div class="card" id="card-datos-evento" style="margin-bottom:16px;">
           <div class="card-header">
@@ -828,14 +818,13 @@
           </div>
         </div>
 
-        <div style="display:flex;justify-content:space-between;margin-top:4px;">
-          <button class="btn btn-ghost" onclick="prevStep(2)">← Atrás</button>
-          <button class="btn btn-primary" onclick="nextStep(2)">Continuar →</button>
+        <div style="display:flex;justify-content:flex-end;margin-top:4px;">
+          <button class="btn btn-primary" id="btn-registrar" onclick="nextStep(1)">Registrar →</button>
         </div>
       </div>
 
-      <!-- ======= PASO 3: CIERRE ======= -->
-      <div id="form-step-3" style="display:none;">
+      <!-- ======= PASO 2: CIERRE ======= -->
+      <div id="form-step-3" style="display:none;" data-logical-step="2">
 
         <!-- ── Card 1 — Persona que reporta el robo ── -->
         <div class="card" id="card-persona-reporta" style="margin-bottom:14px;">
@@ -2527,14 +2516,157 @@ function esVisible(id) {
   return true;
 }
 
-function nextStep(from) {
+// ===== REGISTRAR EN PROCESO (Sheets + Slack) =====
+async function registrarEnProceso() {
+  const tipoEvento  = document.getElementById('f-tipo-evento')?.value || '';
+  const esCredito   = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
+
+  // Tipo(s) de alerta
+  const alertaActiva = document.getElementById('toggle-alerta')?.checked;
+  const tiposAlerta = [];
+  if(alertaActiva) {
+    if(document.getElementById('chk-ta-panico')?.checked)      tiposAlerta.push('Botón de pánico');
+    if(document.getElementById('chk-ta-desconexion')?.checked) tiposAlerta.push('Desconexión de equipo');
+    if(document.getElementById('chk-ta-jammer')?.checked)      tiposAlerta.push('Evento de Jammer');
+  }
+
+  // Paro de motor
+  const paroEl = document.querySelector('input[name="paro-motor"]:checked');
+  const paroLabels = {
+    enviado:      'Enviado y ejecutado',
+    autorizado:   'Autorizado, sin respuesta',
+    desconexion:  'No enviado — desconexión',
+    sinreporte:   'No enviado — sin reporte',
+    noautorizado: 'No autorizado por cliente',
+    noaplicar:    'No aplica'
+  };
+  const paroMotor = paroEl ? (paroLabels[paroEl.value] || paroEl.value) : 'N/A';
+
+  // Fecha/hora reporte
+  const fechaRaw = document.getElementById('f-fecha')?.value || '';
+  let fechaReporte = fechaRaw;
+  if(fechaRaw.includes('T')) {
+    const [fecha, tiempo] = fechaRaw.split('T');
+    const [y,m,d] = fecha.split('-');
+    const [hh,mm] = (tiempo||'00:00').split(':');
+    fechaReporte = d+'/'+m+'/'+y+' '+hh+':'+mm;
+  }
+
+  // Folio temporal basado en timestamp
+  const folioTemp = 'EP-' + Date.now();
+
+  const payload = {
+    folio_temp:     folioTemp,
+    estado:         'EN PROCESO',
+    tipo_evento:    tipoEvento,
+    fecha_reporte:  fechaReporte,
+    monitorista:    document.getElementById('f-monitorista')?.value || '—',
+    alerta_sistema: alertaActiva ? 'SÍ' : 'NO',
+    tipo_alerta:    tiposAlerta.length ? tiposAlerta.join(', ') : 'N/A',
+    paro_motor:     paroMotor,
+    cliente:        esCredito ? (document.getElementById('f-credito-razon')?.value||'—') : (document.getElementById('f-cliente')?.value||'—'),
+    marca:          esCredito ? (document.getElementById('f-marca-credito')?.value||'—') : (document.getElementById('f-marca')?.value||'—'),
+    modelo:         esCredito ? (document.getElementById('f-modelo-credito')?.value||'—') : (document.getElementById('f-modelo')?.value||'—'),
+    anio:           esCredito ? (document.getElementById('f-anio-credito')?.value||'—') : (document.getElementById('f-anio')?.value||'—'),
+    color:          document.getElementById('f-color')?.value||'—',
+    placas:         esCredito ? (document.getElementById('f-placas-credito')?.value||'—') : (document.getElementById('f-placas')?.value||'—'),
+    serie:          document.getElementById('f-serie')?.value||'—',
+    fecha_robo:     document.getElementById('f-fecha-robo')?.value||'—',
+    hora_robo:      document.getElementById('f-hora-robo')?.value||'—',
+    lugar:          document.getElementById('f-lugar')?.value||'—',
+    coordenadas:    document.getElementById('f-coords')?.value||'—',
+    ultima_senal:   document.getElementById('f-ultima-senal')?.value||'—',
+    folio_911:      document.getElementById('f-folio911-step1')?.value||'—',
+    plataforma:     document.getElementById('f-plataforma')?.value||'—',
+    esn:            document.getElementById('f-esn')?.value||'—',
+    nick:           esCredito ? (document.getElementById('f-credito-tk')?.value||'—') : (document.getElementById('f-nick')?.value||'—'),
+    ultima_senal:   document.getElementById('f-ultima-senal')?.value||'—',
+  };
+
+  // Guardar folio_temp para usar al cerrar el caso
+  window._folioTemp = folioTemp;
+
+  // ===== Construir mensaje para Slack =====
+  const tipoEmoji   = tipoEvento === 'ROBO' ? '🚨' : tipoEvento === 'ABUSO DE CONFIANZA' ? '⚠️' : '📋';
+  const cliente     = payload.cliente;
+  const plataforma  = payload.plataforma || '—';
+  const nick        = payload.nick || '—';
+  const placas      = payload.placas || '—';
+  const esn         = payload.esn || '—';
+  const coordenadas = payload.coordenadas || '—';
+  const lugar       = payload.lugar || '—';
+  const monitorista = payload.monitorista || '—';
+
+  // Fecha del robo formateada DD/MM/YYYY
+  let fechaRoboFmt = '—';
+  const fr = payload.fecha_robo;
+  if(fr && fr.includes('-')) {
+    const [y,m,d] = fr.split('-');
+    fechaRoboFmt = d+'/'+m+'/'+y;
+  } else if(fr) {
+    fechaRoboFmt = fr;
+  }
+
+  const alertasTexto = payload.tipo_alerta && payload.tipo_alerta !== 'N/A'
+    ? payload.tipo_alerta
+    : 'N/A';
+
+  const mensaje = [
+    `🚨 *${tipoEvento} — ${cliente} — ${plataforma}*`,
+    `━━━━━━━━━━━━━━━━━━━`,
+    `🚛 *Unidad:* ${nick} | Placas: ${placas}`,
+    `🔢 *ESN:* ${esn}`,
+    ``,
+    `📍 *Coordenadas:* ${coordenadas}`,
+    `🗺️ *Dirección:* ${lugar}`,
+    ``,
+    `⚡ *Alertas:* ${alertasTexto}`,
+    `🔑 *Paro de motor:* ${payload.paro_motor || '—'}`,
+    `📅 *Fecha del robo:* ${fechaRoboFmt}`,
+    ``,
+    `👮 *Monitorista:* ${monitorista}`,
+    `━━━━━━━━━━━━━━━━━━━`,
+  ].join('\n');
+
+  payload.mensaje = mensaje;
+
+  // Llamadas en paralelo: Sheets (registrar-en-proceso) + Slack (test-wa)
+  const [resSheets, resSlack] = await Promise.allSettled([
+    fetch('https://ain8n.numaris.com/webhook/registrar-en-proceso', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }),
+    fetch('https://ain8n.numaris.com/webhook/test-wa', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+  ]);
+
+  const sheetsOk = resSheets.status === 'fulfilled' && resSheets.value?.ok;
+  const slackOk  = resSlack.status  === 'fulfilled' && resSlack.value?.ok;
+
+  if(sheetsOk && slackOk) {
+    notify('Caso registrado en Sheets y Slack ✓', 'success');
+  } else if(sheetsOk) {
+    notify('Guardado en Sheets. Error al enviar Slack.', 'warning');
+  } else if(slackOk) {
+    notify('Slack enviado. Error al guardar en Sheets.', 'warning');
+  } else {
+    notify('Error al registrar en Sheets y Slack', 'warning');
+  }
+}
+
+async function nextStep(from) {
+  // PASO 1 ahora combina las validaciones del antiguo paso 1 + paso 2
   if(from===1) {
     const tipoEvento = document.getElementById('f-tipo-evento')?.value || '';
     if(!tipoEvento) { notify('Selecciona el tipo de evento', 'warning'); return; }
     if(!validarCampo('f-monitorista', 'Monitorista responsable')) return;
     if(!validarCampo('f-fecha', 'Fecha y hora de reporte')) return;
     if(!validarCampo('f-plantilla-raw', 'Plantilla del evento')) return;
-    // Paro de motor — en paso 1, solo para ROBO y ABUSO
+    // Paro de motor — solo para ROBO y ABUSO
     if(tipoEvento !== 'RECUPERACIÓN DE CRÉDITO') {
       const paroSeleccionado = document.querySelector('input[name="paro-motor"]:checked');
       if(!paroSeleccionado) {
@@ -2555,7 +2687,7 @@ function nextStep(from) {
     }
     origenSelected = origenSelected || 'llamada';
     syncParsedToForm();
-    // Para crédito: ocultar persona que reporta en paso 3
+    // Para crédito: ocultar persona que reporta en paso de cierre
     const esCredito1 = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
     const cardPersona = document.getElementById('card-persona-reporta');
     if(cardPersona) cardPersona.style.display = esCredito1 ? 'none' : 'block';
@@ -2563,14 +2695,11 @@ function nextStep(from) {
     if(campoNick) campoNick.style.display = esCredito1 ? 'none' : 'block';
     const cardDatosExtra = document.getElementById('card-datos-extra-credito');
     if(cardDatosExtra) cardDatosExtra.style.display = esCredito1 ? 'block' : 'none';
-  }
-  if(from===2) {
-    const tipoEvento2 = document.getElementById('f-tipo-evento')?.value || '';
-    const esCredito2 = tipoEvento2 === 'RECUPERACIÓN DE CRÉDITO';
-    const esRobo2    = tipoEvento2 === 'ROBO';
 
+    // === Validaciones del antiguo Paso 2 (ahora parte del Paso 1) ===
+    const esCredito2 = esCredito1;
+    const esRobo2    = tipoEvento === 'ROBO';
     if(esCredito2) {
-      // Campos del paso 2 para CRÉDITO
       if(!validarCampo('f-credito-razon', 'Razón social')) return;
       if(!validarCampo('f-credito-tk', 'TK')) return;
       if(!validarCampo('f-marca-credito', 'Marca')) return;
@@ -2586,7 +2715,6 @@ function nextStep(from) {
       if(!validarCampo('f-credito-gestor', 'Gestor asignado')) return;
       if(!validarCampo('f-credito-correo', 'Correo del cliente')) return;
     } else {
-      // Campos del paso 2 para ROBO / ABUSO
       if(!validarCampo('f-cliente', 'Razón social / Cliente')) return;
       if(!validarCampo('f-marca', 'Marca')) return;
       if(!validarCampo('f-modelo', 'Modelo')) return;
@@ -2603,7 +2731,7 @@ function nextStep(from) {
         if(!validarCampo('f-folio911-step1', 'Folio 911')) return;
       }
     }
-    // Guardar campos del paso 2 en variables globales antes de ocultarlo
+    // Guardar variables globales
     const _coordsVal = document.getElementById('f-coords')?.value;
     if(_coordsVal) { window._lastCoordenadas = _coordsVal; setF('f-coords-hidden', _coordsVal); try{localStorage.setItem('cim_coords',_coordsVal);}catch(e){} }
     window._lastLugar       = document.getElementById('f-lugar')?.value || window._lastLugar || '';
@@ -2616,6 +2744,26 @@ function nextStep(from) {
     window._lastUltimaSenal = document.getElementById('f-ultima-senal')?.value || window._lastUltimaSenal || '';
     window._lastFechaRobo   = document.getElementById('f-fecha-robo')?.value || window._lastFechaRobo || '';
     window._lastHoraRobo    = document.getElementById('f-hora-robo')?.value || window._lastHoraRobo || '';
+    // ===== GUARDAR EN SHEETS + ENVIAR A SLACK =====
+    const btn = document.getElementById('btn-registrar');
+    if(btn) { btn.disabled = true; btn.textContent = 'Registrando...'; }
+    try {
+      await registrarEnProceso();
+    } catch(e) {
+      notify('Error al registrar: ' + e.message, 'warning');
+    }
+    if(btn) { btn.disabled = false; btn.textContent = 'Registrar →'; }
+    // Ocultar paso 1 (que incluye form-step-2), mostrar form-step-3 (Cierre)
+    document.getElementById('form-step-1').style.display='none';
+    document.getElementById('form-step-2').style.display='none';
+    document.getElementById('form-step-3').style.display='block';
+    markStep(1,'done');
+    markStep(2,'active');
+    currentStep = 2;
+    return;
+  }
+  if(from===2) {
+    // Este bloque ya no se usa (fusionado en from===1), pero se mantiene por compatibilidad
   }
   if(from===3) {
     if(!recuperadoSelected) { notify('Indica el resultado del evento','warning'); return; }
@@ -2744,7 +2892,7 @@ function nextStep(from) {
     document.getElementById('form-step-3').style.display='none';
     const conf = document.getElementById('form-step-4-confirm');
     if(conf) conf.style.display='block';
-    markStep(3,'done');
+    markStep(2,'done');
     const icons = {si:'✅', no:'🔎', cancel:'🚫'};
     const titles = {si:'Unidad recuperada', no:'No recuperada', cancel:'Cancelado'};
     document.getElementById('confirm-icon').textContent = icons[recuperadoSelected]||'✅';
@@ -2768,12 +2916,21 @@ function nextStep(from) {
 
 function prevStep(from) {
   document.getElementById('form-step-'+from).style.display='none';
-  const prev = from-1;
-  const prevEl = document.getElementById('form-step-'+prev);
-  if(prevEl) prevEl.style.display='block';
-  markStep(from, '');
-  markStep(prev, 'active');
-  currentStep = prev;
+  if(from === 3) {
+    // Volver al paso combinado (1+2)
+    document.getElementById('form-step-1').style.display='block';
+    document.getElementById('form-step-2').style.display='block';
+    markStep(2, '');
+    markStep(1, 'active');
+    currentStep = 1;
+  } else {
+    const prev = from-1;
+    const prevEl = document.getElementById('form-step-'+prev);
+    if(prevEl) prevEl.style.display='block';
+    markStep(from, '');
+    markStep(prev, 'active');
+    currentStep = prev;
+  }
 }
 
 function markStep(n, state) {
@@ -3294,14 +3451,16 @@ async function registerEvento() {
 
 function resetForm() {
   origenSelected=null; recuperadoSelected=null; currentStep=1;
+  window._folioTemp = null;
   for(let i=1;i<=3;i++){
     const el = document.getElementById('form-step-'+i);
-    if(el) el.style.display = i===1?'block':'none';
+    if(el) el.style.display = (i===1||i===2)?'block':'none';
     markStep(i,'');
   }
   const conf = document.getElementById('form-step-4-confirm');
   if(conf) conf.style.display='none';
   document.getElementById('form-step-1').style.display='block';
+  document.getElementById('form-step-2').style.display='block';
   markStep(1,'active');
   // Reset toggle alerta + checkboxes tipo
   const tog = document.getElementById('toggle-alerta');
@@ -4314,9 +4473,34 @@ async function probarSeguimiento() {
   } catch(e) { setCheck('seguimiento', 'error', e.message); }
 }
 
+async function eliminarEnProceso() {
+  if(!window._folioTemp) return; // no hay caso EN PROCESO registrado
+  try {
+    const res = await fetch('https://ain8n.numaris.com/webhook/eliminar-en-proceso', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        folio_temp:  window._folioTemp,
+        folio_final: _lastFolio || '—',
+        resultado:   buildPayload().resultado || '—',
+        fecha_cierre: new Date().toLocaleString('es-MX', { hour12: false })
+      })
+    });
+    if(res.ok) {
+      notify('Caso movido de EN PROCESO ✓', 'success');
+      window._folioTemp = null; // limpiar para no repetir
+    } else {
+      notify('No se pudo eliminar de EN PROCESO: ' + res.status, 'warning');
+    }
+  } catch(e) {
+    notify('Error al eliminar EN PROCESO: ' + e.message, 'warning');
+  }
+}
+
 async function probarTodo() {
   await probarWA();
   await probarFolio();
+  await eliminarEnProceso(); // eliminar de EN PROCESO una vez que ya tenemos folio final
   await probarSheets();
   await probarDrive();
   await probarPDF();
