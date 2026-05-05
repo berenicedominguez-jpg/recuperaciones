@@ -3759,69 +3759,6 @@ async function cerrarCaso(folio, resultado) {
   window.scrollTo(0, 0);
 }
 
-  // Inyectar datos del caso en los campos del formulario para buildPayload
-  const setVal = (id, val) => { const el = document.getElementById(id); if(el && val && val !== '—') el.value = val; };
-  setVal('f-tipo-evento',    caso.tipoEvento);
-  setVal('f-cliente',        caso.cliente);
-  setVal('f-nick',           caso.nick || caso.unidad);
-  setVal('f-placas',         caso.placas);
-  setVal('f-esn',            caso.esn);
-  setVal('f-plataforma',     caso.plataforma);
-  setVal('f-marca',          caso.marca);
-  setVal('f-modelo',         caso.modelo);
-  setVal('f-anio',           caso.anio);
-  setVal('f-color',          caso.color);
-  setVal('f-serie',          caso.serie);
-  setVal('f-lugar',          caso.lugar);
-  setVal('f-coords',         caso.coordenadas);
-  setVal('f-monitorista',    caso.monitorista);
-  setVal('f-folio911-step1', caso.folio911);
-  setVal('f-ultima-senal',   caso.fechaRobo);
-  if(caso.coordenadas && caso.coordenadas !== '—') {
-    window._lastCoordenadas = caso.coordenadas;
-    setVal('f-coords-hidden', caso.coordenadas);
-  }
-
-  // Auto-detectar empresa por plataforma
-  if(caso.plataforma && caso.plataforma !== '—') {
-    if(typeof autoDetectEmpresa === 'function') autoDetectEmpresa(caso.plataforma);
-  }
-
-  // Restaurar alertas desde TIPO_ALERTA
-  if(caso.tipoAlerta && caso.tipoAlerta !== 'N/A' && caso.tipoAlerta !== '—') {
-    const toggle = document.getElementById('toggle-alerta');
-    if(toggle) toggle.checked = true;
-    const ta = caso.tipoAlerta.toLowerCase();
-    const chkPanico = document.getElementById('chk-ta-panico');
-    const chkDescon = document.getElementById('chk-ta-desconexion');
-    const chkJammer = document.getElementById('chk-ta-jammer');
-    if(chkPanico) chkPanico.checked = ta.includes('pánico') || ta.includes('panico');
-    if(chkDescon) chkDescon.checked = ta.includes('desconex');
-    if(chkJammer) chkJammer.checked = ta.includes('jammer');
-  }
-
-  // Restaurar paro de motor
-  if(caso.paroMotor && caso.paroMotor !== '—') {
-    const paroMap = {
-      'Enviado y ejecutado':          'enviado',
-      'Autorizado, sin respuesta':    'autorizado',
-      'No enviado — desconexión':     'desconexion',
-      'No enviado — sin reporte':     'sinreporte',
-      'No autorizado por cliente':    'noautorizado',
-      'No aplica':                    'noaplicar'
-    };
-    const paroVal = paroMap[caso.paroMotor];
-    if(paroVal) {
-      const radio = document.querySelector(`input[name="paro-motor"][value="${paroVal}"]`);
-      if(radio) radio.checked = true;
-    }
-  }
-
-  // Activar resultado
-  selectRecuperacion(recuperadoSelected);
-  window.scrollTo(0, 0);
-}
-
 function irAlCierre(folio) {
   const c = casos.find(x => x.folio === folio);
   if(!c) return;
