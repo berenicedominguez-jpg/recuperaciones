@@ -3653,35 +3653,39 @@ async function cerrarCaso(folio, resultado) {
   const navNuevo = document.querySelector('[onclick*="nuevo"]');
   showPage('nuevo', navNuevo);
 
-  // Ocultar paso 1, mostrar paso 3
-  document.getElementById('form-step-1').style.display = 'none';
-  document.getElementById('form-step-2').style.display = 'none';
-  document.getElementById('form-step-3').style.display = 'block';
-  const conf = document.getElementById('form-step-4-confirm');
-  if(conf) conf.style.display = 'none';
-  markStep(1,'done');
-  markStep(2,'active');
-  currentStep = 2;
+  // Esperar a que el DOM se actualice y luego mostrar el Paso 2
+  setTimeout(() => {
+    // Ocultar paso 1, mostrar paso 3
+    const s1 = document.getElementById('form-step-1');
+    const s2 = document.getElementById('form-step-2');
+    const s3 = document.getElementById('form-step-3');
+    const conf = document.getElementById('form-step-4-confirm');
+    if(s1) s1.style.display = 'none';
+    if(s2) s2.style.display = 'none';
+    if(s3) s3.style.display = 'block';
+    if(conf) conf.style.display = 'none';
+    markStep(1,'done');
+    markStep(2,'active');
+    currentStep = 2;
 
-  // Preseleccionar tipo de evento para mostrar/ocultar cards correctamente
-  const tipoEvento = caso.tipoEvento || '';
-  const sel = document.getElementById('f-tipo-evento');
-  if(sel && tipoEvento) sel.value = tipoEvento;
+    // Preseleccionar tipo de evento
+    const tipoEvento = caso.tipoEvento || '';
+    const sel = document.getElementById('f-tipo-evento');
+    if(sel && tipoEvento) sel.value = tipoEvento;
 
-  // Mostrar/ocultar card persona según tipo
-  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
-  const cardPersona = document.getElementById('card-persona-reporta');
-  if(cardPersona) cardPersona.style.display = esCredito ? 'none' : 'block';
-  const campoNick = document.getElementById('campo-nick-alias');
-  if(campoNick) campoNick.style.display = esCredito ? 'none' : 'block';
-  const cardDatosExtra = document.getElementById('card-datos-extra-credito');
-  if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
+    // Mostrar/ocultar cards según tipo
+    const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
+    const cardPersona = document.getElementById('card-persona-reporta');
+    if(cardPersona) cardPersona.style.display = esCredito ? 'none' : 'block';
+    const campoNick = document.getElementById('campo-nick-alias');
+    if(campoNick) campoNick.style.display = esCredito ? 'none' : 'block';
+    const cardDatosExtra = document.getElementById('card-datos-extra-credito');
+    if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
 
-  // Activar visualmente el botón de resultado correcto
-  selectRecuperacion(recuperadoSelected);
-
-  // Scroll al inicio
-  window.scrollTo(0, 0);
+    // Activar resultado
+    selectRecuperacion(recuperadoSelected);
+    window.scrollTo(0, 0);
+  }, 50);
 }
 
 function irAlCierre(folio) {
