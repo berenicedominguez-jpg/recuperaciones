@@ -3658,6 +3658,20 @@ async function cerrarCaso(folio, resultado) {
   console.log('cerrarCaso llamado:', folio, resultado);
   const caso = casos.find(c => c.folio === folio);
   console.log('caso encontrado:', caso);
+  if(!caso) { console.log('CASO NO ENCONTRADO - abortando'); return; }
+
+  const mapResultado = {'RECUPERADA':'si', 'NO RECUPERADA':'no', 'CANCELADO':'cancel'};
+  recuperadoSelected = mapResultado[resultado];
+  window._folioTemp = folio;
+  console.log('recuperadoSelected:', recuperadoSelected);
+
+  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+  const pageNuevo = document.getElementById('page-nuevo');
+  console.log('page-nuevo encontrado:', !!pageNuevo);
+  if(pageNuevo) { pageNuevo.classList.add('active'); pageNuevo.style.display = 'block'; }
+
+  const s3 = document.getElementById('form-step-3');
+  console.log('form-step-3 encontrado:', !!s3, 'display antes:', s3?.style.display);
   if(!caso) return;
 
   // Mapear resultado al valor interno
