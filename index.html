@@ -2593,8 +2593,8 @@ async function registrarEnProceso() {
     ultima_senal:   document.getElementById('f-ultima-senal')?.value||'—',
   };
 
-  // Guardar folio_temp para usar al cerrar el caso
-  window._folioTemp = folioTemp;
+  // Guardar folio_temp provisional — se reemplaza con el consecutivo que devuelve n8n
+  window._folioTemp = 'EP-' + Date.now();
 
   // ===== Construir mensaje para Slack =====
   const tipoEmoji   = tipoEvento === 'ROBO' ? '🚨' : tipoEvento === 'ABUSO DE CONFIANZA' ? '⚠️' : '📋';
@@ -2657,17 +2657,12 @@ async function registrarEnProceso() {
   const sheetsOk = resSheets.status === 'fulfilled' && resSheets.value?.ok;
   const slackOk  = resSlack.status  === 'fulfilled' && resSlack.value?.ok;
 
-  // Log detallado para debug
-  if(resSheets.status === 'fulfilled') {
-    console.log('Sheets status:', resSheets.value.status);
-    resSheets.value.text().then(t => console.log('Sheets response:', t));
-  } else {
-    console.error('Sheets error:', resSheets.reason);
-  }
-  if(resSlack.status === 'fulfilled') {
-    console.log('Slack status:', resSlack.value.status);
-  } else {
-    console.error('Slack error:', resSlack.reason);
+  // Leer el folio consecutivo que devuelve n8n
+  if(resSheets.status === 'fulfilled' && resSheets.value?.ok) {
+    try {
+      const data = await resSheets.value.json();
+      if(data.folio_temp) window._folioTemp = data.folio_temp;
+    } catch(e) {}
   }
 
   if(sheetsOk && slackOk) {
