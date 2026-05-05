@@ -2675,6 +2675,25 @@ async function registrarEnProceso() {
     const sheetsStatus = resSheets.status === 'fulfilled' ? 'HTTP ' + resSheets.value.status : resSheets.reason?.message || 'sin respuesta';
     notify('Sheets: ' + sheetsStatus + ' | Revisa que el webhook registrar-en-proceso esté activo en n8n', 'warning');
   }
+
+  // Agregar a la lista local para que aparezca en Casos activos
+  casos.unshift({
+    folio:       window._folioTemp,
+    cliente:     payload.cliente     || '—',
+    unidad:      payload.nick        || '—',
+    estado:      'En proceso',
+    origen:      document.getElementById('toggle-alerta')?.checked ? 'Alerta' : 'Llamada',
+    correos:     0,
+    total:       0,
+    recuperado:  false,
+    hora:        new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'}),
+    estadoMx:    document.getElementById('f-estado-rep')?.value || '—',
+    tipoEvento:  payload.tipo_evento || '—',
+    placas:      payload.placas      || '—',
+    esn:         payload.esn         || '—',
+    plataforma:  payload.plataforma  || '—',
+    enProceso:   true
+  });
 }
 
 async function nextStep(from) {
@@ -3546,8 +3565,11 @@ function renderCasos(data) {
       </td>
       <td>
         <div style="display:flex;gap:6px;">
-          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openModal('${c.folio}')">Ver</button>
-          ${!c.recuperado?`<button class="btn btn-success btn-sm" onclick="event.stopPropagation();marcarRecuperado('${c.folio}')">Recuperada</button>`:''}
+          ${c.enProceso
+            ? `<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();irAlCierre('${c.folio}')">Cerrar caso →</button>`
+            : `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openModal('${c.folio}')">Ver</button>`
+          }
+          ${!c.recuperado && !c.enProceso ?`<button class="btn btn-success btn-sm" onclick="event.stopPropagation();marcarRecuperado('${c.folio}')">Recuperada</button>`:''}
         </div>
       </td>
     </tr>`).join('') || '<tr><td colspan="7"><div class="empty"><div class="empty-icon">📭</div><p>No hay casos en esta categoría</p></div></td></tr>';
@@ -3563,6 +3585,24 @@ function filterCasos(f, btn) {
 function searchCasos(q) {
   const filtered = casos.filter(c=>c.folio.toLowerCase().includes(q.toLowerCase())||c.cliente.toLowerCase().includes(q.toLowerCase()));
   renderCasos(filtered);
+}
+
+function irAlCierre(folio) {
+  const c = casos.find(x => x.folio === folio);
+  if(!c) return;
+  // Restaurar folio_temp
+  window._folioTemp = folio;
+  // Ir a la página de nuevo evento mostrando solo el Paso 2 (Cierre)
+  const navNuevo = document.querySelector('[onclick*="nuevo"]');
+  showPage('nuevo', navNuevo);
+  // Ocultar paso 1+2, mostrar paso 3 (cierre)
+  document.getElementById('form-step-1').style.display = 'none';
+  document.getElementById('form-step-2').style.display = 'none';
+  document.getElementById('form-step-3').style.display = 'block';
+  document.getElementById('form-step-4-confirm').style.display = 'none';
+  markStep(1, 'done');
+  markStep(2, 'active');
+  currentStep = 2;
 }
 
 function marcarRecuperado(folio) {
