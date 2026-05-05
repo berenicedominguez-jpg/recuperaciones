@@ -3655,31 +3655,14 @@ function searchCasos(q) {
 }
 
 async function cerrarCaso(folio, resultado) {
-  console.log('cerrarCaso llamado:', folio, resultado);
   const caso = casos.find(c => c.folio === folio);
-  console.log('caso encontrado:', caso);
-  if(!caso) { console.log('CASO NO ENCONTRADO - abortando'); return; }
-
-  const mapResultado = {'RECUPERADA':'si', 'NO RECUPERADA':'no', 'CANCELADO':'cancel'};
-  recuperadoSelected = mapResultado[resultado];
-  window._folioTemp = folio;
-  console.log('recuperadoSelected:', recuperadoSelected);
-
-  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
-  const pageNuevo = document.getElementById('page-nuevo');
-  console.log('page-nuevo encontrado:', !!pageNuevo);
-  if(pageNuevo) { pageNuevo.classList.add('active'); pageNuevo.style.display = 'block'; }
-
-  const s3 = document.getElementById('form-step-3');
-  console.log('form-step-3 encontrado:', !!s3, 'display antes:', s3?.style.display);
   if(!caso) return;
 
-  // Mapear resultado al valor interno
   const mapResultado = {'RECUPERADA':'si', 'NO RECUPERADA':'no', 'CANCELADO':'cancel'};
   recuperadoSelected = mapResultado[resultado];
   window._folioTemp = folio;
 
-  // Activar page-nuevo directamente sin resetear form-steps
+  // Activar page-nuevo directamente
   document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
   const pageNuevo = document.getElementById('page-nuevo');
   if(pageNuevo) { pageNuevo.classList.add('active'); pageNuevo.style.display = 'block'; }
@@ -3712,6 +3695,69 @@ async function cerrarCaso(folio, resultado) {
   if(campoNick) campoNick.style.display = esCredito ? 'none' : 'block';
   const cardDatosExtra = document.getElementById('card-datos-extra-credito');
   if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
+
+  // Inyectar datos del caso en los campos del formulario para buildPayload
+  const setVal = (id, val) => { const el = document.getElementById(id); if(el && val && val !== '—') el.value = val; };
+  setVal('f-tipo-evento',    caso.tipoEvento);
+  setVal('f-cliente',        caso.cliente);
+  setVal('f-nick',           caso.nick || caso.unidad);
+  setVal('f-placas',         caso.placas);
+  setVal('f-esn',            caso.esn);
+  setVal('f-plataforma',     caso.plataforma);
+  setVal('f-marca',          caso.marca);
+  setVal('f-modelo',         caso.modelo);
+  setVal('f-anio',           caso.anio);
+  setVal('f-color',          caso.color);
+  setVal('f-serie',          caso.serie);
+  setVal('f-lugar',          caso.lugar);
+  setVal('f-coords',         caso.coordenadas);
+  setVal('f-monitorista',    caso.monitorista);
+  setVal('f-folio911-step1', caso.folio911);
+  setVal('f-ultima-senal',   caso.fechaRobo);
+  if(caso.coordenadas && caso.coordenadas !== '—') {
+    window._lastCoordenadas = caso.coordenadas;
+    setVal('f-coords-hidden', caso.coordenadas);
+  }
+
+  // Auto-detectar empresa por plataforma
+  if(caso.plataforma && caso.plataforma !== '—') {
+    if(typeof autoDetectEmpresa === 'function') autoDetectEmpresa(caso.plataforma);
+  }
+
+  // Restaurar alertas
+  if(caso.tipoAlerta && caso.tipoAlerta !== 'N/A' && caso.tipoAlerta !== '—') {
+    const toggle = document.getElementById('toggle-alerta');
+    if(toggle) toggle.checked = true;
+    const ta = caso.tipoAlerta.toLowerCase();
+    const chkPanico = document.getElementById('chk-ta-panico');
+    const chkDescon = document.getElementById('chk-ta-desconexion');
+    const chkJammer = document.getElementById('chk-ta-jammer');
+    if(chkPanico) chkPanico.checked = ta.includes('pánico') || ta.includes('panico');
+    if(chkDescon) chkDescon.checked = ta.includes('desconex');
+    if(chkJammer) chkJammer.checked = ta.includes('jammer');
+  }
+
+  // Restaurar paro de motor
+  if(caso.paroMotor && caso.paroMotor !== '—') {
+    const paroMap = {
+      'Enviado y ejecutado':       'enviado',
+      'Autorizado, sin respuesta': 'autorizado',
+      'No enviado — desconexión':  'desconexion',
+      'No enviado — sin reporte':  'sinreporte',
+      'No autorizado por cliente': 'noautorizado',
+      'No aplica':                 'noaplicar'
+    };
+    const paroVal = paroMap[caso.paroMotor];
+    if(paroVal) {
+      const radio = document.querySelector(`input[name="paro-motor"][value="${paroVal}"]`);
+      if(radio) radio.checked = true;
+    }
+  }
+
+  // Activar resultado
+  selectRecuperacion(recuperadoSelected);
+  window.scrollTo(0, 0);
+}
 
   // Inyectar datos del caso en los campos del formulario para buildPayload
   const setVal = (id, val) => { const el = document.getElementById(id); if(el && val && val !== '—') el.value = val; };
