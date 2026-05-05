@@ -280,10 +280,10 @@
   <nav class="sidebar-nav">
     <div class="nav-section">Principal</div>
 
-    <button class="nav-item active" onclick="showPage('nuevo',this)">
+    <button class="nav-item" onclick="showPage('nuevo',this)">
       <span class="icon">＋</span> Nuevo evento
     </button>
-    <button class="nav-item" onclick="showPage('casos',this)">
+    <button class="nav-item active" onclick="showPage('casos',this)">
       <span class="icon">≡</span> Casos activos
     </button>
     <button class="nav-item" onclick="showPage('seguimiento',this)">
@@ -403,7 +403,7 @@
   </div>
 
   <!-- ===== NUEVO EVENTO ===== -->
-  <div class="page active" id="page-nuevo">
+  <div class="page" id="page-nuevo">
     <div style="max-width:820px;margin:0 auto;">
 
       <!-- STEPPER -->
@@ -1585,7 +1585,7 @@
 
     </div><!-- /max-width wrapper -->
   </div><!-- /page-nuevo -->
-  <div class="page" id="page-casos">
+  <div class="page active" id="page-casos" style="display:block !important; min-height:400px;">
     <div class="tabs">
       <button class="tab active" onclick="filterCasos('todos',this)">Todos</button>
       <button class="tab" onclick="filterCasos('proceso',this)">En proceso</button>
@@ -1610,7 +1610,9 @@
             <th>Origen</th><th>Correos</th><th>Acciones</th>
           </tr>
         </thead>
-        <tbody id="casos-tbody"></tbody>
+        <tbody id="casos-tbody">
+          <tr><td colspan="7" style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;">Sin casos registrados</td></tr>
+        </tbody>
       </table>
     </div>
   </div>
@@ -1783,11 +1785,7 @@
 
 <script>
 // DATA
-const casos = [
-  { folio:'REC-2025-001', cliente:'Carlos García López', unidad:'UTD-0042', estado:'En seguimiento', origen:'Alerta', correos:2, total:4, recuperado:false, hora:'08:32', estadoMx:'Puebla' },
-  { folio:'REC-2025-002', cliente:'Ana Martínez Cruz', unidad:'UTD-0018', estado:'En proceso', origen:'Llamada', correos:0, total:4, recuperado:false, hora:'11:15', estadoMx:'Jalisco' },
-  { folio:'REC-2025-003', cliente:'Roberto Sánchez', unidad:'UTD-0056', estado:'Recuperada', origen:'Alerta', correos:0, total:0, recuperado:true, hora:'06:45', estadoMx:'CDMX' },
-];
+const casos = [];
 
 
 // ===== WHATSAPP BUSINESS =====
@@ -2445,16 +2443,22 @@ function setF(id, val) {
 }
 
 // ===== PAGES =====
+let filterActive = 'todos';
 function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  const titles = {dashboard:'Dashboard',nuevo:'Nuevo evento',casos:'Casos activos',seguimiento:'Seguimiento 48hrs',reportes:'Reportes',integraciones:'Integraciones'};
-  document.getElementById('page-title').textContent = titles[id]||id;
-  if(id==='casos') renderCasos(casos);
-  if(id==='dashboard') renderDashboard();
-  if(id==='seguimiento') renderSeguimiento();
+  try {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById('page-'+id);
+    if(page) page.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    const titles = {dashboard:'Dashboard',nuevo:'Nuevo evento',casos:'Casos activos',seguimiento:'Seguimiento 48hrs',reportes:'Reportes',integraciones:'Integraciones'};
+    document.getElementById('page-title').textContent = titles[id]||id;
+    if(id==='casos') { filterActive = 'todos'; renderCasos(casos); }
+    if(id==='dashboard') renderDashboard();
+    if(id==='seguimiento') renderSeguimiento();
+  } catch(e) {
+    console.error('showPage error:', e);
+  }
 }
 
 // STEPPER
@@ -3542,7 +3546,6 @@ function renderDashboard() {
 }
 
 // RENDER CASOS
-let filterActive = 'todos';
 function renderCasos(data) {
   let filtered = data;
   if(filterActive==='proceso') filtered=data.filter(c=>c.estado==='En proceso');
@@ -3550,7 +3553,7 @@ function renderCasos(data) {
   if(filterActive==='recuperados') filtered=data.filter(c=>c.recuperado);
   const tb = document.getElementById('casos-tbody');
   if(!tb) return;
-  tb.innerHTML = filtered.map(c=>`
+  tb.innerHTML = filtered.length ? filtered.map(c=>`
     <tr onclick="openModal('${c.folio}')">
       <td class="main-col">${c.folio}</td>
       <td>${c.cliente}</td>
@@ -3572,7 +3575,8 @@ function renderCasos(data) {
           ${!c.recuperado && !c.enProceso ?`<button class="btn btn-success btn-sm" onclick="event.stopPropagation();marcarRecuperado('${c.folio}')">Recuperada</button>`:''}
         </div>
       </td>
-    </tr>`).join('') || '<tr><td colspan="7"><div class="empty"><div class="empty-icon">📭</div><p>No hay casos en esta categoría</p></div></td></tr>';
+    </tr>`).join('')
+  : '<tr><td colspan="7" style="text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;">Sin casos registrados</td></tr>';
 }
 
 function filterCasos(f, btn) {
@@ -4911,8 +4915,12 @@ document.addEventListener('paste', e => {
 
 // INIT
 document.addEventListener('DOMContentLoaded', ()=>{
-  renderDashboard();
-  // f-fecha empieza vacío — el monitorista lo llena manualmente
+  try { renderDashboard(); } catch(e) { console.error('renderDashboard:', e); }
+  try { renderCasos(casos); } catch(e) { console.error('renderCasos:', e); }
+  try {
+    const navCasos = document.querySelector('[onclick*="casos"]');
+    showPage('casos', navCasos);
+  } catch(e) { console.error('showPage casos:', e); }
 });
 </script>
 </body>
