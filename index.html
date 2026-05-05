@@ -2141,35 +2141,36 @@ function liveParseTemplate(text) {
 
   // Editable fields
   const grid = document.getElementById('parse-fields-grid');
-  if(!grid) return;
-  grid.innerHTML = FIELD_MAP.filter(f => parsedData[f.id]).map(f => {
-    const val = parsedData[f.id] || '';
-    const isLong = f.id === 'fp-descripcion' || val.length > 60;
-    return `<div class="form-group ${isLong ? 'full' : ''}">
-      <label>${f.label}</label>
-      ${isLong
-        ? `<textarea id="${f.id}" oninput="parsedData['${f.id}']=this.value" style="min-height:70px">${val}</textarea>`
-        : `<input type="text" id="${f.id}" value="${val.replace(/"/g,'&quot;')}" oninput="parsedData['${f.id}']=this.value" />`
-      }
-    </div>`;
-  }).join('');
+  if(grid) {
+    grid.innerHTML = FIELD_MAP.filter(f => parsedData[f.id]).map(f => {
+      const val = parsedData[f.id] || '';
+      const isLong = f.id === 'fp-descripcion' || val.length > 60;
+      return `<div class="form-group ${isLong ? 'full' : ''}">
+        <label>${f.label}</label>
+        ${isLong
+          ? `<textarea id="${f.id}" oninput="parsedData['${f.id}']=this.value" style="min-height:70px">${val}</textarea>`
+          : `<input type="text" id="${f.id}" value="${val.replace(/"/g,'&quot;')}" oninput="parsedData['${f.id}']=this.value" />`
+        }
+      </div>`;
+    }).join('');
 
-  // Also fill missing fields as empty editable
-  const missing = FIELD_MAP.filter(f => !parsedData[f.id]);
-  if(missing.length) {
-    grid.innerHTML += `<div class="form-group full" style="margin-top:4px;">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Campos no detectados — puedes completarlos manualmente:</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        ${missing.map(f=>`<div class="form-group">
-          <label>${f.label}</label>
-          <input type="text" id="${f.id}" placeholder="No detectado" oninput="parsedData['${f.id}']=this.value" />
-        </div>`).join('')}
-      </div>
-    </div>`;
+    // Also fill missing fields as empty editable
+    const missing = FIELD_MAP.filter(f => !parsedData[f.id]);
+    if(missing.length) {
+      grid.innerHTML += `<div class="form-group full" style="margin-top:4px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;">Campos no detectados — puedes completarlos manualmente:</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          ${missing.map(f=>`<div class="form-group">
+            <label>${f.label}</label>
+            <input type="text" id="${f.id}" placeholder="No detectado" oninput="parsedData['${f.id}']=this.value" />
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }
   }
 
   // Auto-sincronizar campos del formulario en tiempo real
-  syncParsedToForm();
+  setTimeout(() => syncParsedToForm(), 0);
 }
 
 function parseTemplate(text) {
@@ -2320,109 +2321,113 @@ function parseTemplate(text) {
   return result;
 }
 function syncParsedToForm() {
-  // Vehículo: combinar marca + submarca
-  const marca    = getF('fp-marca');
-  const submarca = getF('fp-submarca');
-  const vehiculo = [marca, submarca].filter(Boolean).join(' ');
+  // Leer directo de parsedData para campos fp-* (no depender del DOM)
+  function pd(key) { return (parsedData[key] || '').trim(); }
 
-  // Map every parsed field → step-1 field IDs
-  if(getF('fp-razon'))    setF('f-cliente',       getF('fp-razon'));
-  if(getF('fp-telefono')) setF('f-telefono',       getF('fp-telefono'));
-  if(getF('fp-placas'))   setF('f-placas',         getF('fp-placas'));
-  if(marca)               setF('f-marca',          marca);
-  if(submarca)            setF('f-modelo',         submarca);
-  if(getF('fp-anio'))     setF('f-anio',           getF('fp-anio'));
-  if(getF('fp-color'))    setF('f-color',          getF('fp-color'));
-  if(getF('fp-serie'))    setF('f-serie',          getF('fp-serie'));
-  if(getF('fp-operador')) setF('f-operador',       getF('fp-operador'));
-  if(getF('fp-lugar'))    setF('f-lugar',          getF('fp-lugar'));
-  // Coordenadas — normalizar formato (puede venir con espacio en vez de coma)
-  const coordsRaw = getF('fp-coords') || '';
+  const marca    = pd('fp-marca');
+  const submarca = pd('fp-submarca');
+
+  if(marca)           setF('f-marca',          marca);
+  if(submarca)        setF('f-modelo',         submarca);
+  if(pd('fp-razon'))  setF('f-cliente',        pd('fp-razon'));
+  if(pd('fp-placas')) setF('f-placas',         pd('fp-placas'));
+  if(pd('fp-anio'))   setF('f-anio',           pd('fp-anio'));
+  if(pd('fp-color'))  setF('f-color',          pd('fp-color'));
+  if(pd('fp-serie'))  setF('f-serie',          pd('fp-serie'));
+  if(pd('fp-operador')) setF('f-operador',     pd('fp-operador'));
+  if(pd('fp-lugar'))  setF('f-lugar',          pd('fp-lugar'));
+  if(pd('fp-telefono')) setF('f-telefono',     pd('fp-telefono'));
+
+  // Coordenadas
+  const coordsRaw  = pd('fp-coords');
   const coordsNorm = coordsRaw.replace(/\s+(-?\d)/, ', $1');
-  if(coordsRaw)           { setF('f-coords', coordsNorm); setF('f-coords-hidden', coordsNorm); window._lastCoordenadas = coordsNorm; try{localStorage.setItem('cim_coords',coordsNorm);}catch(e){} }
-  // NOTA: fecha-robo y hora-robo se sincronizan usando los nuevos pickers
-  if(getF('fp-fecha')) setFechaRobo(getF('fp-fecha'));
-  if(getF('fp-hora'))  setHoraRobo(getF('fp-hora'));
-  if(getF('fp-fechahora')) {
-    setF('f-ultima-senal', getF('fp-fechahora'));
-  } else if(getF('fp-fecha') && getF('fp-hora')) {
-    setF('f-ultima-senal', getF('fp-fecha') + ' ' + getF('fp-hora'));
-  } else if(getF('fp-fecha')) {
-    setF('f-ultima-senal', getF('fp-fecha'));
+  if(coordsRaw) {
+    setF('f-coords', coordsNorm);
+    setF('f-coords-hidden', coordsNorm);
+    window._lastCoordenadas = coordsNorm;
+    try{ localStorage.setItem('cim_coords', coordsNorm); } catch(e) {}
   }
-  if(getF('fp-folio911')) setF('f-folio911-step1', getF('fp-folio911'));
-  // Caja — mapear todos los campos
-  const cajaFields = {
-    'fp-caja-marca':  'f-caja-marca',
-    'fp-caja-color':  'f-caja-color',
-    'fp-caja-anio':   'f-caja-anio',
-    'fp-caja-placa':  'f-caja-placas',
-    'fp-caja-serie':  'f-caja-serie',
+
+  // Fecha y hora del robo
+  if(pd('fp-fecha')) setFechaRobo(pd('fp-fecha'));
+  if(pd('fp-hora'))  setHoraRobo(pd('fp-hora'));
+
+  // Última señal GPS
+  if(pd('fp-fechahora')) {
+    setF('f-ultima-senal', pd('fp-fechahora'));
+  } else if(pd('fp-fecha') && pd('fp-hora')) {
+    setF('f-ultima-senal', pd('fp-fecha') + ' ' + pd('fp-hora'));
+  } else if(pd('fp-fecha')) {
+    setF('f-ultima-senal', pd('fp-fecha'));
+  }
+
+  if(pd('fp-folio911')) setF('f-folio911-step1', pd('fp-folio911'));
+
+  // Caja
+  const cajaMap = {
+    'fp-caja-marca': 'f-caja-marca',
+    'fp-caja-color': 'f-caja-color',
+    'fp-caja-anio':  'f-caja-anio',
+    'fp-caja-placa': 'f-caja-placas',
+    'fp-caja-serie': 'f-caja-serie',
   };
   let cajaTieneDatos = false;
-  for(const [src, dst] of Object.entries(cajaFields)) {
-    const v = getF(src);
+  for(const [src, dst] of Object.entries(cajaMap)) {
+    const v = pd(src);
     if(v) { setF(dst, v); cajaTieneDatos = true; }
   }
-  // Tipo de caja — select
-  const cajaTipo = getF('fp-caja-tipo');
+  const cajaTipo = pd('fp-caja-tipo');
   if(cajaTipo) {
     cajaTieneDatos = true;
     const sel = document.getElementById('f-caja-tipo');
     if(sel) {
-      for(const o of sel.options){
-        if(o.value && o.value.toUpperCase() === cajaTipo.toUpperCase()){
-          sel.value = o.value; break;
-        }
-      }
-      // Si no coincide exacto, buscar parcial
-      if(!sel.value) {
-        for(const o of sel.options){
-          if(o.value && cajaTipo.toUpperCase().includes(o.value.toUpperCase())){
-            sel.value = o.value; break;
-          }
-        }
+      for(const o of sel.options) {
+        if(o.value && o.value.toUpperCase() === cajaTipo.toUpperCase()) { sel.value = o.value; break; }
       }
     }
   }
-  // Auto-abrir sección caja si hay datos
   if(cajaTieneDatos) {
     const cajaBody = document.getElementById('caja-body');
     if(cajaBody && cajaBody.style.display === 'none') toggleCaja();
   }
-  // Modus operandi — select
-  const modus = getF('fp-modus');
+
+  // Modus operandi
+  const modus = pd('fp-modus');
   if(modus) {
     const sel = document.getElementById('f-modus');
     if(sel) {
       const mu = modus.toUpperCase();
-      for(const o of sel.options){ if(o.value && mu.includes(o.value.substring(0,6))){ sel.value=o.value; break; } }
-      if(!sel.value) sel.value='OTRO';
+      for(const o of sel.options) { if(o.value && mu.includes(o.value.substring(0,6))) { sel.value = o.value; break; } }
+      if(!sel.value) sel.value = 'OTRO';
     }
   }
 
-  // Sincronizar campos de CRÉDITO
+  // Crédito
   const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
   if(esCredito) {
-    if(getF('fp-credito-tk'))           setF('f-credito-tk',           getF('fp-credito-tk'));
-    if(getF('fp-credito-razon') || getF('fp-razon'))
-      setF('f-credito-razon', getF('fp-credito-razon') || getF('fp-razon'));
-    if(getF('fp-marca'))                setF('f-marca-credito',        getF('fp-marca'));
-    if(getF('fp-submarca'))             setF('f-modelo-credito',       getF('fp-submarca'));
-    if(getF('fp-anio'))                 setF('f-anio-credito',         getF('fp-anio'));
-    if(getF('fp-placas'))               setF('f-placas-credito',       getF('fp-placas'));
-    if(getF('fp-credito-nombre'))       setF('f-credito-nombre',       getF('fp-credito-nombre'));
-    if(getF('fp-credito-motivo'))       setF('f-credito-motivo',       getF('fp-credito-motivo'));
-    if(getF('fp-credito-fecha-inicio')) setF('f-credito-fecha-inicio', getF('fp-credito-fecha-inicio'));
-    if(getF('fp-credito-fecha-fin'))    setF('f-credito-fecha-fin',    getF('fp-credito-fecha-fin'));
-    if(getF('fp-credito-localidad'))    setF('f-credito-localidad',    getF('fp-credito-localidad'));
-    if(getF('fp-credito-resguardo'))    setF('f-credito-resguardo',    getF('fp-credito-resguardo'));
-    if(getF('fp-credito-gestor'))       setF('f-credito-gestor',       getF('fp-credito-gestor'));
+    if(pd('fp-credito-tk'))           setF('f-credito-tk',           pd('fp-credito-tk'));
+    if(pd('fp-credito-razon') || pd('fp-razon'))
+      setF('f-credito-razon', pd('fp-credito-razon') || pd('fp-razon'));
+    if(pd('fp-marca'))                setF('f-marca-credito',        pd('fp-marca'));
+    if(pd('fp-submarca'))             setF('f-modelo-credito',       pd('fp-submarca'));
+    if(pd('fp-anio'))                 setF('f-anio-credito',         pd('fp-anio'));
+    if(pd('fp-placas'))               setF('f-placas-credito',       pd('fp-placas'));
+    if(pd('fp-credito-nombre'))       setF('f-credito-nombre',       pd('fp-credito-nombre'));
+    if(pd('fp-credito-motivo'))       setF('f-credito-motivo',       pd('fp-credito-motivo'));
+    if(pd('fp-credito-fecha-inicio')) setF('f-credito-fecha-inicio', pd('fp-credito-fecha-inicio'));
+    if(pd('fp-credito-fecha-fin'))    setF('f-credito-fecha-fin',    pd('fp-credito-fecha-fin'));
+    if(pd('fp-credito-localidad'))    setF('f-credito-localidad',    pd('fp-credito-localidad'));
+    if(pd('fp-credito-resguardo'))    setF('f-credito-resguardo',    pd('fp-credito-resguardo'));
+    if(pd('fp-credito-gestor'))       setF('f-credito-gestor',       pd('fp-credito-gestor'));
   }
 
-  // Show visual feedback — solo si fue llamado manualmente desde nextStep
-  const filled = ['f-cliente','f-telefono','f-placas','f-modelo','f-operador','f-lugar','f-fecha-robo','f-hora-robo']
-    .filter(id=>{ const el=document.getElementById(id); return el&&el.value.trim(); }).length;
+  // Feedback visual
+  const filled = ['f-cliente','f-placas','f-marca','f-modelo','f-lugar','f-fecha-robo','f-hora-robo','f-coords']
+    .filter(id => { const el = document.getElementById(id); return el && el.value.trim(); }).length;
+  if(filled > 0) {
+    const hint = document.getElementById('parse-hint');
+    if(hint) hint.textContent = filled + ' campos rellenados';
+  }
 }
 
 function getF(id) {
