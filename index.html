@@ -2760,13 +2760,9 @@ async function nextStep(from) {
       notify('Error al registrar: ' + e.message, 'warning');
     }
     if(btn) { btn.disabled = false; btn.textContent = 'Registrar →'; }
-    // Ocultar paso 1 (que incluye form-step-2), mostrar form-step-3 (Cierre)
-    document.getElementById('form-step-1').style.display='none';
-    document.getElementById('form-step-2').style.display='none';
-    document.getElementById('form-step-3').style.display='block';
-    markStep(1,'done');
-    markStep(2,'active');
-    currentStep = 2;
+    // Redirigir a Casos activos
+    const navCasos = document.querySelector('[onclick*="casos"]');
+    showPage('casos', navCasos);
     return;
   }
   if(from===2) {
