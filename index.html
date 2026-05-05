@@ -3737,12 +3737,25 @@ async function cerrarCaso(folio, resultado) {
   const cardDatosExtra = document.getElementById('card-datos-extra-credito');
   if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
 
-  // Activar resultado y ocultar botones de selección (ya viene definido)
+  // Activar resultado — mostrar panel correcto y ocultar botones de selección
   selectRecuperacion(recuperadoSelected);
 
-  // Ocultar los botones de selección — el resultado ya está definido
+  // Ocultar los 3 botones de selección de resultado
   const selectorGrid = document.querySelector('#panel-resultado-normal > div:first-child');
   if(selectorGrid) selectorGrid.style.display = 'none';
+
+  // También ocultar en el clon dentro de page-cierre
+  const cloneSelectorGrid = document.querySelector('#form-step-3-cierre #panel-resultado-normal > div:first-child');
+  if(cloneSelectorGrid) cloneSelectorGrid.style.display = 'none';
+
+  // Mostrar el panel correcto en el clon
+  const v = recuperadoSelected;
+  const clonePanelSi     = document.querySelector('#form-step-3-cierre #panel-si');
+  const clonePanelNo     = document.querySelector('#form-step-3-cierre #panel-no');
+  const clonePanelCancel = document.querySelector('#form-step-3-cierre #panel-cancel');
+  if(clonePanelSi)     clonePanelSi.style.display     = v === 'si'     ? 'block' : 'none';
+  if(clonePanelNo)     clonePanelNo.style.display      = v === 'no'     ? 'block' : 'none';
+  if(clonePanelCancel) clonePanelCancel.style.display  = v === 'cancel' ? 'block' : 'none';
 
   window.scrollTo(0, 0);
 }
