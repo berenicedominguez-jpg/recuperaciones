@@ -3877,7 +3877,9 @@ async function recuperarDesdeSeguimiento(folio) {
           fechaRobo: caso.fechaRobo,
           fechaRecuperacion,
           resultado: 'RECUPERADA',
-          origen: 'seguimiento'
+          origen: 'seguimiento',
+          plataforma: caso.plataforma || '—',
+          empresa: empresa
         })
       });
       document.getElementById('rec-icon-ticket').textContent = resTicket.ok ? '✅' : '⚠️';
