@@ -3726,7 +3726,15 @@ async function cerrarCaso(folio, resultado) {
 
   // Fecha y hora del robo — usar raw si existe, si no usar el valor formateado
   const fechaRoboVal = caso.fechaRoboRaw || caso.fechaRobo?.split(' ')[0] || '';
-  const horaRoboVal  = caso.horaRoboRaw  || caso.fechaRobo?.split(' ')[1] || '';
+  let horaRoboVal = caso.horaRoboRaw || caso.fechaRobo?.split(' ')[1] || '';
+
+  // Convertir "12:13 PM" → "12:13" para campos input[type=time]
+  if(horaRoboVal && (horaRoboVal.includes('AM') || horaRoboVal.includes('PM'))) {
+    horaRoboVal = horaRoboVal.replace(/\s*(AM|PM).*/i, '').trim();
+  }
+  // También quitar " HRS." si viene así
+  horaRoboVal = horaRoboVal.replace(/\s*HRS\.?/i, '').trim();
+
   if(fechaRoboVal) {
     setVal('f-fecha-robo', fechaRoboVal);
     window._lastFechaRobo = fechaRoboVal;
