@@ -1534,11 +1534,11 @@
   </div>
   </div><!-- /page-nuevo -->
   <div class="page active" id="page-casos">
-    <div style="display:flex;gap:2px;background:#d5dfee;border-radius:8px;padding:3px;margin-bottom:20px;">
-      <button style="flex:1;padding:7px;text-align:center;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:#fff;color:#2563eb;border:none;" onclick="filterCasos('todos',this)">Todos</button>
-      <button style="flex:1;padding:7px;text-align:center;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:none;color:#5e7399;border:none;" onclick="filterCasos('proceso',this)">En proceso</button>
-      <button style="flex:1;padding:7px;text-align:center;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:none;color:#5e7399;border:none;" onclick="filterCasos('seguimiento',this)">Seguimiento</button>
-      <button style="flex:1;padding:7px;text-align:center;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:none;color:#5e7399;border:none;" onclick="filterCasos('recuperados',this)">Recuperados</button>
+    <div class="tabs">
+      <button class="tab active" onclick="filterCasos('todos',this)">Todos</button>
+      <button class="tab" onclick="filterCasos('proceso',this)">En proceso</button>
+      <button class="tab" onclick="filterCasos('seguimiento',this)">Seguimiento</button>
+      <button class="tab" onclick="filterCasos('recuperados',this)">Recuperados</button>
     </div>
     <div style="background:#fff;border:1px solid rgba(37,99,235,0.10);border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(30,60,120,0.07);">
       <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(37,99,235,0.10);">
