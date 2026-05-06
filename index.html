@@ -3844,11 +3844,11 @@ async function recuperarDesdeSeguimiento(folio) {
       document.getElementById('rec-step-folio').style.color = '#d97706';
     }
 
-    // PASO 2: Mover de NO RECUPERADAS → RECUPERADAS con folio nuevo
+    // PASO 2: Mover de NO RECUPERADAS → RECUPERADAS con folio nuevo (Apps Script)
     document.getElementById('rec-icon-sheets').textContent = '🔄';
-    const resSh = await fetch('https://ain8n.numaris.com/webhook/recuperar-desde-seguimiento', {
+    const resSh = await fetch('https://script.google.com/macros/s/AKfycbyfqtv6rdPHcrFa1bQ8atrTabkcsay3uLbtqrCJG-8gjatBA-wKldoKBlwZpHorAfjz/exec', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         folio,
         folioNuevo,
@@ -3856,7 +3856,8 @@ async function recuperarDesdeSeguimiento(folio) {
         fechaRecuperacion
       })
     });
-    if(!resSh.ok) throw new Error('Error Sheets: ' + resSh.status);
+    const dataSh = await resSh.json();
+    if(!dataSh.ok) throw new Error(dataSh.error || 'Error Sheets');
     document.getElementById('rec-icon-sheets').textContent = '✅';
     document.getElementById('rec-step-sheets').style.color = '#059669';
     document.getElementById('rec-step-sheets').innerHTML = `<span>✅</span> Movido a UNIDADES RECUPERADAS`;
