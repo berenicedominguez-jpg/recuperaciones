@@ -1535,8 +1535,7 @@
   </div><!-- /page-nuevo -->
   <div class="page active" id="page-casos">
     <div class="tabs">
-      <button class="tab active" onclick="filterCasos('todos',this)">Todos</button>
-      <button class="tab" onclick="filterCasos('proceso',this)">En proceso</button>
+      <button class="tab active" onclick="filterCasos('proceso',this)">En proceso</button>
       <button class="tab" onclick="filterCasos('seguimiento',this)">Seguimiento</button>
       <button class="tab" onclick="filterCasos('recuperados',this)">Recuperados</button>
     </div>
@@ -2410,7 +2409,7 @@ function setF(id, val) {
 }
 
 // ===== PAGES =====
-let filterActive = 'todos';
+let filterActive = 'proceso';
 function showPage(id, btn) {
   try {
     // Hide all pages
@@ -2429,7 +2428,7 @@ function showPage(id, btn) {
     const titles = {dashboard:'Dashboard',nuevo:'Nuevo evento',casos:'Casos activos',seguimiento:'Seguimiento 48hrs',reportes:'Reportes',integraciones:'Integraciones'};
     document.getElementById('page-title').textContent = titles[id]||id;
     if(id==='casos') {
-      filterActive = 'todos';
+      filterActive = 'proceso';
       renderCasos(casos); // mostrar lo que hay mientras carga
       cargarCasosDesdeSheets(); // actualizar desde Sheets
     }
@@ -3573,50 +3572,114 @@ async function cargarCasosDesdeSheets() {
   try {
     const tb = document.getElementById('casos-tbody');
     if(tb) tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Cargando casos...</td></tr>';
-    const res = await fetch('https://ain8n.numaris.com/webhook/obtener-en-proceso');
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    if(Array.isArray(data) && data.length > 0) {
-      const sinProceso = casos.filter(c => !c.enProceso);
-      casos.length = 0;
-      data.forEach(c => casos.push({
-        folio:        c.folio       || c.FOLIO_TEMP   || '—',
-        cliente:      c.cliente     || c.CLIENTE       || '—',
-        unidad:       c.unidad      || c.NICK          || '—',
-        nick:         c.unidad      || c.NICK          || '—',
-        tipoEvento:   c.tipoEvento  || c.TIPO_EVENTO   || '—',
-        fechaRobo:    c.fechaRobo   || ((c.FECHA_ROBO||'') + ' ' + (c.HORA_ROBO||'')).trim() || '—',
-        monitorista:  c.monitorista || c.MONITORISTA   || '—',
-        placas:       c.placas      || c.PLACAS        || '—',
-        esn:          c.esn         || c.ESN           || '—',
-        plataforma:   c.plataforma  || c.PLATAFORMA    || '—',
-        marca:        c.marca       || c.MARCA         || '—',
-        modelo:       c.modelo      || c.MODELO        || '—',
-        anio:         c.anio        || c.ANIO          || '—',
-        color:        c.color       || c.COLOR         || '—',
-        serie:        c.serie       || c.SERIE         || '—',
-        lugar:        c.lugar       || c.LUGAR         || '—',
-        coordenadas:  c.coordenadas || c.COORDENADAS   || '—',
-        folio911:     c.folio911    || c.FOLIO_911     || '—',
-        tipoAlerta:   c.tipoAlerta  || c.TIPO_ALERTA   || '—',
-        paroMotor:    c.paroMotor   || c.PARO_MOTOR    || '—',
-        operador:     c.operador    || '—',
-        modus:        c.modus       || '—',
-        estadoRep:    c.estadoRep   || '—',
-        paroMotorVal: c.paroMotorVal|| '',
-        fechaRoboRaw: c.fechaRoboRaw || c.FECHA_ROBO    || '',
-        horaRoboRaw:  c.horaRoboRaw  || c.HORA_ROBO     || '',
-        horaRoboAmpm: c.horaRoboAmpm || 'AM',
-        fechaReporte: c.fechaReporte || c.FECHA_REPORTE  || '',
-        estado:       'En proceso',
-        origen:       c.origen      || '—',
-        recuperado:   false,
-        correos:      0,
-        total:        0,
-        enProceso:    true
-      }));
-      sinProceso.forEach(c => casos.push(c));
+
+    // Lanzar las 3 peticiones en paralelo
+    const [resProceso, resSeguimiento, resRecuperados] = await Promise.allSettled([
+      fetch('https://ain8n.numaris.com/webhook/obtener-en-proceso'),
+      fetch('https://ain8n.numaris.com/webhook/obtener-seguimiento'),
+      fetch('https://ain8n.numaris.com/webhook/obtener-recuperados')
+    ]);
+
+    casos.length = 0;
+
+    // ── EN PROCESO ──
+    if(resProceso.status === 'fulfilled' && resProceso.value.ok) {
+      const data = await resProceso.value.json();
+      if(Array.isArray(data)) {
+        data.forEach(c => casos.push({
+          folio:        c.folio       || c.FOLIO_TEMP   || '—',
+          cliente:      c.cliente     || c.CLIENTE       || '—',
+          unidad:       c.unidad      || c.NICK          || '—',
+          nick:         c.unidad      || c.NICK          || '—',
+          tipoEvento:   c.tipoEvento  || c.TIPO_EVENTO   || '—',
+          fechaRobo:    c.fechaRobo   || ((c.FECHA_ROBO||'') + ' ' + (c.HORA_ROBO||'')).trim() || '—',
+          monitorista:  c.monitorista || c.MONITORISTA   || '—',
+          placas:       c.placas      || c.PLACAS        || '—',
+          esn:          c.esn         || c.ESN           || '—',
+          plataforma:   c.plataforma  || c.PLATAFORMA    || '—',
+          marca:        c.marca       || c.MARCA         || '—',
+          modelo:       c.modelo      || c.MODELO        || '—',
+          anio:         c.anio        || c.ANIO          || '—',
+          color:        c.color       || c.COLOR         || '—',
+          serie:        c.serie       || c.SERIE         || '—',
+          lugar:        c.lugar       || c.LUGAR         || '—',
+          coordenadas:  c.coordenadas || c.COORDENADAS   || '—',
+          folio911:     c.folio911    || c.FOLIO_911     || '—',
+          tipoAlerta:   c.tipoAlerta  || c.TIPO_ALERTA   || '—',
+          paroMotor:    c.paroMotor   || c.PARO_MOTOR    || '—',
+          operador:     c.operador    || '—',
+          modus:        c.modus       || '—',
+          estadoRep:    c.estadoRep   || '—',
+          paroMotorVal: c.paroMotorVal|| '',
+          fechaRoboRaw: c.fechaRoboRaw || c.FECHA_ROBO   || '',
+          horaRoboRaw:  c.horaRoboRaw  || c.HORA_ROBO    || '',
+          horaRoboAmpm: c.horaRoboAmpm || 'AM',
+          fechaReporte: c.fechaReporte || c.FECHA_REPORTE || '',
+          estado:       'En proceso',
+          origen:       c.origen      || '—',
+          recuperado:   false,
+          correos:      0,
+          total:        0,
+          enProceso:    true
+        }));
+      }
     }
+
+    // ── NO RECUPERADOS (Seguimiento) ──
+    if(resSeguimiento.status === 'fulfilled' && resSeguimiento.value.ok) {
+      const data = await resSeguimiento.value.json();
+      if(Array.isArray(data)) {
+        data.forEach(c => casos.push({
+          folio:        c.FOLIO        || c.folio        || '—',
+          cliente:      c['NOMBRE CLIENTE'] || c.cliente || '—',
+          unidad:       c['NICK UNIDAD']    || c.unidad  || '—',
+          nick:         c['NICK UNIDAD']    || c.nick    || '—',
+          tipoEvento:   c['TIPO DE EVENTO'] || c.tipoEvento || '—',
+          fechaRobo:    c['FECHA Y HORA DEL ROBO'] || c.fechaRobo || '—',
+          monitorista:  c['NOMBRE']     || c.monitorista || '—',
+          placas:       c.PLACAS        || c.placas      || '—',
+          esn:          c['ESN/ID']     || c.esn         || '—',
+          plataforma:   c.PLATAFORMA    || c.plataforma  || '—',
+          estatus:      c.ESTATUS       || c.estatus     || '—',
+          coordenadas:  c.COORDENADAS   || c.coordenadas || '—',
+          folio911:     c['FOLIO PRE-DENUNCIA'] || c.folio911 || '—',
+          estadoRep:    c['ESTADO DE LA REPUBLICA DEL REPORTE'] || c.estadoRep || '—',
+          fechaReporte: c['FECHA Y HORA DEL REPORTE AL CENTRO DE MONITOREO'] || '',
+          estado:       'En seguimiento',
+          recuperado:   false,
+          enProceso:    false
+        }));
+      }
+    }
+
+    // ── RECUPERADOS ──
+    if(resRecuperados.status === 'fulfilled' && resRecuperados.value.ok) {
+      const data = await resRecuperados.value.json();
+      if(Array.isArray(data)) {
+        data.forEach(c => casos.push({
+          folio:        c.FOLIO        || c.folio        || '—',
+          cliente:      c['NOMBRE CLIENTE'] || c.cliente || '—',
+          unidad:       c['NICK UNIDAD']    || c.unidad  || '—',
+          nick:         c['NICK UNIDAD']    || c.nick    || '—',
+          tipoEvento:   c['TIPO DE EVENTO'] || c.tipoEvento || '—',
+          fechaRobo:    c['FECHA Y HORA DEL ROBO'] || c.fechaRobo || '—',
+          monitorista:  c['NOMBRE']     || c.monitorista || '—',
+          placas:       c.PLACAS        || c.placas      || '—',
+          esn:          c['ESN/ID']     || c.esn         || '—',
+          plataforma:   c.PLATAFORMA    || c.plataforma  || '—',
+          estatus:      c.ESTATUS       || c.estatus     || '—',
+          coordenadas:  c.COORDENADAS   || c.coordenadas || '—',
+          folio911:     c['FOLIO PRE-DENUNCIA'] || c.folio911 || '—',
+          estadoRep:    c['ESTADO DE LA REPUBLICA DEL REPORTE'] || c.estadoRep || '—',
+          fechaRecuperacion: c['FECHA Y HORA DE RECUPERACIÓN'] || '',
+          fechaReporte: c['FECHA Y HORA DEL REPORTE AL CENTRO DE MONITOREO'] || '',
+          estado:       'Recuperada',
+          recuperado:   true,
+          enProceso:    false
+        }));
+      }
+    }
+
     renderCasos(casos);
   } catch(e) {
     console.error('Error cargando casos:', e);
@@ -3628,7 +3691,7 @@ async function cargarCasosDesdeSheets() {
 function renderCasos(data) {
   let filtered = data;
   if(filterActive==='proceso') filtered=data.filter(c=>c.estado==='En proceso');
-  if(filterActive==='seguimiento') filtered=data.filter(c=>c.estado==='En seguimiento');
+  if(filterActive==='seguimiento') filtered=data.filter(c=>!c.recuperado && c.estado!=='En proceso');
   if(filterActive==='recuperados') filtered=data.filter(c=>c.recuperado);
   const tb = document.getElementById('casos-tbody');
   if(!tb) return;
