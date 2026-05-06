@@ -3755,7 +3755,7 @@ function confirmarRecuperada(folio) {
           style="padding:10px 24px;border-radius:8px;border:1px solid #e2e8f0;background:#f8faff;color:#5e7399;font-size:13px;font-weight:600;cursor:pointer;">
           Cancelar
         </button>
-        <button onclick="this.closest('[style*=fixed]').remove();cerrarCaso('${folio}','RECUPERADA')"
+        <button onclick="this.closest('[style*=fixed]').remove();recuperarDesdeSeguimiento('${folio}')"
           style="padding:10px 24px;border-radius:8px;border:none;background:#059669;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">
           ✓ Sí, confirmar
         </button>
@@ -3763,6 +3763,150 @@ function confirmarRecuperada(folio) {
     </div>`;
   document.body.appendChild(modal);
   modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
+}
+
+async function recuperarDesdeSeguimiento(folio) {
+  const caso = casos.find(c => c.folio === folio);
+  if(!caso) return;
+
+  // Calcular mes y fecha de recuperación al momento del click
+  const ahora = new Date();
+  const meses = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+  const mes = meses[ahora.getMonth()];
+  const dd = String(ahora.getDate()).padStart(2,'0');
+  const mm = String(ahora.getMonth()+1).padStart(2,'0');
+  const yyyy = ahora.getFullYear();
+  const hh = String(ahora.getHours()).padStart(2,'0');
+  const min = String(ahora.getMinutes()).padStart(2,'0');
+  const fechaRecuperacion = `${dd}/${mm}/${yyyy} ${hh}:${min} HRS`;
+
+  // Calcular prefijo UR según plataforma del caso
+  const empresaMap = {
+    'TECNOMETRICS':   'TECNOCONTROL VEHICULAR',
+    'UTRAX':          'TECNOCONTROL VEHICULAR',
+    'FT VISION':      'TECNOCONTROL VEHICULAR',
+    'RECUPERAMOVIL':  'SMART TRACKER',
+    'EASYTRACK':      'EASYTRACK',
+    'SFLEET':         'SFLEET',
+    'TRAFFILOG':      'TRAFFILOG',
+    'INBURSA':        'INBURSA',
+  };
+  const empresa = empresaMap[caso.plataforma] || 'TECNOCONTROL VEHICULAR';
+  const prefijosMap = {
+    'TECNOCONTROL VEHICULAR': 'UR-T',
+    'SMART TRACKER':          'UR-ST',
+    'EASYTRACK':              'UR-ET',
+    'SFLEET':                 'UR-SF',
+    'TRAFFILOG':              'UR-TL',
+    'INBURSA':                'UR-I',
+  };
+  const prefijo = prefijosMap[empresa] || 'UR-X';
+
+  // Mostrar modal de progreso
+  const modal = document.createElement('div');
+  modal.id = 'modal-recuperando';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(15,31,61,0.45);backdrop-filter:blur(4px);';
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:16px;padding:32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(15,31,61,0.2);text-align:center;">
+      <div style="font-size:14px;font-weight:700;color:#0f1f3d;margin-bottom:20px;">Procesando recuperación...</div>
+      <div id="rec-step-folio" style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;background:#f8faff;margin-bottom:8px;font-size:13px;color:#5e7399;">
+        <span id="rec-icon-folio">⏳</span> Obteniendo folio de recuperada...
+      </div>
+      <div id="rec-step-sheets" style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;background:#f8faff;margin-bottom:8px;font-size:13px;color:#5e7399;">
+        <span id="rec-icon-sheets">⏳</span> Actualizando hojas de cálculo...
+      </div>
+      <div id="rec-step-ticket" style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;background:#f8faff;margin-bottom:8px;font-size:13px;color:#5e7399;">
+        <span id="rec-icon-ticket">⏳</span> Subiendo ticket...
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+
+  let folioNuevo = folio; // fallback
+
+  try {
+    // PASO 1: Obtener folio nuevo de recuperada
+    document.getElementById('rec-icon-folio').textContent = '🔄';
+    try {
+      const resF = await fetch('https://ain8n.numaris.com/webhook/test-folio', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resultado: 'RECUPERADA', prefijo })
+      });
+      const dataF = await resF.json();
+      if(dataF.folio) folioNuevo = dataF.folio;
+      document.getElementById('rec-icon-folio').textContent = '✅';
+      document.getElementById('rec-step-folio').style.color = '#059669';
+      document.getElementById('rec-step-folio').querySelector('span+*') || 
+        (document.getElementById('rec-step-folio').innerHTML = `<span>✅</span> Folio asignado: <strong>${folioNuevo}</strong>`);
+      document.getElementById('rec-step-folio').innerHTML = `<span>✅</span> Folio asignado: <strong style="color:#0f1f3d;">${folioNuevo}</strong>`;
+    } catch(e) {
+      document.getElementById('rec-icon-folio').textContent = '⚠️';
+      document.getElementById('rec-step-folio').style.color = '#d97706';
+    }
+
+    // PASO 2: Mover de NO RECUPERADAS → RECUPERADAS con folio nuevo
+    document.getElementById('rec-icon-sheets').textContent = '🔄';
+    const resSh = await fetch('https://ain8n.numaris.com/webhook/recuperar-desde-seguimiento', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        folio,
+        folioNuevo,
+        mes,
+        fechaRecuperacion
+      })
+    });
+    if(!resSh.ok) throw new Error('Error Sheets: ' + resSh.status);
+    document.getElementById('rec-icon-sheets').textContent = '✅';
+    document.getElementById('rec-step-sheets').style.color = '#059669';
+    document.getElementById('rec-step-sheets').innerHTML = `<span>✅</span> Movido a UNIDADES RECUPERADAS`;
+
+    // PASO 3: Subir ticket Zoho Desk
+    document.getElementById('rec-icon-ticket').textContent = '🔄';
+    try {
+      const resTicket = await fetch('https://ain8n.numaris.com/webhook/test-desk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          folio: folioNuevo,
+          cliente: caso.cliente,
+          unidad: caso.unidad || caso.nick,
+          tipoEvento: caso.tipoEvento,
+          monitorista: caso.monitorista,
+          fechaRobo: caso.fechaRobo,
+          fechaRecuperacion,
+          resultado: 'RECUPERADA',
+          origen: 'seguimiento'
+        })
+      });
+      document.getElementById('rec-icon-ticket').textContent = resTicket.ok ? '✅' : '⚠️';
+      document.getElementById('rec-step-ticket').style.color = resTicket.ok ? '#059669' : '#d97706';
+      document.getElementById('rec-step-ticket').innerHTML = `<span>${resTicket.ok ? '✅' : '⚠️'}</span> ${resTicket.ok ? 'Ticket creado' : 'Ticket no creado (continúa)'}`;
+    } catch(e) {
+      document.getElementById('rec-icon-ticket').textContent = '⚠️';
+      document.getElementById('rec-step-ticket').innerHTML = `<span>⚠️</span> Ticket no creado (continúa)`;
+    }
+
+    // Actualizar en memoria y recargar tabla
+    caso.recuperado = true;
+    caso.estado = 'Recuperada';
+    caso.fechaRecuperacion = fechaRecuperacion;
+    caso.folio = folioNuevo;
+
+    setTimeout(() => {
+      modal.remove();
+      notify(`✅ ${folioNuevo} registrado en UNIDADES RECUPERADAS`, 'success');
+      cargarCasosDesdeSheets();
+    }, 1800);
+
+  } catch(e) {
+    document.getElementById('rec-icon-sheets').textContent = '❌';
+    document.getElementById('rec-step-sheets').innerHTML = `<span>❌</span> Error: ${e.message}`;
+    setTimeout(() => {
+      modal.remove();
+      notify('Error: ' + e.message, 'error');
+    }, 2500);
+  }
 }
 
 function filterCasos(f, btn) {
