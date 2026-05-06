@@ -3018,10 +3018,19 @@ async function registerEvento() {
   const fechaRobo = fechaRoboRaw !== '—' && fechaRoboRaw.includes('-') 
     ? fechaRoboRaw.split('-').reverse().join('/') 
     : (fechaRoboRaw !== '—' ? fechaRoboRaw : (window._casoActivo?.fechaRobo?.split(' ')[0] || '—'));
-  const horaRobo    = document.getElementById('f-hora-robo')?.value       || window._casoActivo?.horaRoboRaw  || '—';
+  let horaRobo    = document.getElementById('f-hora-robo')?.value       || window._casoActivo?.horaRoboRaw  || '—';
+  if(horaRobo && horaRobo !== '—') horaRobo = horaRobo.replace(/\s*(AM|PM|HRS\.?).*/i,'').trim();
   const folio911    = document.getElementById('f-folio911-step1')?.value  || window._casoActivo?.folio911     || '—';
   const monitorista = document.getElementById('f-monitorista')?.value     || window._casoActivo?.monitorista  || '—';
-  const fechaAtencion = document.getElementById('f-fecha')?.value         || window._casoActivo?.fechaReporte || '—';
+  // fechaAtencion: intentar DOM primero, luego _casoActivo
+  // Si viene como "05/05/2026 13:58" convertir a datetime-local "2026-05-05T13:58"
+  let fechaAtencion = document.getElementById('f-fecha')?.value || window._casoActivo?.fechaReporte || '—';
+  if(fechaAtencion && fechaAtencion !== '—' && fechaAtencion.includes('/')) {
+    const parts = fechaAtencion.split(' ');
+    const [d, m, y] = parts[0].split('/');
+    const time = parts[1] || '00:00';
+    fechaAtencion = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}T${time}`;
+  }
   const estadoRep   = document.getElementById('f-estado-rep')?.value      || window._casoActivo?.estadoRep    || '—';
   const tipoUnidad  = document.getElementById('f-tipo-unidad')?.value     || '—';
   const costo       = document.getElementById('f-costo')?.value           || '—';
@@ -3594,10 +3603,10 @@ async function cargarCasosDesdeSheets() {
         modus:        c.modus       || '—',
         estadoRep:    c.estadoRep   || '—',
         paroMotorVal: c.paroMotorVal|| '',
-        fechaRoboRaw: c.fechaRoboRaw|| '',
-        horaRoboRaw:  c.horaRoboRaw || '',
-        horaRoboAmpm: c.horaRoboAmpm|| 'AM',
-        fechaReporte: c.fechaReporte || c.FECHA_REPORTE || '',
+        fechaRoboRaw: c.fechaRoboRaw || c.FECHA_ROBO    || '',
+        horaRoboRaw:  c.horaRoboRaw  || c.HORA_ROBO     || '',
+        horaRoboAmpm: c.horaRoboAmpm || 'AM',
+        fechaReporte: c.fechaReporte || c.FECHA_REPORTE  || '',
         estado:       'En proceso',
         origen:       c.origen      || '—',
         recuperado:   false,
