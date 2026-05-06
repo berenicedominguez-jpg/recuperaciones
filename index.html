@@ -1504,7 +1504,7 @@
         </div>
 
         <!-- Evidencias adicionales — solo disponible si Drive fue exitoso -->
-        <div class="card" style="margin-bottom:16px;" id="card-evidencias">
+        <div class="card" style="margin-bottom:16px;display:none;" id="card-evidencias">
           <div class="card-header">
             <div class="card-title">🖼️ Evidencias adicionales</div>
             <span style="font-size:11px;color:var(--muted);">Disponible una vez creada la carpeta Drive</span>
@@ -4769,11 +4769,8 @@ async function finalizarTodo() {
   const btn = document.getElementById('btn-finalizar-todo');
   if(btn) { btn.disabled = true; btn.textContent = 'Procesando...'; }
 
-  // Bloquear evidencias
   const cardEvidencias = document.getElementById('card-evidencias');
-  if(cardEvidencias) cardEvidencias.style.opacity = '0.4';
   const btnEvidencias = document.getElementById('btn-subir-evidencias');
-  if(btnEvidencias) btnEvidencias.disabled = true;
 
   // 1. Folio
   await probarFolio();
@@ -4802,8 +4799,8 @@ async function finalizarTodo() {
     return;
   }
 
-  // ✅ Drive listo — habilitar evidencias inmediatamente
-  if(cardEvidencias) cardEvidencias.style.opacity = '1';
+  // ✅ Drive listo — mostrar y habilitar evidencias inmediatamente
+  if(cardEvidencias) { cardEvidencias.style.display = 'block'; cardEvidencias.style.opacity = '1'; }
   if(btnEvidencias) btnEvidencias.disabled = false;
   notify('Carpeta Drive creada — puedes subir evidencias ahora', 'success');
 
