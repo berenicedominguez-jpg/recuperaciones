@@ -3720,22 +3720,26 @@ async function cerrarCaso(folio, resultado) {
     setVal('f-coords-hidden', caso.coordenadas);
   }
 
-  // Fecha y hora del robo
-  if(caso.fechaRoboRaw) {
-    setVal('f-fecha-robo', caso.fechaRoboRaw);
-    window._lastFechaRobo = caso.fechaRoboRaw;
+  // Fecha y hora del robo — usar raw si existe, si no usar el valor formateado
+  const fechaRoboVal = caso.fechaRoboRaw || caso.fechaRobo?.split(' ')[0] || '';
+  const horaRoboVal  = caso.horaRoboRaw  || caso.fechaRobo?.split(' ')[1] || '';
+  if(fechaRoboVal) {
+    setVal('f-fecha-robo', fechaRoboVal);
+    window._lastFechaRobo = fechaRoboVal;
   }
-  if(caso.horaRoboRaw) {
-    setVal('f-hora-robo', caso.horaRoboRaw);      // campo de display
-    setVal('f-hora-robo-raw', caso.horaRoboRaw);  // campo raw para validación
-    window._lastHoraRobo = caso.horaRoboRaw;
+  if(horaRoboVal) {
+    setVal('f-hora-robo', horaRoboVal);
+    setVal('f-hora-robo-raw', horaRoboVal);
+    window._lastHoraRobo = horaRoboVal;
   }
   if(caso.horaRoboAmpm) {
     const ampm = document.getElementById('f-hora-robo-ampm');
     if(ampm) ampm.value = caso.horaRoboAmpm;
   }
-  // Fecha y hora del reporte
-  if(caso.fechaReporte) setVal('f-fecha', caso.fechaReporte);
+  // Fecha y hora del reporte — usar raw si existe
+  if(caso.fechaReporte) {
+    setVal('f-fecha', caso.fechaReporte);
+  }
 
   // Modus operandi
   if(caso.modus && caso.modus !== '—') {
