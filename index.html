@@ -3725,8 +3725,14 @@ async function cerrarCaso(folio, resultado) {
   }
 
   // Fecha y hora del robo — usar raw si existe, si no usar el valor formateado
-  const fechaRoboVal = caso.fechaRoboRaw || caso.fechaRobo?.split(' ')[0] || '';
+  let fechaRoboVal = caso.fechaRoboRaw || caso.fechaRobo?.split(' ')[0] || '';
   let horaRoboVal = caso.horaRoboRaw || caso.fechaRobo?.split(' ')[1] || '';
+
+  // Convertir "12/03/2026" → "2026-03-12" para input[type=date]
+  if(fechaRoboVal && fechaRoboVal.includes('/')) {
+    const [d, m, y] = fechaRoboVal.split('/');
+    fechaRoboVal = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
 
   // Convertir "12:13 PM" → "12:13" para campos input[type=time]
   if(horaRoboVal && (horaRoboVal.includes('AM') || horaRoboVal.includes('PM'))) {
@@ -3748,9 +3754,17 @@ async function cerrarCaso(folio, resultado) {
     const ampm = document.getElementById('f-hora-robo-ampm');
     if(ampm) ampm.value = caso.horaRoboAmpm;
   }
-  // Fecha y hora del reporte — usar raw si existe
+  // Fecha y hora del reporte — convertir a formato datetime-local si es necesario
   if(caso.fechaReporte) {
-    setVal('f-fecha', caso.fechaReporte);
+    let fechaReporteVal = caso.fechaReporte;
+    // Si viene como "05/05/2026 13:58" convertir a "2026-05-05T13:58"
+    if(fechaReporteVal && fechaReporteVal.includes('/')) {
+      const parts = fechaReporteVal.split(' ');
+      const [d, m, y] = parts[0].split('/');
+      const time = parts[1] || '00:00';
+      fechaReporteVal = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}T${time}`;
+    }
+    setVal('f-fecha', fechaReporteVal);
   }
 
   // Modus operandi
