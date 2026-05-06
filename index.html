@@ -3014,6 +3014,10 @@ async function registerEvento() {
   const plataforma  = document.getElementById('f-plataforma')?.value      || '—';
   const lugar       = document.getElementById('f-lugar')?.value           || '—';
   const fechaRoboRaw = document.getElementById('f-fecha-robo')?.value || '—';
+  console.log('DEBUG buildPayload - f-fecha:', document.getElementById('f-fecha')?.value);
+  console.log('DEBUG buildPayload - f-fecha-robo:', fechaRoboRaw);
+  console.log('DEBUG buildPayload - f-hora-robo:', document.getElementById('f-hora-robo')?.value);
+  console.log('DEBUG buildPayload - f-anio:', document.getElementById('f-anio')?.value);
   const fechaRobo = fechaRoboRaw.includes('-') 
     ? fechaRoboRaw.split('-').reverse().join('/') 
     : fechaRoboRaw;
