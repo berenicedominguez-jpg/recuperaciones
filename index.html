@@ -3007,6 +3007,7 @@ async function registerEvento() {
   // Todas las validaciones del paso 3 ya se hicieron en nextStep(from===3)
 
   const empresa     = document.getElementById('f-empresa-atiende')?.value || window._casoActivo?.empresa    || '';
+  console.log('buildPayload _casoActivo:', window._casoActivo ? JSON.stringify({fecha: window._casoActivo.fechaReporte, fechaRobo: window._casoActivo.fechaRoboRaw, horaRobo: window._casoActivo.horaRoboRaw, anio: window._casoActivo.anio}) : 'NULL');
   const cliente     = document.getElementById('f-cliente')?.value         || window._casoActivo?.cliente    || '—';
   const placas      = document.getElementById('f-placas')?.value          || window._casoActivo?.placas     || '—';
   const nick        = document.getElementById('f-nick')?.value            || window._casoActivo?.nick       || '—';
@@ -3674,7 +3675,8 @@ async function cerrarCaso(folio, resultado) {
   const mapResultado = {'RECUPERADA':'si', 'NO RECUPERADA':'no', 'CANCELADO':'cancel'};
   recuperadoSelected = mapResultado[resultado];
   window._folioTemp = folio;
-  window._casoActivo = caso; // guardar para que buildPayload pueda leerlo
+  window._casoActivo = caso;
+  console.log('_casoActivo completo:', JSON.stringify(caso));
 
   // Mover form-step-3 y form-step-4-confirm a page-cierre
   const step3 = document.getElementById('form-step-3');
