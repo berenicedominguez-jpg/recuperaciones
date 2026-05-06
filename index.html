@@ -3627,57 +3627,57 @@ async function cargarCasosDesdeSheets() {
 
     // ── NO RECUPERADOS (Seguimiento) ──
     if(resSeguimiento.status === 'fulfilled' && resSeguimiento.value.ok) {
-      const data = await resSeguimiento.value.json();
-      if(Array.isArray(data)) {
-        data.forEach(c => casos.push({
-          folio:        c.FOLIO        || c.folio        || '—',
-          cliente:      c['NOMBRE CLIENTE'] || c.cliente || '—',
-          unidad:       c['NICK UNIDAD']    || c.unidad  || '—',
-          nick:         c['NICK UNIDAD']    || c.nick    || '—',
-          tipoEvento:   c['TIPO DE EVENTO'] || c.tipoEvento || '—',
-          fechaRobo:    c['FECHA Y HORA DEL ROBO'] || c.fechaRobo || '—',
-          monitorista:  c['NOMBRE']     || c.monitorista || '—',
-          placas:       c.PLACAS        || c.placas      || '—',
-          esn:          c['ESN/ID']     || c.esn         || '—',
-          plataforma:   c.PLATAFORMA    || c.plataforma  || '—',
-          estatus:      c.ESTATUS       || c.estatus     || '—',
-          coordenadas:  c.COORDENADAS   || c.coordenadas || '—',
-          folio911:     c['FOLIO PRE-DENUNCIA'] || c.folio911 || '—',
-          estadoRep:    c['ESTADO DE LA REPUBLICA DEL REPORTE'] || c.estadoRep || '—',
+      const raw = await resSeguimiento.value.json();
+      const data = Array.isArray(raw) ? raw : [raw];
+      data.forEach(c => {
+        if(!c.FOLIO && !c.folio) return; // saltar filas vacías
+        casos.push({
+          folio:        c.FOLIO        || '—',
+          cliente:      c['NOMBRE CLIENTE'] || '—',
+          unidad:       c['NICK UNIDAD']    || '—',
+          nick:         c['NICK UNIDAD']    || '—',
+          tipoEvento:   c['TIPO DE EVENTO'] || '—',
+          fechaRobo:    c['FECHA Y HORA DEL ROBO'] || '—',
+          monitorista:  c['NOMBRE']          || '—',
+          esn:          c['ESN/ID ']         || c['ESN/ID'] || '—',
+          plataforma:   c['PLATAFORMA']      || '—',
+          coordenadas:  c['COORDENADAS (REPORTADAS A AUTORIDADES)'] || '—',
+          folio911:     c['FOLIO PRE-DENUNCIA'] || '—',
+          estadoRep:    c['ESTADO DE LA REPUBLICA DEL REPORTE'] || '—',
           fechaReporte: c['FECHA Y HORA DEL REPORTE AL CENTRO DE MONITOREO'] || '',
           estado:       'En seguimiento',
           recuperado:   false,
           enProceso:    false
-        }));
-      }
+        });
+      });
     }
 
     // ── RECUPERADOS ──
     if(resRecuperados.status === 'fulfilled' && resRecuperados.value.ok) {
-      const data = await resRecuperados.value.json();
-      if(Array.isArray(data)) {
-        data.forEach(c => casos.push({
-          folio:        c.FOLIO        || c.folio        || '—',
-          cliente:      c['NOMBRE CLIENTE'] || c.cliente || '—',
-          unidad:       c['NICK UNIDAD']    || c.unidad  || '—',
-          nick:         c['NICK UNIDAD']    || c.nick    || '—',
-          tipoEvento:   c['TIPO DE EVENTO'] || c.tipoEvento || '—',
-          fechaRobo:    c['FECHA Y HORA DEL ROBO'] || c.fechaRobo || '—',
-          monitorista:  c['NOMBRE']     || c.monitorista || '—',
-          placas:       c.PLACAS        || c.placas      || '—',
-          esn:          c['ESN/ID']     || c.esn         || '—',
-          plataforma:   c.PLATAFORMA    || c.plataforma  || '—',
-          estatus:      c.ESTATUS       || c.estatus     || '—',
-          coordenadas:  c.COORDENADAS   || c.coordenadas || '—',
-          folio911:     c['FOLIO PRE-DENUNCIA'] || c.folio911 || '—',
-          estadoRep:    c['ESTADO DE LA REPUBLICA DEL REPORTE'] || c.estadoRep || '—',
-          fechaRecuperacion: c['FECHA Y HORA DE RECUPERACIÓN'] || '',
+      const raw = await resRecuperados.value.json();
+      const data = Array.isArray(raw) ? raw : [raw];
+      data.forEach(c => {
+        if(!c.FOLIO && !c.folio) return; // saltar filas vacías
+        casos.push({
+          folio:        c.FOLIO        || '—',
+          cliente:      c['NOMBRE CLIENTE'] || '—',
+          unidad:       c['NICK UNIDAD']    || '—',
+          nick:         c['NICK UNIDAD']    || '—',
+          tipoEvento:   c['TIPO DE EVENTO'] || '—',
+          fechaRobo:    c['FECHA Y HORA DEL ROBO'] || '—',
+          monitorista:  c['NOMBRE']          || '—',
+          esn:          c['ESN/ID ']         || c['ESN/ID'] || '—',
+          plataforma:   c['PLATAFORMA']      || '—',
+          coordenadas:  c['COORDENADAS (REPORTADAS A AUTORIDADES)'] || '—',
+          folio911:     c['FOLIO PRE-DENUNCIA'] || '—',
+          estadoRep:    c['ESTADO DE LA REPUBLICA DEL REPORTE'] || '—',
+          fechaRecuperacion: c['FECHA Y HORA DE RECUPERACIÓN'] || c['FECHA Y HORA DE RECUPERACI\u00d3N'] || '',
           fechaReporte: c['FECHA Y HORA DEL REPORTE AL CENTRO DE MONITOREO'] || '',
           estado:       'Recuperada',
           recuperado:   true,
           enProceso:    false
-        }));
-      }
+        });
+      });
     }
 
     renderCasos(casos);
