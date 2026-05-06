@@ -2553,6 +2553,7 @@ async function registrarEnProceso() {
     estado:         'EN PROCESO',
     tipo_evento:    tipoEvento,
     fecha_reporte:  fechaReporte,
+    fecha_reporte_raw: document.getElementById('f-fecha')?.value || '',
     monitorista:    document.getElementById('f-monitorista')?.value || '—',
     tipo_alerta:    tiposAlerta.length ? tiposAlerta.join(', ') : 'N/A',
     paro_motor:     paroMotor,
@@ -2698,6 +2699,7 @@ async function registrarEnProceso() {
     fechaRoboRaw:  payload.fecha_robo_raw|| '',
     horaRoboRaw:   payload.hora_robo_raw || '',
     horaRoboAmpm:  payload.hora_robo_ampm|| 'AM',
+    fechaReporte:  payload.fecha_reporte_raw || '',
     origen:        document.getElementById('toggle-alerta')?.checked ? 'Alerta' : 'Llamada',
     correos:       0,
     total:         0,
@@ -3593,6 +3595,7 @@ async function cargarCasosDesdeSheets() {
         fechaRoboRaw: c.fechaRoboRaw|| '',
         horaRoboRaw:  c.horaRoboRaw || '',
         horaRoboAmpm: c.horaRoboAmpm|| 'AM',
+        fechaReporte: c.fechaReporte || c.FECHA_REPORTE || '',
         estado:       'En proceso',
         origen:       c.origen      || '—',
         recuperado:   false,
@@ -3718,9 +3721,21 @@ async function cerrarCaso(folio, resultado) {
   }
 
   // Fecha y hora del robo
-  if(caso.fechaRoboRaw) setVal('f-fecha-robo', caso.fechaRoboRaw);
-  if(caso.horaRoboRaw)  setVal('f-hora-robo-raw', caso.horaRoboRaw);
-  if(caso.horaRoboAmpm) { const ampm = document.getElementById('f-hora-robo-ampm'); if(ampm) ampm.value = caso.horaRoboAmpm; }
+  if(caso.fechaRoboRaw) {
+    setVal('f-fecha-robo', caso.fechaRoboRaw);
+    window._lastFechaRobo = caso.fechaRoboRaw;
+  }
+  if(caso.horaRoboRaw) {
+    setVal('f-hora-robo', caso.horaRoboRaw);      // campo de display
+    setVal('f-hora-robo-raw', caso.horaRoboRaw);  // campo raw para validación
+    window._lastHoraRobo = caso.horaRoboRaw;
+  }
+  if(caso.horaRoboAmpm) {
+    const ampm = document.getElementById('f-hora-robo-ampm');
+    if(ampm) ampm.value = caso.horaRoboAmpm;
+  }
+  // Fecha y hora del reporte
+  if(caso.fechaReporte) setVal('f-fecha', caso.fechaReporte);
 
   // Modus operandi
   if(caso.modus && caso.modus !== '—') {
