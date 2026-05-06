@@ -268,6 +268,7 @@
   .dot-pulse { width:8px; height:8px; border-radius:50%; background:var(--accent); animation:pulse 1.5s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -280,11 +281,17 @@
   <nav class="sidebar-nav">
     <div class="nav-section">Principal</div>
 
+    <button class="nav-item" onclick="showPage('historico',this)">
+      <span class="icon">📊</span> Dashboard
+    </button>
     <button class="nav-item active" onclick="showPage('casos',this)">
       <span class="icon">≡</span> Casos activos
     </button>
     <button class="nav-item" onclick="showPage('seguimiento',this)">
       <span class="icon">◷</span> Seguimiento
+    </button>
+    <button class="nav-item" onclick="showPage('reporte-historico',this)">
+      <span class="icon">📋</span> Reporte histórico
     </button>
 
   </nav>
@@ -1600,7 +1607,127 @@
     </div>
   </div>
 
-  <!-- ===== REPORTES ===== -->
+  <!-- ===== DASHBOARD ===== -->
+  <div class="page" id="page-historico">
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+      <div class="stat-card">
+        <div class="stat-label">Total recuperadas</div>
+        <div class="stat-value" id="hist-total-rec" style="color:var(--success)">—</div>
+        <div class="stat-sub">Historial completo</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total no recuperadas</div>
+        <div class="stat-value" id="hist-total-norec" style="color:var(--danger)">—</div>
+        <div class="stat-sub">Historial completo</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Tasa de recuperación</div>
+        <div class="stat-value" id="hist-tasa" style="color:var(--accent)">—</div>
+        <div class="stat-sub">Recuperadas / Total</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-head">
+        <div style="font-size:13px;font-weight:700;">Últimos casos</div>
+        <div id="hist-count" style="font-size:12px;color:var(--muted);"></div>
+      </div>
+      <div style="display:flex;gap:10px;padding:12px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;">
+        <select id="hist-filtro-mes" onchange="filtrarHistorico()" style="width:150px;">
+          <option value="">Todos los meses</option>
+          <option>ENERO</option><option>FEBRERO</option><option>MARZO</option>
+          <option>ABRIL</option><option>MAYO</option><option>JUNIO</option>
+          <option>JULIO</option><option>AGOSTO</option><option>SEPTIEMBRE</option>
+          <option>OCTUBRE</option><option>NOVIEMBRE</option><option>DICIEMBRE</option>
+        </select>
+        <select id="hist-filtro-hoja" onchange="filtrarHistorico()" style="width:200px;">
+          <option value="">Recuperadas y No recuperadas</option>
+          <option value="recuperadas">Solo recuperadas</option>
+          <option value="no-recuperadas">Solo no recuperadas</option>
+        </select>
+        <div class="table-search" style="flex:1;max-width:260px;">
+          <span style="color:var(--muted);font-size:13px;">🔍</span>
+          <input type="text" placeholder="Buscar folio, cliente..." oninput="filtrarHistorico(this.value)" id="hist-search">
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>FOLIO</th><th>CLIENTE</th><th>UNIDAD</th><th>TIPO</th>
+            <th>FECHA ROBO</th><th>MONITORISTA</th><th>ESTATUS</th>
+          </tr>
+        </thead>
+        <tbody id="hist-tbody">
+          <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== REPORTE HISTÓRICO (MACRO EXCEL) ===== -->
+  <div class="page" id="page-reporte-historico">
+    <div class="two-col" style="grid-template-columns:1fr 1.4fr;gap:24px;">
+
+      <!-- Panel izquierdo: configuración -->
+      <div class="card" style="align-self:start;">
+        <div class="card-header">
+          <div class="card-title">📂 Configurar reporte</div>
+        </div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:16px;">
+          <div class="form-group">
+            <label class="req">Plataforma</label>
+            <select id="rh-plataforma" onchange="rhOnPlataformaChange()">
+              <option value="">— Selecciona —</option>
+              <option value="RECUPERAMOVIL">RECUPERAMOVIL</option>
+              <option value="TECNOMETRICS">TECNOMETRICS</option>
+              <option value="UTRAX">UTRAX</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="req">Nombre de la unidad (para el título)</label>
+            <input type="text" id="rh-unidad" placeholder="Ej: ECO64 - 730EY9" oninput="rhCheckReady()">
+          </div>
+          <div class="form-group">
+            <label class="req">Archivo Excel (.xlsx)</label>
+            <div id="rh-drop-zone" onclick="document.getElementById('rh-file').click()"
+              style="border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:28px;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--card2);"
+              ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
+              ondragleave="this.style.borderColor='var(--border2)'"
+              ondrop="rhHandleDrop(event)">
+              <div style="font-size:24px;margin-bottom:8px;">📊</div>
+              <div style="font-size:13px;color:var(--muted2);font-weight:500;" id="rh-drop-label">Arrastra el archivo aquí o haz clic para seleccionar</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px;">Solo archivos .xlsx</div>
+            </div>
+            <input type="file" id="rh-file" accept=".xlsx" style="display:none" onchange="rhHandleFile(this.files[0])">
+          </div>
+          <button class="btn btn-primary" id="rh-btn-procesar" onclick="rhProcesar()" disabled style="width:100%;padding:12px;font-size:14px;">
+            ⚙️ Generar reporte formateado
+          </button>
+          <div id="rh-status" style="display:none;padding:12px;border-radius:8px;font-size:13px;line-height:1.6;"></div>
+        </div>
+      </div>
+
+      <!-- Panel derecho: preview -->
+      <div class="card" style="align-self:start;">
+        <div class="card-header">
+          <div class="card-title">👁 Vista previa de datos</div>
+          <div id="rh-preview-info" style="font-size:11px;color:var(--muted);"></div>
+        </div>
+        <div class="card-body">
+          <div id="rh-preview-empty" style="text-align:center;padding:60px 20px;color:var(--muted);">
+            <div style="font-size:36px;margin-bottom:12px;">📋</div>
+            <div style="font-size:13px;">Sube un archivo y selecciona la plataforma<br>para ver una vista previa de los datos</div>
+          </div>
+          <div id="rh-preview-table" style="display:none;overflow-x:auto;max-height:500px;overflow-y:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+              <thead id="rh-preview-thead"></thead>
+              <tbody id="rh-preview-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
   <div class="page" id="page-reportes">
     <div class="two-col" style="margin-bottom:20px;">
       <div class="card">
@@ -2425,7 +2552,7 @@ function showPage(id, btn) {
     }
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     if(btn) btn.classList.add('active');
-    const titles = {dashboard:'Dashboard',nuevo:'Nuevo evento',casos:'Casos activos',seguimiento:'Seguimiento 48hrs',reportes:'Reportes',integraciones:'Integraciones'};
+    const titles = {dashboard:'Dashboard',nuevo:'Nuevo evento',casos:'Casos activos',seguimiento:'Seguimiento 48hrs',reportes:'Reportes',integraciones:'Integraciones',historico:'Dashboard',['reporte-historico']:'Reporte histórico'};
     document.getElementById('page-title').textContent = titles[id]||id;
     if(id==='casos') {
       filterActive = 'proceso';
@@ -2434,6 +2561,7 @@ function showPage(id, btn) {
     }
     if(id==='dashboard') renderDashboard();
     if(id==='seguimiento') renderSeguimiento();
+    if(id==='historico') renderHistorico();
   } catch(e) {
     console.error('showPage error:', e);
   }
@@ -4113,6 +4241,86 @@ function marcarRecuperado(folio) {
 }
 
 // RENDER SEGUIMIENTO
+// ===== DASHBOARD HISTÓRICO =====
+let _histData = [];
+
+async function renderHistorico() {
+  const tbody = document.getElementById('hist-tbody');
+  if(tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Cargando...</td></tr>';
+  try {
+    const [resRec, resNoRec] = await Promise.allSettled([
+      fetch('https://ain8n.numaris.com/webhook/obtener-recuperados'),
+      fetch('https://ain8n.numaris.com/webhook/obtener-seguimiento')
+    ]);
+    _histData = [];
+    if(resRec.status === 'fulfilled' && resRec.value.ok) {
+      const raw = await resRec.value.json();
+      (Array.isArray(raw) ? raw : [raw]).forEach(c => {
+        if(!c.FOLIO) return;
+        _histData.push({ folio:c.FOLIO, cliente:c['NOMBRE CLIENTE']||'—', unidad:c['NICK UNIDAD']||'—', tipo:c['TIPO DE EVENTO']||'—', fechaRobo:c['FECHA Y HORA DEL ROBO']||'—', monitorista:c['NOMBRE']||'—', mes:c['MES']||'—', recuperado:true });
+      });
+    }
+    if(resNoRec.status === 'fulfilled' && resNoRec.value.ok) {
+      const raw = await resNoRec.value.json();
+      (Array.isArray(raw) ? raw : [raw]).forEach(c => {
+        if(!c.FOLIO) return;
+        _histData.push({ folio:c.FOLIO, cliente:c['NOMBRE CLIENTE']||'—', unidad:c['NICK UNIDAD']||'—', tipo:c['TIPO DE EVENTO']||'—', fechaRobo:c['FECHA Y HORA DEL ROBO']||'—', monitorista:c['NOMBRE']||'—', mes:c['MES']||'—', recuperado:false });
+      });
+    }
+    const totalRec = _histData.filter(c=>c.recuperado).length;
+    const totalNoRec = _histData.filter(c=>!c.recuperado).length;
+    const total = totalRec + totalNoRec;
+    const el = id => document.getElementById(id);
+    if(el('hist-total-rec'))   el('hist-total-rec').textContent   = totalRec;
+    if(el('hist-total-norec')) el('hist-total-norec').textContent = totalNoRec;
+    if(el('hist-tasa'))        el('hist-tasa').textContent        = total > 0 ? Math.round((totalRec/total)*100)+'%' : '—';
+    filtrarHistorico();
+  } catch(e) {
+    if(tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--danger);">Error: ${e.message}</td></tr>`;
+  }
+}
+
+function filtrarHistorico(busqueda) {
+  const mes  = document.getElementById('hist-filtro-mes')?.value  || '';
+  const hoja = document.getElementById('hist-filtro-hoja')?.value || '';
+  const q    = (busqueda !== undefined ? busqueda : document.getElementById('hist-search')?.value || '').toLowerCase();
+  let filtered = _histData.filter(c => {
+    if(mes  && c.mes !== mes) return false;
+    if(hoja === 'recuperadas'    && !c.recuperado)  return false;
+    if(hoja === 'no-recuperadas' &&  c.recuperado)  return false;
+    if(q && !c.folio.toLowerCase().includes(q) && !c.cliente.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  const count = document.getElementById('hist-count');
+  if(count) count.textContent = filtered.length + ' registros';
+  const tbody = document.getElementById('hist-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = filtered.length ? filtered.map(c => `
+    <tr style="border-bottom:1px solid rgba(37,99,235,0.07);" onmouseover="this.style.background='#f8faff'" onmouseout="this.style.background=''">
+      <td style="padding:10px 20px;font-weight:600;font-size:13px;color:#1e3a5f;">${c.folio}</td>
+      <td style="padding:10px 20px;font-size:13px;">${c.cliente}</td>
+      <td style="padding:10px 20px;font-size:13px;">${c.unidad}</td>
+      <td style="padding:10px 20px;">
+        <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;
+          background:${c.tipo==='ROBO'?'#fee2e2':c.tipo.includes('ABUSO')?'#fef3c7':'#dbeafe'};
+          color:${c.tipo==='ROBO'?'#991b1b':c.tipo.includes('ABUSO')?'#92400e':'#1e40af'};">
+          ${c.tipo==='ROBO'?'Robo':c.tipo.includes('ABUSO')?'Abuso':'Crédito'}
+        </span>
+      </td>
+      <td style="padding:10px 20px;font-size:13px;color:#3a517a;">${c.fechaRobo}</td>
+      <td style="padding:10px 20px;font-size:13px;">${c.monitorista}</td>
+      <td style="padding:10px 20px;">
+        <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;
+          background:${c.recuperado?'#ccfbf1':'#fee2e2'};color:${c.recuperado?'#0f766e':'#b91c1c'};">
+          ${c.recuperado?'✓ Recuperada':'✗ No recuperada'}
+        </span>
+      </td>
+    </tr>`).join('')
+  : '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Sin registros</td></tr>';
+}
+
+// ===== REPORTE HISTÓRICO =====
+
 function renderSeguimiento() {
   const activos = casos.filter(c => c.estado === 'En seguimiento' && c.total === 6);
   const list = document.getElementById('seguimiento-list');
@@ -5469,6 +5677,140 @@ document.addEventListener('paste', e => {
     }
   }
 });
+
+function rhOnPlataformaChange() {
+  rhCheckReady();
+  if(_rhWorkbook) rhMostrarPreview();
+}
+
+function rhCheckReady() {
+  const plat = document.getElementById('rh-plataforma').value;
+  const unidad = document.getElementById('rh-unidad').value.trim();
+  const btn = document.getElementById('rh-btn-procesar');
+  if(btn) btn.disabled = !(plat && unidad && _rhFile);
+}
+
+function rhHandleDrop(e) {
+  e.preventDefault();
+  const file = e.dataTransfer.files[0];
+  if(file) rhHandleFile(file);
+}
+
+function rhHandleFile(file) {
+  if(!file || !file.name.endsWith('.xlsx')) { notify('Solo se aceptan archivos .xlsx', 'warning'); return; }
+  _rhFile = file;
+  document.getElementById('rh-drop-label').textContent = '✅ ' + file.name;
+  document.getElementById('rh-drop-zone').style.borderColor = 'var(--success)';
+  document.getElementById('rh-drop-zone').style.background = '#f0fdf4';
+  const reader = new FileReader();
+  reader.onload = e => {
+    _rhWorkbook = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+    rhMostrarPreview();
+  };
+  reader.readAsArrayBuffer(file);
+  rhCheckReady();
+}
+
+function rhMostrarPreview() {
+  if(!_rhWorkbook) return;
+  const plat = document.getElementById('rh-plataforma').value;
+  const config = plat ? RH_CONFIG[plat] : null;
+  const sheetName = _rhWorkbook.SheetNames[0];
+  const ws = _rhWorkbook.Sheets[sheetName];
+  const jsonData = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+
+  // Find header row
+  let headerRowIdx = 0, maxCells = 0;
+  for(let i = 0; i < Math.min(20, jsonData.length); i++) {
+    const nonEmpty = jsonData[i].filter(c => c !== '' && c !== null).length;
+    if(nonEmpty > maxCells) { maxCells = nonEmpty; headerRowIdx = i; }
+  }
+
+  const maxCols = config ? config.maxCol : Math.min(15, jsonData[headerRowIdx].length);
+  const headers = config ? config.headers : jsonData[headerRowIdx].slice(0, maxCols);
+  const dataRows = jsonData.slice(headerRowIdx + 1).filter(r => r.some(c => c !== '' && c !== null));
+
+  const thead = document.getElementById('rh-preview-thead');
+  const tbody = document.getElementById('rh-preview-tbody');
+  if(!thead || !tbody) return;
+
+  thead.innerHTML = '<tr>' + headers.slice(0, maxCols).map(h =>
+    `<th style="padding:6px 10px;background:#002060;color:#fff;font-size:11px;white-space:nowrap;position:sticky;top:0;">${h}</th>`
+  ).join('') + '</tr>';
+
+  tbody.innerHTML = dataRows.slice(0, 100).map(row =>
+    '<tr>' + Array.from({length: maxCols}, (_,i) => row[i] ?? '').map(c =>
+      `<td style="padding:5px 10px;font-size:11px;border-bottom:1px solid #eee;white-space:nowrap;">${c}</td>`
+    ).join('') + '</tr>'
+  ).join('');
+
+  document.getElementById('rh-preview-empty').style.display = 'none';
+  document.getElementById('rh-preview-table').style.display = 'block';
+  document.getElementById('rh-preview-info').textContent = `${dataRows.length} filas · ${maxCols} columnas`;
+  rhCheckReady();
+}
+
+async function rhProcesar() {
+  const plat = document.getElementById('rh-plataforma').value;
+  const unidad = document.getElementById('rh-unidad').value.trim();
+  if(!plat || !unidad || !_rhFile) return;
+
+  const btn = document.getElementById('rh-btn-procesar');
+  const status = document.getElementById('rh-status');
+  btn.disabled = true;
+  btn.textContent = '⏳ Procesando...';
+  status.style.display = 'block';
+  status.style.background = '#f0f5fc';
+  status.style.color = 'var(--muted2)';
+  status.textContent = 'Leyendo archivo...';
+
+  try {
+    // Convert file to base64
+    const reader = new FileReader();
+    const ab = await new Promise(res => { reader.onload = e => res(e.target.result); reader.readAsArrayBuffer(_rhFile); });
+    const bytes = new Uint8Array(ab);
+    let binary = '';
+    bytes.forEach(b => binary += String.fromCharCode(b));
+    const fileBase64 = btoa(binary);
+
+    status.textContent = 'Enviando al servidor para formatear...';
+
+    const res = await fetch('https://script.google.com/macros/s/AKfycbyfqtv6rdPHcrFa1bQ8atrTabkcsay3uLbtqrCJG-8gjatBA-wKldoKBlwZpHorAfjz/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ plataforma: plat, unidad, fileBase64 })
+    });
+
+    const result = await res.json();
+    if(!result.ok) throw new Error(result.error || 'Error del servidor');
+
+    // Decode and download
+    status.textContent = `✅ ${result.rows} registros procesados. Descargando...`;
+    const binaryStr = atob(result.fileBase64);
+    const outBytes = new Uint8Array(binaryStr.length);
+    for(let i = 0; i < binaryStr.length; i++) outBytes[i] = binaryStr.charCodeAt(i);
+    const blob = new Blob([outBytes], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = result.filename || `REPORTE_HISTORICO_${plat}_${unidad}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    status.style.background = '#d1fae5';
+    status.style.color = '#065f46';
+    status.innerHTML = `✅ <strong>${result.rows} registros</strong> exportados con formato ${plat} incluyendo logo y título.<br><span style="font-size:11px;">Archivo: ${result.filename}</span>`;
+
+  } catch(e) {
+    status.style.background = '#fee2e2';
+    status.style.color = '#991b1b';
+    status.textContent = '❌ Error: ' + e.message;
+    console.error(e);
+  }
+
+  btn.disabled = false;
+  btn.textContent = '⚙️ Generar reporte formateado';
+}
 
 // INIT
 document.addEventListener('DOMContentLoaded', ()=>{
