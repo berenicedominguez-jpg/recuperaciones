@@ -3711,6 +3711,12 @@ function renderCasos(data) {
       <td style="padding:12px 20px;font-size:13px;">${c.monitorista||'—'}</td>
       <td style="padding:12px 20px;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          ${c.estado === 'En seguimiento' ? `
+          <button onclick="confirmarRecuperada('${c.folio}')"
+            style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#d1fae5;color:#065f46;">
+            ✓ Recuperada
+          </button>
+          ` : `
           <button onclick="cerrarCaso('${c.folio}','RECUPERADA')"
             style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#d1fae5;color:#065f46;">
             ✓ Recuperada
@@ -3723,10 +3729,38 @@ function renderCasos(data) {
             style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#f1f5f9;color:#475569;">
             Cancelado
           </button>
+          `}
         </div>
       </td>
     </tr>`).join('')
   : '<tr><td colspan="6" style="text-align:center;padding:48px 20px;color:#5e7399;font-size:13px;">Sin casos registrados</td></tr>';
+}
+
+function confirmarRecuperada(folio) {
+  const caso = casos.find(c => c.folio === folio);
+  if(!caso) return;
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(15,31,61,0.45);backdrop-filter:blur(4px);';
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:16px;padding:32px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(15,31,61,0.2);text-align:center;">
+      <div style="font-size:36px;margin-bottom:16px;">✅</div>
+      <div style="font-size:16px;font-weight:700;color:#0f1f3d;margin-bottom:8px;">¿Confirmar recuperación?</div>
+      <div style="font-size:13px;color:#5e7399;margin-bottom:6px;">Folio: <strong style="color:#0f1f3d;">${caso.folio}</strong></div>
+      <div style="font-size:13px;color:#5e7399;margin-bottom:6px;">Cliente: <strong style="color:#0f1f3d;">${caso.cliente}</strong></div>
+      <div style="font-size:13px;color:#5e7399;margin-bottom:24px;">Unidad: <strong style="color:#0f1f3d;">${caso.unidad}</strong></div>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button onclick="this.closest('[style*=fixed]').remove()"
+          style="padding:10px 24px;border-radius:8px;border:1px solid #e2e8f0;background:#f8faff;color:#5e7399;font-size:13px;font-weight:600;cursor:pointer;">
+          Cancelar
+        </button>
+        <button onclick="this.closest('[style*=fixed]').remove();cerrarCaso('${folio}','RECUPERADA')"
+          style="padding:10px 24px;border-radius:8px;border:none;background:#059669;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">
+          ✓ Sí, confirmar
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if(e.target === modal) modal.remove(); });
 }
 
 function filterCasos(f, btn) {
