@@ -5786,17 +5786,34 @@ async function rhProcesar() {
   status.textContent = 'Leyendo archivo...';
 
   try {
-    // Leer xlsx con SheetJS y extraer datos como JSON
+    // Leer xlsx con SheetJS — detectar fila de headers (la que tiene más celdas no vacías)
     const reader = new FileReader();
     const ab = await new Promise(res => { reader.onload = e => res(e.target.result); reader.readAsArrayBuffer(_rhFile); });
     const wb = XLSX.read(new Uint8Array(ab), {type:'array', cellText: true, cellDates: false});
     const ws = wb.Sheets[wb.SheetNames[0]];
     const rawData = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:false});
 
-    // Fila 1 = headers, resto = datos
-    const dataRows = rawData.slice(1).filter(r => r.some(c => c !== '' && c !== null && c !== undefined));
+    // Encontrar fila de headers (la que tiene más celdas no vacías, igual que el preview)
+    let headerRowIdx = 0, maxCells = 0;
+    for(let i = 0; i < Math.min(20, rawData.length); i++) {
+      const nonEmpty = rawData[i].filter(c => c !== '' && c !== null && c !== undefined).length;
+      if(nonEmpty > maxCells) { maxCells = nonEmpty; headerRowIdx = i; }
+    }
+
+    // Datos desde la fila siguiente al header — solo las columnas necesarias (maxCol)
+    const config = RH_CONFIG[plat];
+    const maxCol = config ? config.maxCol : 27;
+    const dataRows = rawData.slice(headerRowIdx + 1)
+      .filter(r => r.some(c => c !== '' && c !== null && c !== undefined))
+      .map(r => r.slice(0, maxCol)); // Solo enviar columnas necesarias
 
     status.textContent = `${dataRows.length} filas encontradas. Enviando al servidor...`;
+
+    // Enviar en chunks si hay muchas filas (límite ~50k celdas por request)
+    const CHUNK_SIZE = 1500;
+    if(dataRows.length > CHUNK_SIZE) {
+      status.textContent = `${dataRows.length} filas — enviando en partes...`;
+    }
 
     const res = await fetch('https://script.google.com/macros/s/AKfycbyfqtv6rdPHcrFa1bQ8atrTabkcsay3uLbtqrCJG-8gjatBA-wKldoKBlwZpHorAfjz/exec', {
       method: 'POST',
