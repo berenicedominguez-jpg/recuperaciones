@@ -5844,21 +5844,21 @@ async function rhProcesar() {
     const result = await res.json();
     if(!result.ok) throw new Error(result.error || 'Error del servidor');
 
-    // Descargar resultado
-    const binaryStr = atob(result.fileBase64);
-    const outBytes = new Uint8Array(binaryStr.length);
-    for(let i = 0; i < binaryStr.length; i++) outBytes[i] = binaryStr.charCodeAt(i);
-    const blob = new Blob([outBytes], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-    const url = URL.createObjectURL(blob);
+    // Descargar PDF
+    const pdfStr = atob(result.pdfBase64);
+    const pdfBytes = new Uint8Array(pdfStr.length);
+    for(let i = 0; i < pdfStr.length; i++) pdfBytes[i] = pdfStr.charCodeAt(i);
+    const pdfBlob = new Blob([pdfBytes], {type:'application/pdf'});
+    const pdfUrl = URL.createObjectURL(pdfBlob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = result.filename || `REPORTE_HISTORICO_${plat}_${unidad}.xlsx`;
+    a.href = pdfUrl;
+    a.download = result.pdfFilename || `REPORTE_HISTORICO_${plat}_${unidad}.pdf`;
     a.click();
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(pdfUrl);
 
     status.style.background = '#d1fae5';
     status.style.color = '#065f46';
-    status.innerHTML = `✅ <strong>${result.rows} registros</strong> exportados con formato ${plat}.<br><span style="font-size:11px;">Archivo: ${result.filename}</span>`;
+    status.innerHTML = `✅ <strong>${result.rows} registros</strong> exportados en PDF horizontal con formato ${plat}.<br><span style="font-size:11px;">Archivo: ${result.pdfFilename}</span>`;
 
   } catch(e) {
     status.style.background = '#fee2e2';
