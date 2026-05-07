@@ -1695,9 +1695,9 @@
               ondrop="rhHandleDrop(event)">
               <div style="font-size:24px;margin-bottom:8px;">📊</div>
               <div style="font-size:13px;color:var(--muted2);font-weight:500;" id="rh-drop-label">Arrastra el archivo aquí o haz clic para seleccionar</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:4px;">Solo archivos .xlsx</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px;">Archivos .xlsx o .xls</div>
             </div>
-            <input type="file" id="rh-file" accept=".xlsx" style="display:none" onchange="rhHandleFile(this.files[0])">
+            <input type="file" id="rh-file" accept=".xlsx,.xls" style="display:none" onchange="rhHandleFile(this.files[0])">
           </div>
           <button class="btn btn-primary" id="rh-btn-procesar" onclick="rhProcesar()" disabled style="width:100%;padding:12px;font-size:14px;">
             ⚙️ Generar reporte formateado
@@ -5718,17 +5718,31 @@ function rhHandleDrop(e) {
 }
 
 function rhHandleFile(file) {
-  if(!file || !file.name.endsWith('.xlsx')) { notify('Solo se aceptan archivos .xlsx', 'warning'); return; }
+  if(!file || (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls'))) { notify('Solo se aceptan archivos .xlsx o .xls', 'warning'); return; }
   _rhFile = file;
   document.getElementById('rh-drop-label').textContent = '✅ ' + file.name;
   document.getElementById('rh-drop-zone').style.borderColor = 'var(--success)';
   document.getElementById('rh-drop-zone').style.background = '#f0fdf4';
   const reader = new FileReader();
-  reader.onload = e => {
-    _rhWorkbook = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
-    rhMostrarPreview();
-  };
-  reader.readAsArrayBuffer(file);
+  // XLS files from UTRAX are actually HTML - read as text first
+  if(file.name.endsWith('.xls')) {
+    reader.onload = e => {
+      try {
+        _rhWorkbook = XLSX.read(e.target.result, {type:'string'});
+      } catch(err) {
+        // Fallback to binary read
+        _rhWorkbook = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+      }
+      rhMostrarPreview();
+    };
+    reader.readAsText(file, 'iso-8859-1');
+  } else {
+    reader.onload = e => {
+      _rhWorkbook = XLSX.read(new Uint8Array(e.target.result), {type:'array'});
+      rhMostrarPreview();
+    };
+    reader.readAsArrayBuffer(file);
+  }
   rhCheckReady();
 }
 
@@ -5786,10 +5800,16 @@ async function rhProcesar() {
   status.textContent = 'Leyendo archivo...';
 
   try {
-    // Leer xlsx con SheetJS — detectar fila de headers (la que tiene más celdas no vacías)
+    // Leer archivo con SheetJS (soporta xlsx y xls/HTML)
     const reader = new FileReader();
-    const ab = await new Promise(res => { reader.onload = e => res(e.target.result); reader.readAsArrayBuffer(_rhFile); });
-    const wb = XLSX.read(new Uint8Array(ab), {type:'array', cellText: true, cellDates: false});
+    let wb;
+    if(_rhFile.name.endsWith('.xls')) {
+      const text = await new Promise(res => { reader.onload = e => res(e.target.result); reader.readAsText(_rhFile, 'iso-8859-1'); });
+      try { wb = XLSX.read(text, {type:'string'}); } catch(e) { wb = _rhWorkbook; }
+    } else {
+      const ab = await new Promise(res => { reader.onload = e => res(e.target.result); reader.readAsArrayBuffer(_rhFile); });
+      wb = XLSX.read(new Uint8Array(ab), {type:'array', cellText: true, cellDates: false});
+    }
     const ws = wb.Sheets[wb.SheetNames[0]];
     const rawData = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:false});
 
