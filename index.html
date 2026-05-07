@@ -5765,27 +5765,28 @@ async function rhProcesar() {
   status.textContent = 'Leyendo archivo...';
 
   try {
-    // Convert file to base64
+    // Leer xlsx con SheetJS y extraer datos como JSON
     const reader = new FileReader();
     const ab = await new Promise(res => { reader.onload = e => res(e.target.result); reader.readAsArrayBuffer(_rhFile); });
-    const bytes = new Uint8Array(ab);
-    let binary = '';
-    bytes.forEach(b => binary += String.fromCharCode(b));
-    const fileBase64 = btoa(binary);
+    const wb = XLSX.read(new Uint8Array(ab), {type:'array', cellText: true, cellDates: false});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rawData = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:false});
 
-    status.textContent = 'Enviando al servidor para formatear...';
+    // Fila 1 = headers, resto = datos
+    const dataRows = rawData.slice(1).filter(r => r.some(c => c !== '' && c !== null && c !== undefined));
+
+    status.textContent = `${dataRows.length} filas encontradas. Enviando al servidor...`;
 
     const res = await fetch('https://script.google.com/macros/s/AKfycbyfqtv6rdPHcrFa1bQ8atrTabkcsay3uLbtqrCJG-8gjatBA-wKldoKBlwZpHorAfjz/exec', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ plataforma: plat, unidad, fileBase64 })
+      body: JSON.stringify({ plataforma: plat, unidad, dataRows })
     });
 
     const result = await res.json();
     if(!result.ok) throw new Error(result.error || 'Error del servidor');
 
-    // Decode and download
-    status.textContent = `✅ ${result.rows} registros procesados. Descargando...`;
+    // Descargar resultado
     const binaryStr = atob(result.fileBase64);
     const outBytes = new Uint8Array(binaryStr.length);
     for(let i = 0; i < binaryStr.length; i++) outBytes[i] = binaryStr.charCodeAt(i);
@@ -5799,7 +5800,7 @@ async function rhProcesar() {
 
     status.style.background = '#d1fae5';
     status.style.color = '#065f46';
-    status.innerHTML = `✅ <strong>${result.rows} registros</strong> exportados con formato ${plat} incluyendo logo y título.<br><span style="font-size:11px;">Archivo: ${result.filename}</span>`;
+    status.innerHTML = `✅ <strong>${result.rows} registros</strong> exportados con formato ${plat}.<br><span style="font-size:11px;">Archivo: ${result.filename}</span>`;
 
   } catch(e) {
     status.style.background = '#fee2e2';
