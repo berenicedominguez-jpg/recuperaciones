@@ -4244,6 +4244,27 @@ function marcarRecuperado(folio) {
 // ===== DASHBOARD HISTÓRICO =====
 let _histData = [];
 
+// ===== REPORTE HISTÓRICO - Variables =====
+const RH_CONFIG = {
+  RECUPERAMOVIL: {
+    maxCol: 27, titleCol: 3, titleMergeEnd: 27, logoMergeEnd: 2, titleSz: 26, headerHeight: 40,
+    colWidths: [300,268,154,127,105,249,432,172,153,158,546,128,138,186,138,98,183,138,98,98,98,183,138,98,98,98,98],
+    headers: ['Cliente','Flotilla','Unidad','Evento','Fecha','Fecha de servidor','Fecha local','Velocidad','Ignición','Número de satélites','Dirección','Longitud','Latitud','Coordenadas','Geocerca','Dentro de POI','Orientación','Estatus IO','Entradas','Salidas','Odómetro','Temperatura de Caja','POI','Distancia','Señal','Voltaje [V]','Batería [%]']
+  },
+  TECNOMETRICS: {
+    maxCol: 14, titleCol: 3, titleMergeEnd: 13, logoMergeEnd: 2, titleSz: 26, headerHeight: 60,
+    colWidths: [197,95,126,447,153,98,74,131,249,143,106,126,135,98],
+    headers: ['Nombre Equipo','Latitud','Longitud','Ubicación','Fecha GPS','Fecha Srv','Vel','Odómetro Kms','Último Mensaje','Geocerca','GPS','GPRS','SATELITES','ESN']
+  },
+  UTRAX: {
+    maxCol: 12, titleCol: 4, titleMergeEnd: 12, logoMergeEnd: 3, titleSz: 35, headerHeight: 55,
+    colWidths: [106,188,144,258,158,148,187,256,157,235,113,532],
+    headers: ['#','GPS','FECHA GPS','FECHA SERVIDOR','LATITUD','LONGITUD','VEL','CURSO','ODOMETRO','REFERENCIA GEOGRAFICA','EVENTO','TEXTO LIBRE']
+  }
+};
+let _rhFile = null;
+let _rhWorkbook = null;
+
 async function renderHistorico() {
   const tbody = document.getElementById('hist-tbody');
   if(tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Cargando...</td></tr>';
