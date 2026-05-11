@@ -2788,6 +2788,11 @@ async function registrarEnProceso() {
     hora_robo_raw:  document.getElementById('f-hora-robo')?.value||'',
     hora_robo_ampm: document.getElementById('f-hora-robo-ampm')?.value||'AM',
     folio911:       document.getElementById('f-folio911-step1')?.value||'—',
+    // Campos específicos de crédito para Slack
+    nombre_cliente: document.getElementById('f-credito-nombre')?.value||'—',
+    motivo:         document.getElementById('f-credito-motivo')?.value||'—',
+    fecha_inicio:   document.getElementById('f-credito-fecha-inicio')?.value||'—',
+    fecha_fin:      document.getElementById('f-credito-fecha-fin')?.value||'—',
   };
 
   // Guardar folio_temp provisional — se reemplaza con el consecutivo que devuelve n8n
@@ -2818,7 +2823,21 @@ async function registrarEnProceso() {
     ? payload.tipo_alerta
     : 'N/A';
 
-  const mensaje = [
+  const esCredito_slack = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
+  const mensaje = esCredito_slack ? [
+    `🏦 *RECUPERACIÓN DE CRÉDITO — ${cliente} — ${plataforma}*`,
+    `━━━━━━━━━━━━━━━━━━━`,
+    `🔑 *TK:* ${nick} | Placas: ${placas}`,
+    `🔢 *ESN:* ${esn}`,
+    ``,
+    `👤 *Cliente:* ${payload.nombre_cliente || '—'}`,
+    `📋 *Motivo:* ${payload.motivo || '—'}`,
+    `📅 *Inicio seguimiento:* ${payload.fecha_inicio || '—'}`,
+    `📅 *Fin seguimiento:* ${payload.fecha_fin || '—'}`,
+    ``,
+    `👮 *Monitorista:* ${monitorista}`,
+    `━━━━━━━━━━━━━━━━━━━`,
+  ].join('\n') : [
     `🚨 *${tipoEvento} — ${cliente} — ${plataforma}*`,
     `━━━━━━━━━━━━━━━━━━━`,
     `🚛 *Unidad:* ${nick} | Placas: ${placas}`,
@@ -3485,7 +3504,7 @@ async function registerEvento() {
     mensaje,
     // Campos para test-correo
     correoCliente: esCredito
-      ? (document.getElementById('f-credito-correo')?.value || '')
+      ? ''
       : (document.getElementById('f-correo-reportante')?.value || document.getElementById('f-correo')?.value || ''),
     nick,
     placas,
@@ -3508,8 +3527,8 @@ async function registerEvento() {
       localidad: document.getElementById('f-credito-localidad')?.value || '—',
       lugar_resguardo: document.getElementById('f-credito-resguardo')?.value || '—',
       gestor: document.getElementById('f-credito-gestor')?.value || '—',
-      ubicacion: document.getElementById('f-credito-ubicacion')?.value || '—',
-      coordenadas: document.getElementById('f-credito-coordenadas')?.value || '—',
+      ubicacion: '—',
+      coordenadas: document.getElementById('f-coords')?.value || coordenadas || '—',
       exitoso: creditoExitoso,
       conclusion: document.getElementById('f-credito-conclusion')?.value || '—',
       img_mapa_credito: await (async () => {
