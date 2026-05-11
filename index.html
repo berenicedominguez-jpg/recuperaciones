@@ -4342,11 +4342,31 @@ function filtrarHistorico(busqueda) {
 
 // ===== REPORTE HISTÓRICO =====
 
-function renderSeguimiento() {
-  const activos = casos.filter(c => c.estado === 'En seguimiento' && c.total === 6);
+async function renderSeguimiento() {
   const list = document.getElementById('seguimiento-list');
   const prog = document.getElementById('correos-programados');
-  const ahora = Date.now();
+
+  if(list) list.innerHTML = '<div class="empty"><div class="empty-icon" style="font-size:24px;">⏳</div><p>Cargando casos...</p></div>';
+  if(prog) prog.innerHTML = '<div class="empty"><div class="empty-icon">📧</div><p>Cargando...</p></div>';
+
+  let activos = [];
+  try {
+    const res = await fetch('https://ain8n.numaris.com/webhook/leer-seguimiento', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({}) });
+    const data = await res.json();
+    activos = (data.casos || []).filter(c => c.FOLIO);
+  } catch(e) {
+    if(list) list.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><p>Error al cargar casos</p></div>';
+    if(prog) prog.innerHTML = '<div class="empty"><div class="empty-icon">📧</div><p>Sin correos programados</p></div>';
+    return;
+  }
+
+  // Actualizar badge
+  const badge = document.querySelector('.card-title + .badge, [id="seguimiento-badge"]');
+  const cardTitle = document.querySelector('#page-seguimiento .card-title');
+  if(cardTitle) {
+    const existingBadge = cardTitle.parentElement.querySelector('.badge');
+    if(existingBadge) existingBadge.textContent = activos.length + ' activos';
+  }
 
   const ETIQUETAS = [
     'Notificación inicial',
@@ -4357,6 +4377,17 @@ function renderSeguimiento() {
     'Cierre de protocolo'
   ];
 
+  // Tiempos estimados desde FECHA_INICIO (8h, 16h, 24h, 32h, 40h, 56h)
+  const OFFSETS_H = [0, 8, 16, 24, 32, 48];
+
+  if(!activos.length) {
+    if(list) list.innerHTML = '<div class="empty"><div class="empty-icon">✓</div><p>Sin casos en seguimiento activo</p></div>';
+    if(prog) prog.innerHTML = '<div class="empty"><div class="empty-icon">📧</div><p>Sin correos programados</p></div>';
+    return;
+  }
+
+  const ahora = Date.now();
+
   const fmtFecha = ts => {
     const d = new Date(ts);
     const hoy = new Date(); hoy.setHours(0,0,0,0);
@@ -4365,27 +4396,34 @@ function renderSeguimiento() {
     return base + ' ' + d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:true});
   };
 
-  if(!activos.length) {
-    if(list) list.innerHTML = '<div class="empty"><div class="empty-icon">✓</div><p>Sin casos en seguimiento activo</p></div>';
-    if(prog) prog.innerHTML = '<div class="empty"><div class="empty-icon">📧</div><p>Sin correos programados</p></div>';
-    return;
-  }
+  const parseFecha = str => {
+    if(!str) return null;
+    // Formato: "11/05/2026 14:30:00" o similar
+    const [fecha, hora] = str.split(' ');
+    if(!fecha) return null;
+    const [d, m, y] = fecha.split('/');
+    return new Date(`${y}-${m}-${d}T${hora||'00:00:00'}`).getTime();
+  };
 
   if(list) list.innerHTML = activos.map(c => {
-    const enviados = (c.horarioCorreos || []).filter(t => ahora >= t).length;
+    const inicio = parseFecha(c.FECHA_INICIO) || ahora;
+    const horario = OFFSETS_H.map(h => inicio + h * 3600000);
+    const enviados = parseInt(c.CORREOS_ENVIADOS || 0);
     const pct = Math.round((enviados / 6) * 100);
-    const siguiente = (c.horarioCorreos || []).find(t => ahora < t);
+    const siguiente = horario.find((t, i) => i >= enviados && ahora < t);
+
     return `
       <div style="padding:14px 0;border-bottom:1px solid var(--border);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-          <div style="font-weight:600;font-size:13px;">${c.cliente}</div>
-          <span class="badge badge-amber">${c.folio}</span>
+          <div style="font-weight:600;font-size:13px;">${c.CLIENTE||'—'}</div>
+          <span class="badge badge-amber">${c.FOLIO}</span>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${c.unidad} · ${c.estadoMx||'—'}</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">${c.NICK||'—'} · ${c.MONITORISTA||'—'}</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Inicio: ${c.FECHA_INICIO||'—'}</div>
         <div style="display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">
-          ${(c.horarioCorreos||[]).map((t,i) => {
-            const sent = ahora >= t;
-            const next = !sent && (i===0 || ahora >= c.horarioCorreos[i-1]);
+          ${horario.map((t, i) => {
+            const sent = i < enviados;
+            const next = !sent && (i === 0 || ahora >= horario[i-1]);
             const cls  = sent ? 'sent' : next ? 'next' : 'pending';
             return `<div class="correo-slot ${cls}" title="${ETIQUETAS[i]} — ${fmtFecha(t)}">${sent?'✓':i+1}</div>`;
           }).join('')}
@@ -4396,18 +4434,23 @@ function renderSeguimiento() {
         </div>
         ${siguiente
           ? `<div style="font-size:11px;color:var(--accent);">⏰ Próximo: ${fmtFecha(siguiente)}</div>`
-          : enviados===6
+          : enviados >= 6
             ? `<div style="font-size:11px;color:var(--success);">✅ Protocolo completado</div>`
             : ''}
       </div>`;
   }).join('');
 
-  // Panel derecho: todos los correos de todos los casos ordenados
-  const proximos = activos.flatMap(c =>
-    (c.horarioCorreos||[]).map((t,i) => ({
-      t, label: ETIQUETAS[i], folio: c.folio, enviado: ahora >= t
-    }))
-  ).sort((a,b) => a.t - b.t);
+  // Panel derecho
+  const proximos = activos.flatMap(c => {
+    const inicio = parseFecha(c.FECHA_INICIO) || ahora;
+    const enviados = parseInt(c.CORREOS_ENVIADOS || 0);
+    return OFFSETS_H.map((h, i) => ({
+      t: inicio + h * 3600000,
+      label: ETIQUETAS[i],
+      folio: c.FOLIO,
+      enviado: i < enviados
+    }));
+  }).sort((a, b) => a.t - b.t);
 
   if(prog) prog.innerHTML = `
     <div style="font-size:11px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Programación automática (n8n)</div>
