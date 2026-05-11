@@ -623,7 +623,7 @@
           <div class="card-body">
 
             <!-- Razón social -->
-            <div style="display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px;">
+            <div id="grupo-razon-social" style="display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Razón social / Cliente</label>
                 <input type="text" id="f-cliente" placeholder="Ej. SUPERTRACK" />
@@ -631,7 +631,7 @@
             </div>
 
             <!-- Marca + submarca + año + color + placa + serie -->
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div id="grupo-marca-modelo" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Marca</label>
                 <input type="text" id="f-marca" placeholder="Ej. KENWORTH" />
@@ -646,7 +646,7 @@
               </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div id="grupo-placas-color" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Placa</label>
                 <input type="text" id="f-placas" placeholder="Ej. 01BJ1A" />
@@ -662,7 +662,7 @@
             </div>
 
             <!-- Lugar + coords -->
-            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
+            <div id="grupo-lugar-coords" style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Lugar / Última ubicación GPS</label>
                 <input type="text" id="f-lugar" placeholder="Carretera, municipio, estado..." />
@@ -674,7 +674,7 @@
             </div>
 
             <!-- Fecha + hora + folio 911 + modus -->
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div id="grupo-fecha-hora" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Fecha del robo</label>
                 <input type="date" id="f-fecha-robo" />
@@ -697,14 +697,80 @@
             </div>
 
             <!-- Última señal GPS -->
-            <div style="display:grid;grid-template-columns:1fr;gap:14px;">
+            <div id="grupo-ultima-senal" style="display:grid;grid-template-columns:1fr;gap:14px;">
               <div class="form-group">
                 <label class="req">Última señal GPS</label>
                 <input type="text" id="f-ultima-senal" placeholder="Ej. 12/03/2026 12:13 HRS." />
               </div>
             </div>
 
-            <!-- Plataforma + ESN + Nick -->
+            <!-- Campos específicos de CRÉDITO (ocultos para robo/abuso) -->
+            <div id="grupo-credito" style="display:none;">
+              <div style="height:1px;background:var(--border);margin:14px 0;"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="form-group">
+                  <label class="req">Razón social</label>
+                  <input type="text" id="f-credito-razon" placeholder="Ej. NACIONAL MONTE DE PIEDAD" />
+                </div>
+                <div class="form-group" style="display:none;">
+                  <input type="text" id="f-credito-tk" />
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="form-group">
+                  <label class="req">Marca</label>
+                  <input type="text" id="f-marca-credito" placeholder="Ej. HYUNDAI" />
+                </div>
+                <div class="form-group">
+                  <label class="req">Modelo</label>
+                  <input type="text" id="f-modelo-credito" placeholder="Ej. GRAND I10" />
+                </div>
+                <div class="form-group">
+                  <label class="req">Año</label>
+                  <input type="text" id="f-anio-credito" placeholder="Ej. 2016" />
+                </div>
+                <div class="form-group">
+                  <label class="req">Placas</label>
+                  <input type="text" id="f-placas-credito" placeholder="Ej. ZAK256E" />
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="form-group">
+                  <label class="req">Nombre del cliente</label>
+                  <input type="text" id="f-credito-nombre" placeholder="Nombre completo" />
+                </div>
+                <div class="form-group">
+                  <label class="req">Motivo</label>
+                  <input type="text" id="f-credito-motivo" placeholder="Ej. Impago" />
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="form-group">
+                  <label class="req">Fecha inicio seguimiento</label>
+                  <input type="text" id="f-credito-fecha-inicio" placeholder="DD/MM/YYYY" />
+                </div>
+                <div class="form-group">
+                  <label class="req">Fecha fin seguimiento</label>
+                  <input type="text" id="f-credito-fecha-fin" placeholder="DD/MM/YYYY" />
+                </div>
+                <div class="form-group">
+                  <label class="req">Localidad de gestión</label>
+                  <input type="text" id="f-credito-localidad" placeholder="Ej. YUC, México" />
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
+                <div class="form-group">
+                  <label class="req">Lugar de resguardo</label>
+                  <input type="text" id="f-credito-resguardo" placeholder="Dirección del resguardo" />
+                </div>
+                <div class="form-group">
+                  <label class="req">Gestor asignado</label>
+                  <input type="text" id="f-credito-gestor" placeholder="Nombre del gestor" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Plataforma + ESN + Nick + Empresa -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px;">
               <div class="form-group">
                 <label class="req">Plataforma</label>
@@ -726,7 +792,7 @@
                 <input type="text" id="f-esn" placeholder="No. de serie del equipo" />
               </div>
               <div class="form-group" id="campo-nick-alias">
-                <label class="req">Nick / Alias en plataforma</label>
+                <label class="req" id="label-nick-alias">Nick / Alias en plataforma</label>
                 <input type="text" id="f-nick" placeholder="Nombre del activo en sistema" />
               </div>
             </div>
@@ -781,78 +847,7 @@
           </div>
         </div>
 
-        <!-- ── Card específico CRÉDITO (paso 2) ── -->
-        <div class="card" id="campos-credito-paso2" style="margin-bottom:16px;display:none;">
-          <div class="card-header"><div class="card-title">Datos de recuperación de crédito</div></div>
-          <div class="card-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-              <div class="form-group">
-                <label class="req">Razón social</label>
-                <input type="text" id="f-credito-razon" placeholder="Ej. NACIONAL MONTE DE PIEDAD" />
-              </div>
-              <div class="form-group">
-                <label class="req">TK</label>
-                <input type="text" id="f-credito-tk" placeholder="Ej. 72936" />
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
-              <div class="form-group">
-                <label class="req">Marca</label>
-                <input type="text" id="f-marca-credito" placeholder="Ej. HYUNDAI" />
-              </div>
-              <div class="form-group">
-                <label class="req">Modelo</label>
-                <input type="text" id="f-modelo-credito" placeholder="Ej. GRAND I10" />
-              </div>
-              <div class="form-group">
-                <label class="req">Año</label>
-                <input type="text" id="f-anio-credito" placeholder="Ej. 2016" />
-              </div>
-              <div class="form-group">
-                <label class="req">Placas</label>
-                <input type="text" id="f-placas-credito" placeholder="Ej. ZAK256E" />
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-              <div class="form-group">
-                <label class="req">Nombre del cliente</label>
-                <input type="text" id="f-credito-nombre" placeholder="Nombre completo" />
-              </div>
-              <div class="form-group">
-                <label class="req">Motivo</label>
-                <input type="text" id="f-credito-motivo" placeholder="Ej. Impago" />
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
-              <div class="form-group">
-                <label class="req">Fecha inicio seguimiento</label>
-                <input type="text" id="f-credito-fecha-inicio" placeholder="DD/MM/YYYY" />
-              </div>
-              <div class="form-group">
-                <label class="req">Fecha fin seguimiento</label>
-                <input type="text" id="f-credito-fecha-fin" placeholder="DD/MM/YYYY" />
-              </div>
-              <div class="form-group">
-                <label class="req">Localidad de gestión</label>
-                <input type="text" id="f-credito-localidad" placeholder="Ej. YUC, México" />
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;">
-              <div class="form-group">
-                <label class="req">Lugar de resguardo</label>
-                <input type="text" id="f-credito-resguardo" placeholder="Dirección del resguardo" />
-              </div>
-              <div class="form-group">
-                <label class="req">Gestor asignado</label>
-                <input type="text" id="f-credito-gestor" placeholder="Nombre del gestor" />
-              </div>
-              <div class="form-group">
-                <label class="req">Correo del cliente</label>
-                <input type="email" id="f-credito-correo" placeholder="correo@cliente.com" />
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         <div style="display:flex;justify-content:flex-end;margin-top:4px;">
           <button class="btn btn-primary" id="btn-registrar" onclick="nextStep(1)">Registrar →</button>
@@ -2570,7 +2565,11 @@ function syncParsedToForm() {
   // Crédito
   const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
   if(esCredito) {
-    if(pd('fp-credito-tk'))           setF('f-credito-tk',           pd('fp-credito-tk'));
+    if(pd('fp-credito-tk')) {
+      setF('f-credito-tk', pd('fp-credito-tk'));
+      setF('f-nick', pd('fp-credito-tk'));
+      setF('nick-credito-display', pd('fp-credito-tk'));
+    }
     if(pd('fp-credito-razon') || pd('fp-razon'))
       setF('f-credito-razon', pd('fp-credito-razon') || pd('fp-razon'));
     if(pd('fp-marca'))                setF('f-marca-credito',        pd('fp-marca'));
@@ -2603,6 +2602,13 @@ function setF(id, val) {
   if(!val) return;
   const el = document.getElementById(id);
   if(el) el.value = val;
+  // Sincronizar campos de display en crédito
+  if(id === 'f-esn') { const d = document.getElementById('esn-credito-display'); if(d) d.value = val; }
+  if(id === 'f-nick') { const d = document.getElementById('nick-credito-display'); if(d) d.value = val; }
+  if(id === 'f-plataforma') {
+    const d = document.getElementById('sel-plat-credito'); if(d) d.value = val;
+    autoDetectEmpresa(val);
+  }
 }
 
 // ===== PAGES =====
@@ -2949,6 +2955,9 @@ async function nextStep(from) {
     const esCredito2 = esCredito1;
     const esRobo2    = tipoEvento === 'ROBO';
     if(esCredito2) {
+      if(!validarCampo('f-plataforma', 'Plataforma')) return;
+      if(!validarCampo('f-esn', 'ESN')) return;
+      if(!validarCampo('f-nick', 'TK / Nick')) return;
       if(!validarCampo('f-credito-razon', 'Razón social')) return;
       if(!validarCampo('f-credito-tk', 'TK')) return;
       if(!validarCampo('f-marca-credito', 'Marca')) return;
@@ -2962,8 +2971,10 @@ async function nextStep(from) {
       if(!validarCampo('f-credito-localidad', 'Localidad de gestión')) return;
       if(!validarCampo('f-credito-resguardo', 'Lugar de resguardo')) return;
       if(!validarCampo('f-credito-gestor', 'Gestor asignado')) return;
-      if(!validarCampo('f-credito-correo', 'Correo del cliente')) return;
     } else {
+      if(!validarCampo('f-plataforma', 'Plataforma')) return;
+      if(!validarCampo('f-esn', 'ESN')) return;
+      if(!validarCampo('f-nick', 'Nick / Alias')) return;
       if(!validarCampo('f-cliente', 'Razón social / Cliente')) return;
       if(!validarCampo('f-marca', 'Marca')) return;
       if(!validarCampo('f-modelo', 'Modelo')) return;
@@ -3013,9 +3024,17 @@ async function nextStep(from) {
     // Este bloque ya no se usa (fusionado en from===1), pero se mantiene por compatibilidad
   }
   if(from===3) {
-    if(!recuperadoSelected) { notify('Indica el resultado del evento','warning'); return; }
     const tipoEvento3 = document.getElementById('f-tipo-evento')?.value || '';
     const esCredito3 = tipoEvento3 === 'RECUPERACIÓN DE CRÉDITO';
+    // Para crédito el resultado se toma de creditoExitoso, para otros de recuperadoSelected
+    if(esCredito3) {
+      const panelConclusion = document.getElementById('panel-conclusion-credito');
+      if(!panelConclusion || panelConclusion.style.display === 'none') {
+        notify('Indica si la recuperación fue exitosa o no exitosa', 'warning'); return;
+      }
+    } else {
+      if(!recuperadoSelected) { notify('Indica el resultado del evento','warning'); return; }
+    }
     const esAbuso3   = tipoEvento3 === 'ABUSO DE CONFIANZA';
     const esRobo3    = tipoEvento3 === 'ROBO';
 
@@ -3312,6 +3331,22 @@ async function registerEvento() {
   ].join('\n');
 
   // ── sheetData según tipo de resultado ──
+  // estatusCompleto para ROBO/ABUSO
+  const escenarioLabels = {
+    corrralon: 'Remitida a corralón / depósito',
+    cliente:   'Cliente recoge directamente',
+    mp:        'Puesta a disposición del MP',
+    'no-fisica': 'Localizada pero no recuperada físicamente',
+    extranjero: 'Localizada en el extranjero',
+    otro:      'Otro'
+  };
+  const estatusCompleto = resultado === 'si'
+    ? ('RECUPERADA' + (escenario ? ' — ' + (escenarioLabels[escenario] || escenario) : ''))
+    : resultado === 'no'
+      ? 'NO RECUPERADA'
+      : resultado === 'cancel'
+        ? 'CANCELADO'
+        : resultadoLabel;
   let sheetData = {};
 
   if(esCredito) {
@@ -3357,6 +3392,12 @@ async function registerEvento() {
       'LOCALIDAD DE GESTIÓN':             creditoLocalidad,
       'LUGAR DE RESGUARDO':               creditoResguardo,
       'GESTOR ASIGNADO':                  creditoGestor,
+      'TIPO DE ENTREGA':                  document.getElementById('f-credito-tipo-entrega')?.value || '—',
+      'LUGAR DE RECUPERACIÓN':            document.getElementById('f-credito-lugar-rec')?.value || '—',
+      'FECHA DE RECUPERACIÓN':            document.getElementById('f-credito-fecha-rec')?.value || '—',
+      'CONCLUSIÓN':                       document.getElementById('f-credito-conclusion')?.value || '—',
+      'FECHA Y HORA DEL REPORTE':         fechaAtencion,
+      'MES':                              mes,
       'NOMBRE':                           monitorista,
     };
 
@@ -4224,6 +4265,24 @@ function searchCasos(q) {
 }
 
 async function cerrarCaso(folio, resultado) {
+  // Al abrir el formulario de cierre desde Casos activos, ocultar paneles según tipo
+  // Se hace en irACierre que llama a onTipoEventoChange — pero por si acaso, limpiar resultado
+  recuperadoSelected = null;
+  creditoExitoso = false;
+  ['rec-si','rec-no','rec-cancel'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) { el.style.borderColor='var(--border2)'; el.style.background=''; }
+  });
+  ['panel-si','panel-no','panel-cancel'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  const pcredito = document.getElementById('panel-conclusion-credito');
+  if(pcredito) pcredito.style.display = 'none';
+  const rExitoso = document.getElementById('rec-credito-exitoso');
+  const rNoExitoso = document.getElementById('rec-credito-no-exitoso');
+  if(rExitoso) rExitoso.style.borderColor = 'var(--border2)';
+  if(rNoExitoso) rNoExitoso.style.borderColor = 'var(--border2)';
   const caso = casos.find(c => c.folio === folio);
   if(!caso) return;
 
@@ -5829,12 +5888,14 @@ function onTipoEventoChange(val) {
   if(cardMonitorista) cardMonitorista.style.display = esCredito ? 'none' : 'block';
 
   // Mostrar/ocultar campos específicos de crédito en paso 2
-  const camposCredito = document.getElementById('campos-credito-paso2');
-  if(camposCredito) camposCredito.style.display = esCredito ? 'block' : 'none';
-
-  // Ocultar campos que no aplican para crédito en paso 2
-  const cardVehiculo = document.getElementById('card-datos-evento');
-  if(cardVehiculo) cardVehiculo.style.display = esCredito ? 'none' : 'block';
+  // card-datos-evento siempre visible — mostrar grupos según tipo
+  ['grupo-razon-social','grupo-marca-modelo','grupo-placas-color','grupo-lugar-coords',
+   'grupo-fecha-hora','grupo-ultima-senal'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = esCredito ? 'none' : '';
+  });
+  const grupoCred = document.getElementById('grupo-credito');
+  if(grupoCred) grupoCred.style.display = esCredito ? 'block' : 'none';
 
   // Ocultar escenario de cierre para ABUSO DE CONFIANZA y RECUPERACIÓN DE CRÉDITO
   const esRobo = (val === 'ROBO');
@@ -5850,6 +5911,25 @@ function onTipoEventoChange(val) {
   if(panelResultadoCredito) panelResultadoCredito.style.display = esCredito ? 'block' : 'none';
   const panelResultadoNormal = document.getElementById('panel-resultado-normal');
   if(panelResultadoNormal) panelResultadoNormal.style.display = esCredito ? 'none' : 'block';
+
+  // Adaptar label Nick para crédito (TK = Nick)
+  const labelNick = document.getElementById('label-nick-alias');
+  const nickInput = document.getElementById('f-nick');
+  if(esCredito) {
+    if(labelNick) labelNick.textContent = 'TK / Nick en plataforma';
+    if(nickInput) nickInput.placeholder = 'Número de TK';
+    // Sincronizar f-nick con f-credito-tk
+    const tkInput = document.getElementById('f-credito-tk');
+    if(nickInput && tkInput) {
+      nickInput.oninput = () => { tkInput.value = nickInput.value; };
+      tkInput.oninput  = () => { nickInput.value = tkInput.value; };
+    }
+  } else {
+    if(labelNick) labelNick.textContent = 'Nick / Alias en plataforma';
+    if(nickInput) { nickInput.placeholder = 'Nombre del activo en sistema'; nickInput.oninput = null; }
+    const tkInput = document.getElementById('f-credito-tk');
+    if(tkInput) tkInput.oninput = null;
+  }
 
   // Cambiar placeholder según tipo
   if(ta) {
@@ -5877,6 +5957,12 @@ function autoDetectEmpresa(plataforma) {
   const empresa = map[plataforma] || '';
   const el = document.getElementById('f-empresa-atiende');
   if(el) el.value = empresa;
+  // Sincronizar con display de crédito
+  const elCred = document.getElementById('empresa-credito-display');
+  if(elCred) elCred.value = empresa;
+  // Sincronizar selector de plataforma en crédito
+  const selCred = document.getElementById('sel-plat-credito');
+  if(selCred && selCred.value !== plataforma) selCred.value = plataforma;
   // Mostrar campos INBURSA solo si aplica
   const camposInbursa = document.getElementById('campos-inbursa');
   if(camposInbursa) camposInbursa.style.display = plataforma === 'INBURSA' ? 'block' : 'none';
