@@ -623,7 +623,7 @@
           <div class="card-body">
 
             <!-- Razón social -->
-            <div id="grupo-razon-social" style="display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px;">
+            <div style="display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Razón social / Cliente</label>
                 <input type="text" id="f-cliente" placeholder="Ej. SUPERTRACK" />
@@ -631,7 +631,7 @@
             </div>
 
             <!-- Marca + submarca + año + color + placa + serie -->
-            <div id="grupo-marca-modelo" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Marca</label>
                 <input type="text" id="f-marca" placeholder="Ej. KENWORTH" />
@@ -646,7 +646,7 @@
               </div>
             </div>
 
-            <div id="grupo-placas-color" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Placa</label>
                 <input type="text" id="f-placas" placeholder="Ej. 01BJ1A" />
@@ -662,7 +662,7 @@
             </div>
 
             <!-- Lugar + coords -->
-            <div id="grupo-lugar-coords" style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Lugar / Última ubicación GPS</label>
                 <input type="text" id="f-lugar" placeholder="Carretera, municipio, estado..." />
@@ -674,7 +674,7 @@
             </div>
 
             <!-- Fecha + hora + folio 911 + modus -->
-            <div id="grupo-fecha-hora" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
                 <label class="req">Fecha del robo</label>
                 <input type="date" id="f-fecha-robo" />
@@ -697,80 +697,14 @@
             </div>
 
             <!-- Última señal GPS -->
-            <div id="grupo-ultima-senal" style="display:grid;grid-template-columns:1fr;gap:14px;">
+            <div style="display:grid;grid-template-columns:1fr;gap:14px;">
               <div class="form-group">
                 <label class="req">Última señal GPS</label>
                 <input type="text" id="f-ultima-senal" placeholder="Ej. 12/03/2026 12:13 HRS." />
               </div>
             </div>
 
-            <!-- Campos específicos de CRÉDITO (ocultos para robo/abuso) -->
-            <div id="grupo-credito" style="display:none;">
-              <div style="height:1px;background:var(--border);margin:14px 0;"></div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-                <div class="form-group">
-                  <label class="req">Razón social</label>
-                  <input type="text" id="f-credito-razon" placeholder="Ej. NACIONAL MONTE DE PIEDAD" />
-                </div>
-                <div class="form-group" style="display:none;">
-                  <input type="text" id="f-credito-tk" />
-                </div>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
-                <div class="form-group">
-                  <label class="req">Marca</label>
-                  <input type="text" id="f-marca-credito" placeholder="Ej. HYUNDAI" />
-                </div>
-                <div class="form-group">
-                  <label class="req">Modelo</label>
-                  <input type="text" id="f-modelo-credito" placeholder="Ej. GRAND I10" />
-                </div>
-                <div class="form-group">
-                  <label class="req">Año</label>
-                  <input type="text" id="f-anio-credito" placeholder="Ej. 2016" />
-                </div>
-                <div class="form-group">
-                  <label class="req">Placas</label>
-                  <input type="text" id="f-placas-credito" placeholder="Ej. ZAK256E" />
-                </div>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-                <div class="form-group">
-                  <label class="req">Nombre del cliente</label>
-                  <input type="text" id="f-credito-nombre" placeholder="Nombre completo" />
-                </div>
-                <div class="form-group">
-                  <label class="req">Motivo</label>
-                  <input type="text" id="f-credito-motivo" placeholder="Ej. Impago" />
-                </div>
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
-                <div class="form-group">
-                  <label class="req">Fecha inicio seguimiento</label>
-                  <input type="text" id="f-credito-fecha-inicio" placeholder="DD/MM/YYYY" />
-                </div>
-                <div class="form-group">
-                  <label class="req">Fecha fin seguimiento</label>
-                  <input type="text" id="f-credito-fecha-fin" placeholder="DD/MM/YYYY" />
-                </div>
-                <div class="form-group">
-                  <label class="req">Localidad de gestión</label>
-                  <input type="text" id="f-credito-localidad" placeholder="Ej. YUC, México" />
-                </div>
-              </div>
-              <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
-                <div class="form-group">
-                  <label class="req">Lugar de resguardo</label>
-                  <input type="text" id="f-credito-resguardo" placeholder="Dirección del resguardo" />
-                </div>
-                <div class="form-group">
-                  <label class="req">Gestor asignado</label>
-                  <input type="text" id="f-credito-gestor" placeholder="Nombre del gestor" />
-                </div>
-              </div>
-            </div>
-
-            <!-- Plataforma + ESN + Nick + Empresa -->
+            <!-- Plataforma + ESN + Nick -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px;">
               <div class="form-group">
                 <label class="req">Plataforma</label>
@@ -792,7 +726,7 @@
                 <input type="text" id="f-esn" placeholder="No. de serie del equipo" />
               </div>
               <div class="form-group" id="campo-nick-alias">
-                <label class="req" id="label-nick-alias">Nick / Alias en plataforma</label>
+                <label class="req">Nick / Alias en plataforma</label>
                 <input type="text" id="f-nick" placeholder="Nombre del activo en sistema" />
               </div>
             </div>
@@ -847,7 +781,94 @@
           </div>
         </div>
 
-
+        <!-- ── Card específico CRÉDITO (paso 2) ── -->
+        <div class="card" id="campos-credito-paso2" style="margin-bottom:16px;display:none;">
+          <div class="card-header"><div class="card-title">Datos de recuperación de crédito</div></div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label class="req">Razón social</label>
+                <input type="text" id="f-credito-razon" placeholder="Ej. NACIONAL MONTE DE PIEDAD" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label class="req">Marca</label>
+                <input type="text" id="f-marca-credito" placeholder="Ej. HYUNDAI" />
+              </div>
+              <div class="form-group">
+                <label class="req">Modelo</label>
+                <input type="text" id="f-modelo-credito" placeholder="Ej. GRAND I10" />
+              </div>
+              <div class="form-group">
+                <label class="req">Año</label>
+                <input type="text" id="f-anio-credito" placeholder="Ej. 2016" />
+              </div>
+              <div class="form-group">
+                <label class="req">Placas</label>
+                <input type="text" id="f-placas-credito" placeholder="Ej. ZAK256E" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label class="req">Nombre del cliente</label>
+                <input type="text" id="f-credito-nombre" placeholder="Nombre completo" />
+              </div>
+              <div class="form-group">
+                <label class="req">Motivo</label>
+                <input type="text" id="f-credito-motivo" placeholder="Ej. Impago" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label class="req">Fecha inicio seguimiento</label>
+                <input type="text" id="f-credito-fecha-inicio" placeholder="DD/MM/YYYY" />
+              </div>
+              <div class="form-group">
+                <label class="req">Fecha fin seguimiento</label>
+                <input type="text" id="f-credito-fecha-fin" placeholder="DD/MM/YYYY" />
+              </div>
+              <div class="form-group">
+                <label class="req">Localidad de gestión</label>
+                <input type="text" id="f-credito-localidad" placeholder="Ej. YUC, México" />
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
+              <div class="form-group">
+                <label class="req">Lugar de resguardo</label>
+                <input type="text" id="f-credito-resguardo" placeholder="Dirección del resguardo" />
+              </div>
+              <div class="form-group">
+                <label class="req">Gestor asignado</label>
+                <input type="text" id="f-credito-gestor" placeholder="Nombre del gestor" />
+              </div>
+            </div>
+            <!-- Plataforma + ESN + TK + Empresa para crédito -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;">
+              <div class="form-group">
+                <label class="req">Plataforma</label>
+                <select id="f-plataforma-credito" onchange="document.getElementById('f-plataforma').value=this.value;autoDetectEmpresa(this.value);">
+                  <option value="">Seleccionar...</option>
+                  <option>TECNOMETRICS</option><option>UTRAX</option><option>FT VISION</option>
+                  <option>RECUPERAMOVIL</option><option>EASYTRACK</option><option>SFLEET</option>
+                  <option>TRAFFILOG</option><option>INBURSA</option><option>OTRO PROVEEDOR</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="req">ESN (equipo GPS)</label>
+                <input type="text" id="f-esn-credito" placeholder="No. de serie del equipo" oninput="document.getElementById('f-esn').value=this.value" />
+              </div>
+              <div class="form-group">
+                <label class="req">TK / Nick en plataforma</label>
+                <input type="text" id="f-credito-tk" placeholder="Ej. 72936" oninput="document.getElementById('f-nick').value=this.value" />
+              </div>
+              <div class="form-group">
+                <label>Empresa que atiende</label>
+                <input type="text" id="f-empresa-credito" readonly placeholder="Se detecta por plataforma" style="background:#f0f5fc;color:var(--muted2);cursor:not-allowed;" />
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div style="display:flex;justify-content:flex-end;margin-top:4px;">
           <button class="btn btn-primary" id="btn-registrar" onclick="nextStep(1)">Registrar →</button>
@@ -1508,9 +1529,7 @@
 
         <!-- ===== ENVÍO DE CORREOS ===== -->
         <div class="card" style="margin-bottom:16px;" id="card-correos-destino">
-          <div class="card-header">
-            <div class="card-title">📧 Envío de correos</div>
-          </div>
+          <div class="card-header"><div class="card-title">📧 Envío de correos</div></div>
           <div class="card-body">
             <div class="form-group" style="margin-bottom:14px;">
               <label style="font-size:12px;font-weight:600;margin-bottom:6px;display:block;">Correos destino</label>
@@ -1526,50 +1545,30 @@
             <div id="card-opcion-envio" style="display:none;">
               <label style="font-size:12px;font-weight:600;margin-bottom:8px;display:block;">¿Qué deseas enviar?</label>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <label id="opt-seguimiento" onclick="selectOpcionEnvio('seguimiento')"
-                  style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
+                <label id="opt-seguimiento" onclick="selectOpcionEnvio('seguimiento')" style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
                   <input type="radio" name="opcion-envio" value="seguimiento" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
-                  <div>
-                    <div style="font-size:12px;font-weight:600;">📨 Seguimiento 48hrs + Reporte</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">6 correos automáticos cada 8hrs más el reporte PDF</div>
-                  </div>
+                  <div><div style="font-size:12px;font-weight:600;">📨 Seguimiento 48hrs + Reporte</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">6 correos automáticos cada 8hrs más el reporte PDF</div></div>
                 </label>
-                <label id="opt-solo-reporte" onclick="selectOpcionEnvio('reporte')"
-                  style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
+                <label id="opt-solo-reporte" onclick="selectOpcionEnvio('reporte')" style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
                   <input type="radio" name="opcion-envio" value="reporte" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
-                  <div>
-                    <div style="font-size:12px;font-weight:600;">📄 Solo reporte PDF</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Envía únicamente el reporte sin seguimiento automático</div>
-                  </div>
+                  <div><div style="font-size:12px;font-weight:600;">📄 Solo reporte PDF</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Envía únicamente el reporte sin seguimiento automático</div></div>
                 </label>
-                <label id="opt-no-enviar-norec" onclick="selectOpcionEnvio('ninguno')"
-                  style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
+                <label id="opt-no-enviar-norec" onclick="selectOpcionEnvio('ninguno')" style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
                   <input type="radio" name="opcion-envio" value="ninguno" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
-                  <div>
-                    <div style="font-size:12px;font-weight:600;">🚫 No enviar</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Finalizar sin enviar correos</div>
-                  </div>
+                  <div><div style="font-size:12px;font-weight:600;">🚫 No enviar</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Finalizar sin enviar correos</div></div>
                 </label>
               </div>
             </div>
             <div id="card-solo-reporte-info" style="display:none;">
               <label style="font-size:12px;font-weight:600;margin-bottom:8px;display:block;">¿Deseas enviar el reporte PDF?</label>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <label id="opt-enviar-reporte-rec" onclick="selectOpcionEnvio('reporte')"
-                  style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
+                <label id="opt-enviar-reporte-rec" onclick="selectOpcionEnvio('reporte')" style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
                   <input type="radio" name="opcion-envio-rec" value="reporte" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
-                  <div>
-                    <div style="font-size:12px;font-weight:600;">📄 Enviar reporte PDF</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Envía el reporte de recuperación al cliente</div>
-                  </div>
+                  <div><div style="font-size:12px;font-weight:600;">📄 Enviar reporte PDF</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Envía el reporte de recuperación al cliente</div></div>
                 </label>
-                <label id="opt-no-enviar-rec" onclick="selectOpcionEnvio('ninguno')"
-                  style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
+                <label id="opt-no-enviar-rec" onclick="selectOpcionEnvio('ninguno')" style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
                   <input type="radio" name="opcion-envio-rec" value="ninguno" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
-                  <div>
-                    <div style="font-size:12px;font-weight:600;">🚫 No enviar</div>
-                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Finalizar sin enviar correos</div>
-                  </div>
+                  <div><div style="font-size:12px;font-weight:600;">🚫 No enviar</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Finalizar sin enviar correos</div></div>
                 </label>
               </div>
             </div>
@@ -2568,7 +2567,6 @@ function syncParsedToForm() {
     if(pd('fp-credito-tk')) {
       setF('f-credito-tk', pd('fp-credito-tk'));
       setF('f-nick', pd('fp-credito-tk'));
-      setF('nick-credito-display', pd('fp-credito-tk'));
     }
     if(pd('fp-credito-razon') || pd('fp-razon'))
       setF('f-credito-razon', pd('fp-credito-razon') || pd('fp-razon'));
@@ -2602,13 +2600,6 @@ function setF(id, val) {
   if(!val) return;
   const el = document.getElementById(id);
   if(el) el.value = val;
-  // Sincronizar campos de display en crédito
-  if(id === 'f-esn') { const d = document.getElementById('esn-credito-display'); if(d) d.value = val; }
-  if(id === 'f-nick') { const d = document.getElementById('nick-credito-display'); if(d) d.value = val; }
-  if(id === 'f-plataforma') {
-    const d = document.getElementById('sel-plat-credito'); if(d) d.value = val;
-    autoDetectEmpresa(val);
-  }
 }
 
 // ===== PAGES =====
@@ -2788,9 +2779,8 @@ async function registrarEnProceso() {
     hora_robo_raw:  document.getElementById('f-hora-robo')?.value||'',
     hora_robo_ampm: document.getElementById('f-hora-robo-ampm')?.value||'AM',
     folio911:       document.getElementById('f-folio911-step1')?.value||'—',
-    // Campos específicos de crédito para Slack
     nombre_cliente: document.getElementById('f-credito-nombre')?.value||'—',
-    motivo:         document.getElementById('f-credito-motivo')?.value||'—',
+    motivo_credito: document.getElementById('f-credito-motivo')?.value||'—',
     fecha_inicio:   document.getElementById('f-credito-fecha-inicio')?.value||'—',
     fecha_fin:      document.getElementById('f-credito-fecha-fin')?.value||'—',
   };
@@ -2831,7 +2821,7 @@ async function registrarEnProceso() {
     `🔢 *ESN:* ${esn}`,
     ``,
     `👤 *Cliente:* ${payload.nombre_cliente || '—'}`,
-    `📋 *Motivo:* ${payload.motivo || '—'}`,
+    `📋 *Motivo:* ${payload.motivo_credito || '—'}`,
     `📅 *Inicio seguimiento:* ${payload.fecha_inicio || '—'}`,
     `📅 *Fin seguimiento:* ${payload.fecha_fin || '—'}`,
     ``,
@@ -2974,9 +2964,6 @@ async function nextStep(from) {
     const esCredito2 = esCredito1;
     const esRobo2    = tipoEvento === 'ROBO';
     if(esCredito2) {
-      if(!validarCampo('f-plataforma', 'Plataforma')) return;
-      if(!validarCampo('f-esn', 'ESN')) return;
-      if(!validarCampo('f-nick', 'TK / Nick')) return;
       if(!validarCampo('f-credito-razon', 'Razón social')) return;
       if(!validarCampo('f-credito-tk', 'TK')) return;
       if(!validarCampo('f-marca-credito', 'Marca')) return;
@@ -2991,9 +2978,6 @@ async function nextStep(from) {
       if(!validarCampo('f-credito-resguardo', 'Lugar de resguardo')) return;
       if(!validarCampo('f-credito-gestor', 'Gestor asignado')) return;
     } else {
-      if(!validarCampo('f-plataforma', 'Plataforma')) return;
-      if(!validarCampo('f-esn', 'ESN')) return;
-      if(!validarCampo('f-nick', 'Nick / Alias')) return;
       if(!validarCampo('f-cliente', 'Razón social / Cliente')) return;
       if(!validarCampo('f-marca', 'Marca')) return;
       if(!validarCampo('f-modelo', 'Modelo')) return;
@@ -3045,7 +3029,6 @@ async function nextStep(from) {
   if(from===3) {
     const tipoEvento3 = document.getElementById('f-tipo-evento')?.value || '';
     const esCredito3 = tipoEvento3 === 'RECUPERACIÓN DE CRÉDITO';
-    // Para crédito el resultado se toma de creditoExitoso, para otros de recuperadoSelected
     if(esCredito3) {
       const panelConclusion = document.getElementById('panel-conclusion-credito');
       if(!panelConclusion || panelConclusion.style.display === 'none') {
@@ -3350,22 +3333,16 @@ async function registerEvento() {
   ].join('\n');
 
   // ── sheetData según tipo de resultado ──
-  // estatusCompleto para ROBO/ABUSO
   const escenarioLabels = {
-    corrralon: 'Remitida a corralón / depósito',
-    cliente:   'Cliente recoge directamente',
-    mp:        'Puesta a disposición del MP',
-    'no-fisica': 'Localizada pero no recuperada físicamente',
-    extranjero: 'Localizada en el extranjero',
-    otro:      'Otro'
+    corrralon:'Remitida a corralón / depósito', cliente:'Cliente recoge directamente',
+    mp:'Puesta a disposición del MP', 'no-fisica':'Localizada pero no recuperada físicamente',
+    extranjero:'Localizada en el extranjero', otro:'Otro'
   };
   const estatusCompleto = resultado === 'si'
     ? ('RECUPERADA' + (escenario ? ' — ' + (escenarioLabels[escenario] || escenario) : ''))
-    : resultado === 'no'
-      ? 'NO RECUPERADA'
-      : resultado === 'cancel'
-        ? 'CANCELADO'
-        : resultadoLabel;
+    : resultado === 'no' ? 'NO RECUPERADA'
+    : resultado === 'cancel' ? 'CANCELADO'
+    : resultadoLabel;
   let sheetData = {};
 
   if(esCredito) {
@@ -3411,12 +3388,6 @@ async function registerEvento() {
       'LOCALIDAD DE GESTIÓN':             creditoLocalidad,
       'LUGAR DE RESGUARDO':               creditoResguardo,
       'GESTOR ASIGNADO':                  creditoGestor,
-      'TIPO DE ENTREGA':                  document.getElementById('f-credito-tipo-entrega')?.value || '—',
-      'LUGAR DE RECUPERACIÓN':            document.getElementById('f-credito-lugar-rec')?.value || '—',
-      'FECHA DE RECUPERACIÓN':            document.getElementById('f-credito-fecha-rec')?.value || '—',
-      'CONCLUSIÓN':                       document.getElementById('f-credito-conclusion')?.value || '—',
-      'FECHA Y HORA DEL REPORTE':         fechaAtencion,
-      'MES':                              mes,
       'NOMBRE':                           monitorista,
     };
 
@@ -3504,7 +3475,7 @@ async function registerEvento() {
     mensaje,
     // Campos para test-correo
     correoCliente: esCredito
-      ? ''
+      ? (document.getElementById('f-credito-correo')?.value || '')
       : (document.getElementById('f-correo-reportante')?.value || document.getElementById('f-correo')?.value || ''),
     nick,
     placas,
@@ -3527,8 +3498,8 @@ async function registerEvento() {
       localidad: document.getElementById('f-credito-localidad')?.value || '—',
       lugar_resguardo: document.getElementById('f-credito-resguardo')?.value || '—',
       gestor: document.getElementById('f-credito-gestor')?.value || '—',
-      ubicacion: '—',
-      coordenadas: document.getElementById('f-coords')?.value || coordenadas || '—',
+      ubicacion: document.getElementById('f-credito-ubicacion')?.value || '—',
+      coordenadas: document.getElementById('f-credito-coordenadas')?.value || '—',
       exitoso: creditoExitoso,
       conclusion: document.getElementById('f-credito-conclusion')?.value || '—',
       img_mapa_credito: await (async () => {
@@ -3725,8 +3696,7 @@ async function registerEvento() {
             cliente: esCredito ? document.getElementById('f-credito-razon')?.value : cliente,
             nick: esCredito ? document.getElementById('f-credito-tk')?.value : nick,
             placas: esCredito ? document.getElementById('f-placas-credito')?.value : placas,
-            correoCliente: _correosDestino.length > 0 ? _correosDestino.join(',') : payload.correoCliente,
-            opcionEnvio: _opcionEnvio,
+            correoCliente: payload.correoCliente,
             esCredito,
             datos: payload.datos
           })
@@ -3771,100 +3741,61 @@ async function registerEvento() {
 
 // ===== CORREOS DESTINO TAGS =====
 let _correosDestino = [];
-let _opcionEnvio = 'seguimiento'; // 'seguimiento' | 'reporte'
+let _opcionEnvio = 'ninguno';
 
 function handleCorreoTag(e) {
-  if(e.key === 'Enter' || e.key === ',') {
-    e.preventDefault();
-    agregarCorreoTag();
-  }
+  if(e.key === 'Enter' || e.key === ',') { e.preventDefault(); agregarCorreoTag(); }
 }
-
 function agregarCorreoTag() {
   const input = document.getElementById('correo-input-tag');
   if(!input) return;
   const val = input.value.trim().replace(/,/g,'');
   if(!val) return;
-  // Validar formato básico
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
-    input.style.borderColor = 'var(--danger)';
-    return;
-  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { input.style.borderColor='var(--danger)'; return; }
   if(_correosDestino.includes(val)) { input.value=''; return; }
   _correosDestino.push(val);
-  input.value = '';
-  input.style.borderColor = 'var(--border2)';
+  input.value=''; input.style.borderColor='var(--border2)';
   renderCorreosTags();
 }
-
 function eliminarCorreoTag(correo) {
   _correosDestino = _correosDestino.filter(c => c !== correo);
   renderCorreosTags();
 }
-
 function renderCorreosTags() {
   const wrap = document.getElementById('correos-tags');
   if(!wrap) return;
-  wrap.innerHTML = _correosDestino.map(c => `
-    <span style="display:inline-flex;align-items:center;gap:4px;background:#e8f0fe;color:#1e40af;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;">
-      ${c}
-      <button onclick="eliminarCorreoTag('${c}')" style="background:none;border:none;color:#1e40af;cursor:pointer;font-size:12px;padding:0;line-height:1;">✕</button>
-    </span>`).join('');
+  wrap.innerHTML = _correosDestino.map(c => `<span style="display:inline-flex;align-items:center;gap:4px;background:#e8f0fe;color:#1e40af;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;">${c}<button onclick="eliminarCorreoTag('${c}')" style="background:none;border:none;color:#1e40af;cursor:pointer;font-size:12px;padding:0;line-height:1;">✕</button></span>`).join('');
 }
-
 function selectOpcionEnvio(opcion) {
   _opcionEnvio = opcion;
-  // IDs de todas las opciones posibles
-  const opts = {
-    'seguimiento': 'opt-seguimiento',
-    'reporte':     'opt-solo-reporte',
-    'ninguno':     'opt-no-enviar-norec',
-    'reporte-rec': 'opt-enviar-reporte-rec',
-    'ninguno-rec': 'opt-no-enviar-rec'
-  };
-  // Resetear todos
-  Object.values(opts).forEach(id => {
-    const el = document.getElementById(id);
-    if(el) { el.style.borderColor='var(--border2)'; el.style.background='var(--card2)'; }
-  });
-  // Activar el seleccionado
-  // Para recuperada, "reporte" activa opt-enviar-reporte-rec, "ninguno" activa opt-no-enviar-rec
+  const ids = ['opt-seguimiento','opt-solo-reporte','opt-no-enviar-norec','opt-enviar-reporte-rec','opt-no-enviar-rec'];
+  ids.forEach(id => { const el=document.getElementById(id); if(el){el.style.borderColor='var(--border2)';el.style.background='var(--card2)';} });
   const cardInfo = document.getElementById('card-solo-reporte-info');
-  const esRecuperada = cardInfo && cardInfo.style.display !== 'none';
-  let activeId;
-  if(esRecuperada) {
-    activeId = opcion === 'reporte' ? 'opt-enviar-reporte-rec' : 'opt-no-enviar-rec';
-  } else {
-    activeId = opts[opcion];
-  }
-  const activeEl = document.getElementById(activeId);
-  if(activeEl) { activeEl.style.borderColor='var(--accent)'; activeEl.style.background='#eef4ff'; }
+  const esRec = cardInfo && cardInfo.style.display !== 'none';
+  const activeId = esRec ? (opcion==='reporte' ? 'opt-enviar-reporte-rec' : 'opt-no-enviar-rec') : (opcion==='seguimiento' ? 'opt-seguimiento' : opcion==='reporte' ? 'opt-solo-reporte' : 'opt-no-enviar-norec');
+  const el = document.getElementById(activeId);
+  if(el){el.style.borderColor='var(--accent)';el.style.background='#eef4ff';}
 }
-
 function mostrarOpcionesCorreo(resultado) {
   const cardOpcion = document.getElementById('card-opcion-envio');
   const cardInfo   = document.getElementById('card-solo-reporte-info');
-  _correosDestino = [];
-  _opcionEnvio = 'ninguno';
+  const cardCorreos = document.getElementById('card-correos-destino');
+  _correosDestino = []; _opcionEnvio = 'ninguno';
   renderCorreosTags();
-  // Reset radios
-  document.querySelectorAll('input[name="opcion-envio"], input[name="opcion-envio-rec"]').forEach(r => r.checked = false);
-  ['opt-seguimiento','opt-solo-reporte','opt-no-enviar-norec','opt-enviar-reporte-rec','opt-no-enviar-rec'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) { el.style.borderColor='var(--border2)'; el.style.background='var(--card2)'; }
+  document.querySelectorAll('input[name="opcion-envio"],input[name="opcion-envio-rec"]').forEach(r=>r.checked=false);
+  ['opt-seguimiento','opt-solo-reporte','opt-no-enviar-norec','opt-enviar-reporte-rec','opt-no-enviar-rec'].forEach(id=>{
+    const el=document.getElementById(id); if(el){el.style.borderColor='var(--border2)';el.style.background='var(--card2)';}
   });
   if(resultado === 'no') {
-    if(cardOpcion) cardOpcion.style.display = 'block';
-    if(cardInfo)   cardInfo.style.display   = 'none';
+    if(cardCorreos) cardCorreos.style.display='block';
+    if(cardOpcion) cardOpcion.style.display='block';
+    if(cardInfo)   cardInfo.style.display='none';
   } else if(resultado === 'si') {
-    if(cardOpcion) cardOpcion.style.display = 'none';
-    if(cardInfo)   cardInfo.style.display   = 'block';
+    if(cardCorreos) cardCorreos.style.display='block';
+    if(cardOpcion) cardOpcion.style.display='none';
+    if(cardInfo)   cardInfo.style.display='block';
   } else {
-    // Cancelado: ocultar todo el card
-    const cardCorreos = document.getElementById('card-correos-destino');
-    if(cardCorreos) cardCorreos.style.display = 'none';
-    if(cardOpcion) cardOpcion.style.display = 'none';
-    if(cardInfo)   cardInfo.style.display   = 'none';
+    if(cardCorreos) cardCorreos.style.display='none';
   }
 }
 
@@ -4284,24 +4215,6 @@ function searchCasos(q) {
 }
 
 async function cerrarCaso(folio, resultado) {
-  // Al abrir el formulario de cierre desde Casos activos, ocultar paneles según tipo
-  // Se hace en irACierre que llama a onTipoEventoChange — pero por si acaso, limpiar resultado
-  recuperadoSelected = null;
-  creditoExitoso = false;
-  ['rec-si','rec-no','rec-cancel'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) { el.style.borderColor='var(--border2)'; el.style.background=''; }
-  });
-  ['panel-si','panel-no','panel-cancel'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.style.display = 'none';
-  });
-  const pcredito = document.getElementById('panel-conclusion-credito');
-  if(pcredito) pcredito.style.display = 'none';
-  const rExitoso = document.getElementById('rec-credito-exitoso');
-  const rNoExitoso = document.getElementById('rec-credito-no-exitoso');
-  if(rExitoso) rExitoso.style.borderColor = 'var(--border2)';
-  if(rNoExitoso) rNoExitoso.style.borderColor = 'var(--border2)';
   const caso = casos.find(c => c.folio === folio);
   if(!caso) return;
 
@@ -4594,28 +4507,51 @@ function filtrarHistorico(busqueda) {
 async function renderSeguimiento() {
   const list = document.getElementById('seguimiento-list');
   const prog = document.getElementById('correos-programados');
-
   if(list) list.innerHTML = '<div class="empty"><div class="empty-icon" style="font-size:24px;">⏳</div><p>Cargando casos...</p></div>';
-  if(prog) prog.innerHTML = '<div class="empty"><div class="empty-icon">📧</div><p>Cargando...</p></div>';
-
   let activos = [];
   try {
-    const res = await fetch('https://ain8n.numaris.com/webhook/leer-seguimiento', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({}) });
+    const res = await fetch('https://ain8n.numaris.com/webhook/leer-seguimiento', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
     const data = await res.json();
     activos = (data.casos || []).filter(c => c.FOLIO);
   } catch(e) {
     if(list) list.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><p>Error al cargar casos</p></div>';
+    return;
+  }
+  const ETIQUETAS = ['Notificación inicial','Actualización 8hrs','Actualización 16hrs','Actualización 24hrs','Solicitud carpeta investigación','Cierre de protocolo'];
+  const OFFSETS_H = [0,8,16,24,32,48];
+  if(!activos.length) {
+    if(list) list.innerHTML = '<div class="empty"><div class="empty-icon">✓</div><p>Sin casos en seguimiento activo</p></div>';
     if(prog) prog.innerHTML = '<div class="empty"><div class="empty-icon">📧</div><p>Sin correos programados</p></div>';
     return;
   }
-
-  // Actualizar badge
-  const badge = document.querySelector('.card-title + .badge, [id="seguimiento-badge"]');
-  const cardTitle = document.querySelector('#page-seguimiento .card-title');
-  if(cardTitle) {
-    const existingBadge = cardTitle.parentElement.querySelector('.badge');
-    if(existingBadge) existingBadge.textContent = activos.length + ' activos';
-  }
+  const ahora = Date.now();
+  const fmtFecha = ts => { const d=new Date(ts); const hoy=new Date(); hoy.setHours(0,0,0,0); const diff=Math.floor((d-hoy)/86400000); const base=diff===0?'Hoy':diff===1?'Mañana':d.toLocaleDateString('es-MX',{day:'2-digit',month:'short'}); return base+' '+d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:true}); };
+  const parseFecha = str => { if(!str) return null; const [fecha,hora] = str.split(' '); if(!fecha) return null; const [d,m,y] = fecha.split('/'); return new Date(`${y}-${m}-${d}T${hora||'00:00:00'}`).getTime(); };
+  if(list) list.innerHTML = activos.map(c => {
+    const inicio = parseFecha(c.FECHA_INICIO)||ahora;
+    const horario = OFFSETS_H.map(h=>inicio+h*3600000);
+    const enviados = parseInt(c.CORREOS_ENVIADOS||0);
+    const pct = Math.round((enviados/6)*100);
+    const siguiente = horario.find((t,i)=>i>=enviados&&ahora<t);
+    return `<div style="padding:14px 0;border-bottom:1px solid var(--border);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;"><div style="font-weight:600;font-size:13px;">${c.CLIENTE||'—'}</div><span class="badge badge-amber">${c.FOLIO}</span></div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">${c.NICK||'—'} · ${c.MONITORISTA||'—'}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Inicio: ${c.FECHA_INICIO||'—'}</div>
+      <div style="display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">${horario.map((t,i)=>{const sent=i<enviados;const next=!sent&&(i===0||ahora>=horario[i-1]);const cls=sent?'sent':next?'next':'pending';return `<div class="correo-slot ${cls}" title="${ETIQUETAS[i]} — ${fmtFecha(t)}">${sent?'✓':i+1}</div>`;}).join('')}<span style="font-size:11px;color:var(--muted);margin-left:4px;">${enviados}/6 enviados</span></div>
+      <div class="progress-wrap" style="margin-bottom:6px;"><div class="progress-bar" style="width:${pct}%;"></div></div>
+      ${siguiente?`<div style="font-size:11px;color:var(--accent);">⏰ Próximo: ${fmtFecha(siguiente)}</div>`:enviados>=6?`<div style="font-size:11px;color:var(--success);">✅ Protocolo completado</div>`:''}
+    </div>`;
+  }).join('');
+  const proximos = activos.flatMap(c=>{const inicio=parseFecha(c.FECHA_INICIO)||ahora;const enviados=parseInt(c.CORREOS_ENVIADOS||0);return OFFSETS_H.map((h,i)=>({t:inicio+h*3600000,label:ETIQUETAS[i],folio:c.FOLIO,enviado:i<enviados}));}).sort((a,b)=>a.t-b.t);
+  if(prog) prog.innerHTML = `<div style="font-size:11px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Programación automática (n8n)</div>${proximos.map(p=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);"><div style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${p.enviado?'var(--success)':'var(--accent)'}"></div><div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;color:var(--text);">${p.label}</div><div style="font-size:11px;color:var(--muted);">${p.folio} · ${fmtFecha(p.t)}</div></div><span class="badge ${p.enviado?'badge-green':'badge-amber'}">${p.enviado?'Enviado':'Pendiente'}</span></div>`).join('')}`;
+  setTimeout(renderSeguimiento,60000);
+}
+// OLD renderSeguimiento replaced — dummy to avoid reference errors
+function _old_renderSeguimiento() {
+  const activos = casos.filter(c => c.estado === 'En seguimiento' && c.total === 6);
+  const list = document.getElementById('seguimiento-list');
+  const prog = document.getElementById('correos-programados');
+  const ahora = Date.now();
 
   const ETIQUETAS = [
     'Notificación inicial',
@@ -4626,17 +4562,6 @@ async function renderSeguimiento() {
     'Cierre de protocolo'
   ];
 
-  // Tiempos estimados desde FECHA_INICIO (8h, 16h, 24h, 32h, 40h, 56h)
-  const OFFSETS_H = [0, 8, 16, 24, 32, 48];
-
-  if(!activos.length) {
-    if(list) list.innerHTML = '<div class="empty"><div class="empty-icon">✓</div><p>Sin casos en seguimiento activo</p></div>';
-    if(prog) prog.innerHTML = '<div class="empty"><div class="empty-icon">📧</div><p>Sin correos programados</p></div>';
-    return;
-  }
-
-  const ahora = Date.now();
-
   const fmtFecha = ts => {
     const d = new Date(ts);
     const hoy = new Date(); hoy.setHours(0,0,0,0);
@@ -4645,34 +4570,27 @@ async function renderSeguimiento() {
     return base + ' ' + d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:true});
   };
 
-  const parseFecha = str => {
-    if(!str) return null;
-    // Formato: "11/05/2026 14:30:00" o similar
-    const [fecha, hora] = str.split(' ');
-    if(!fecha) return null;
-    const [d, m, y] = fecha.split('/');
-    return new Date(`${y}-${m}-${d}T${hora||'00:00:00'}`).getTime();
-  };
+  if(!activos.length) {
+    if(list) list.innerHTML = '<div class="empty"><div class="empty-icon">✓</div><p>Sin casos en seguimiento activo</p></div>';
+    if(prog) prog.innerHTML = '<div class="empty"><div class="empty-icon">📧</div><p>Sin correos programados</p></div>';
+    return;
+  }
 
   if(list) list.innerHTML = activos.map(c => {
-    const inicio = parseFecha(c.FECHA_INICIO) || ahora;
-    const horario = OFFSETS_H.map(h => inicio + h * 3600000);
-    const enviados = parseInt(c.CORREOS_ENVIADOS || 0);
+    const enviados = (c.horarioCorreos || []).filter(t => ahora >= t).length;
     const pct = Math.round((enviados / 6) * 100);
-    const siguiente = horario.find((t, i) => i >= enviados && ahora < t);
-
+    const siguiente = (c.horarioCorreos || []).find(t => ahora < t);
     return `
       <div style="padding:14px 0;border-bottom:1px solid var(--border);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-          <div style="font-weight:600;font-size:13px;">${c.CLIENTE||'—'}</div>
-          <span class="badge badge-amber">${c.FOLIO}</span>
+          <div style="font-weight:600;font-size:13px;">${c.cliente}</div>
+          <span class="badge badge-amber">${c.folio}</span>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">${c.NICK||'—'} · ${c.MONITORISTA||'—'}</div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Inicio: ${c.FECHA_INICIO||'—'}</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${c.unidad} · ${c.estadoMx||'—'}</div>
         <div style="display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">
-          ${horario.map((t, i) => {
-            const sent = i < enviados;
-            const next = !sent && (i === 0 || ahora >= horario[i-1]);
+          ${(c.horarioCorreos||[]).map((t,i) => {
+            const sent = ahora >= t;
+            const next = !sent && (i===0 || ahora >= c.horarioCorreos[i-1]);
             const cls  = sent ? 'sent' : next ? 'next' : 'pending';
             return `<div class="correo-slot ${cls}" title="${ETIQUETAS[i]} — ${fmtFecha(t)}">${sent?'✓':i+1}</div>`;
           }).join('')}
@@ -4683,23 +4601,18 @@ async function renderSeguimiento() {
         </div>
         ${siguiente
           ? `<div style="font-size:11px;color:var(--accent);">⏰ Próximo: ${fmtFecha(siguiente)}</div>`
-          : enviados >= 6
+          : enviados===6
             ? `<div style="font-size:11px;color:var(--success);">✅ Protocolo completado</div>`
             : ''}
       </div>`;
   }).join('');
 
-  // Panel derecho
-  const proximos = activos.flatMap(c => {
-    const inicio = parseFecha(c.FECHA_INICIO) || ahora;
-    const enviados = parseInt(c.CORREOS_ENVIADOS || 0);
-    return OFFSETS_H.map((h, i) => ({
-      t: inicio + h * 3600000,
-      label: ETIQUETAS[i],
-      folio: c.FOLIO,
-      enviado: i < enviados
-    }));
-  }).sort((a, b) => a.t - b.t);
+  // Panel derecho: todos los correos de todos los casos ordenados
+  const proximos = activos.flatMap(c =>
+    (c.horarioCorreos||[]).map((t,i) => ({
+      t, label: ETIQUETAS[i], folio: c.folio, enviado: ahora >= t
+    }))
+  ).sort((a,b) => a.t - b.t);
 
   if(prog) prog.innerHTML = `
     <div style="font-size:11px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Programación automática (n8n)</div>
@@ -5907,14 +5820,12 @@ function onTipoEventoChange(val) {
   if(cardMonitorista) cardMonitorista.style.display = esCredito ? 'none' : 'block';
 
   // Mostrar/ocultar campos específicos de crédito en paso 2
-  // card-datos-evento siempre visible — mostrar grupos según tipo
-  ['grupo-razon-social','grupo-marca-modelo','grupo-placas-color','grupo-lugar-coords',
-   'grupo-fecha-hora','grupo-ultima-senal'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.style.display = esCredito ? 'none' : '';
-  });
-  const grupoCred = document.getElementById('grupo-credito');
-  if(grupoCred) grupoCred.style.display = esCredito ? 'block' : 'none';
+  const camposCredito = document.getElementById('campos-credito-paso2');
+  if(camposCredito) camposCredito.style.display = esCredito ? 'block' : 'none';
+
+  // Ocultar campos que no aplican para crédito en paso 2
+  const cardVehiculo = document.getElementById('card-datos-evento');
+  if(cardVehiculo) cardVehiculo.style.display = esCredito ? 'none' : 'block';
 
   // Ocultar escenario de cierre para ABUSO DE CONFIANZA y RECUPERACIÓN DE CRÉDITO
   const esRobo = (val === 'ROBO');
@@ -5930,25 +5841,6 @@ function onTipoEventoChange(val) {
   if(panelResultadoCredito) panelResultadoCredito.style.display = esCredito ? 'block' : 'none';
   const panelResultadoNormal = document.getElementById('panel-resultado-normal');
   if(panelResultadoNormal) panelResultadoNormal.style.display = esCredito ? 'none' : 'block';
-
-  // Adaptar label Nick para crédito (TK = Nick)
-  const labelNick = document.getElementById('label-nick-alias');
-  const nickInput = document.getElementById('f-nick');
-  if(esCredito) {
-    if(labelNick) labelNick.textContent = 'TK / Nick en plataforma';
-    if(nickInput) nickInput.placeholder = 'Número de TK';
-    // Sincronizar f-nick con f-credito-tk
-    const tkInput = document.getElementById('f-credito-tk');
-    if(nickInput && tkInput) {
-      nickInput.oninput = () => { tkInput.value = nickInput.value; };
-      tkInput.oninput  = () => { nickInput.value = tkInput.value; };
-    }
-  } else {
-    if(labelNick) labelNick.textContent = 'Nick / Alias en plataforma';
-    if(nickInput) { nickInput.placeholder = 'Nombre del activo en sistema'; nickInput.oninput = null; }
-    const tkInput = document.getElementById('f-credito-tk');
-    if(tkInput) tkInput.oninput = null;
-  }
 
   // Cambiar placeholder según tipo
   if(ta) {
@@ -5976,12 +5868,8 @@ function autoDetectEmpresa(plataforma) {
   const empresa = map[plataforma] || '';
   const el = document.getElementById('f-empresa-atiende');
   if(el) el.value = empresa;
-  // Sincronizar con display de crédito
-  const elCred = document.getElementById('empresa-credito-display');
+  const elCred = document.getElementById('f-empresa-credito');
   if(elCred) elCred.value = empresa;
-  // Sincronizar selector de plataforma en crédito
-  const selCred = document.getElementById('sel-plat-credito');
-  if(selCred && selCred.value !== plataforma) selCred.value = plataforma;
   // Mostrar campos INBURSA solo si aplica
   const camposInbursa = document.getElementById('campos-inbursa');
   if(camposInbursa) camposInbursa.style.display = plataforma === 'INBURSA' ? 'block' : 'none';
