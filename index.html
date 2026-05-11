@@ -1511,6 +1511,76 @@
           </div>
         </div>
 
+        <!-- ===== ENVÍO DE CORREOS ===== -->
+        <div class="card" style="margin-bottom:16px;" id="card-correos-destino">
+          <div class="card-header">
+            <div class="card-title">📧 Envío de correos</div>
+          </div>
+          <div class="card-body">
+            <div class="form-group" style="margin-bottom:14px;">
+              <label style="font-size:12px;font-weight:600;margin-bottom:6px;display:block;">Correos destino</label>
+              <div id="correos-tags" style="display:flex;flex-wrap:wrap;gap:6px;min-height:36px;padding:6px 10px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--card2);cursor:text;" onclick="document.getElementById('correo-input-tag').focus()"></div>
+              <div style="display:flex;gap:8px;margin-top:6px;">
+                <input type="email" id="correo-input-tag" placeholder="correo@ejemplo.com y presiona Enter"
+                  style="flex:1;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:12px;outline:none;"
+                  onkeydown="handleCorreoTag(event)" />
+                <button type="button" class="btn btn-ghost btn-sm" onclick="agregarCorreoTag()">+ Agregar</button>
+              </div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px;">Presiona Enter o coma para agregar cada correo</div>
+            </div>
+            <div id="card-opcion-envio" style="display:none;">
+              <label style="font-size:12px;font-weight:600;margin-bottom:8px;display:block;">¿Qué deseas enviar?</label>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <label id="opt-seguimiento" onclick="selectOpcionEnvio('seguimiento')"
+                  style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
+                  <input type="radio" name="opcion-envio" value="seguimiento" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
+                  <div>
+                    <div style="font-size:12px;font-weight:600;">📨 Seguimiento 48hrs + Reporte</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">6 correos automáticos cada 8hrs más el reporte PDF</div>
+                  </div>
+                </label>
+                <label id="opt-solo-reporte" onclick="selectOpcionEnvio('reporte')"
+                  style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
+                  <input type="radio" name="opcion-envio" value="reporte" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
+                  <div>
+                    <div style="font-size:12px;font-weight:600;">📄 Solo reporte PDF</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Envía únicamente el reporte sin seguimiento automático</div>
+                  </div>
+                </label>
+                <label id="opt-no-enviar-norec" onclick="selectOpcionEnvio('ninguno')"
+                  style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
+                  <input type="radio" name="opcion-envio" value="ninguno" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
+                  <div>
+                    <div style="font-size:12px;font-weight:600;">🚫 No enviar</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Finalizar sin enviar correos</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div id="card-solo-reporte-info" style="display:none;">
+              <label style="font-size:12px;font-weight:600;margin-bottom:8px;display:block;">¿Deseas enviar el reporte PDF?</label>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <label id="opt-enviar-reporte-rec" onclick="selectOpcionEnvio('reporte')"
+                  style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
+                  <input type="radio" name="opcion-envio-rec" value="reporte" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
+                  <div>
+                    <div style="font-size:12px;font-weight:600;">📄 Enviar reporte PDF</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Envía el reporte de recuperación al cliente</div>
+                  </div>
+                </label>
+                <label id="opt-no-enviar-rec" onclick="selectOpcionEnvio('ninguno')"
+                  style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
+                  <input type="radio" name="opcion-envio-rec" value="ninguno" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
+                  <div>
+                    <div style="font-size:12px;font-weight:600;">🚫 No enviar</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">Finalizar sin enviar correos</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Evidencias adicionales — solo disponible si Drive fue exitoso -->
         <div class="card" style="margin-bottom:16px;display:none;" id="card-evidencias">
           <div class="card-header">
@@ -3069,6 +3139,7 @@ async function nextStep(from) {
     document.getElementById('form-step-3').style.display='none';
     const conf = document.getElementById('form-step-4-confirm');
     if(conf) conf.style.display='block';
+    mostrarOpcionesCorreo(recuperadoSelected);
     markStep(2,'done');
     const icons = {si:'✅', no:'🔎', cancel:'🚫'};
     const titles = {si:'Unidad recuperada', no:'No recuperada', cancel:'Cancelado'};
@@ -3594,7 +3665,8 @@ async function registerEvento() {
             cliente: esCredito ? document.getElementById('f-credito-razon')?.value : cliente,
             nick: esCredito ? document.getElementById('f-credito-tk')?.value : nick,
             placas: esCredito ? document.getElementById('f-placas-credito')?.value : placas,
-            correoCliente: payload.correoCliente,
+            correoCliente: _correosDestino.length > 0 ? _correosDestino.join(',') : payload.correoCliente,
+            opcionEnvio: _opcionEnvio,
             esCredito,
             datos: payload.datos
           })
@@ -3635,6 +3707,105 @@ async function registerEvento() {
     registradoEn: esRoboNoRec2 ? ahoraReg : null,
     horarioCorreos: esRoboNoRec2 ? [0,8,16,24,32,48].map(h=>ahoraReg+h*3600000) : []
   });
+}
+
+// ===== CORREOS DESTINO TAGS =====
+let _correosDestino = [];
+let _opcionEnvio = 'seguimiento'; // 'seguimiento' | 'reporte'
+
+function handleCorreoTag(e) {
+  if(e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    agregarCorreoTag();
+  }
+}
+
+function agregarCorreoTag() {
+  const input = document.getElementById('correo-input-tag');
+  if(!input) return;
+  const val = input.value.trim().replace(/,/g,'');
+  if(!val) return;
+  // Validar formato básico
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+    input.style.borderColor = 'var(--danger)';
+    return;
+  }
+  if(_correosDestino.includes(val)) { input.value=''; return; }
+  _correosDestino.push(val);
+  input.value = '';
+  input.style.borderColor = 'var(--border2)';
+  renderCorreosTags();
+}
+
+function eliminarCorreoTag(correo) {
+  _correosDestino = _correosDestino.filter(c => c !== correo);
+  renderCorreosTags();
+}
+
+function renderCorreosTags() {
+  const wrap = document.getElementById('correos-tags');
+  if(!wrap) return;
+  wrap.innerHTML = _correosDestino.map(c => `
+    <span style="display:inline-flex;align-items:center;gap:4px;background:#e8f0fe;color:#1e40af;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;">
+      ${c}
+      <button onclick="eliminarCorreoTag('${c}')" style="background:none;border:none;color:#1e40af;cursor:pointer;font-size:12px;padding:0;line-height:1;">✕</button>
+    </span>`).join('');
+}
+
+function selectOpcionEnvio(opcion) {
+  _opcionEnvio = opcion;
+  // IDs de todas las opciones posibles
+  const opts = {
+    'seguimiento': 'opt-seguimiento',
+    'reporte':     'opt-solo-reporte',
+    'ninguno':     'opt-no-enviar-norec',
+    'reporte-rec': 'opt-enviar-reporte-rec',
+    'ninguno-rec': 'opt-no-enviar-rec'
+  };
+  // Resetear todos
+  Object.values(opts).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) { el.style.borderColor='var(--border2)'; el.style.background='var(--card2)'; }
+  });
+  // Activar el seleccionado
+  // Para recuperada, "reporte" activa opt-enviar-reporte-rec, "ninguno" activa opt-no-enviar-rec
+  const cardInfo = document.getElementById('card-solo-reporte-info');
+  const esRecuperada = cardInfo && cardInfo.style.display !== 'none';
+  let activeId;
+  if(esRecuperada) {
+    activeId = opcion === 'reporte' ? 'opt-enviar-reporte-rec' : 'opt-no-enviar-rec';
+  } else {
+    activeId = opts[opcion];
+  }
+  const activeEl = document.getElementById(activeId);
+  if(activeEl) { activeEl.style.borderColor='var(--accent)'; activeEl.style.background='#eef4ff'; }
+}
+
+function mostrarOpcionesCorreo(resultado) {
+  const cardOpcion = document.getElementById('card-opcion-envio');
+  const cardInfo   = document.getElementById('card-solo-reporte-info');
+  _correosDestino = [];
+  _opcionEnvio = 'ninguno';
+  renderCorreosTags();
+  // Reset radios
+  document.querySelectorAll('input[name="opcion-envio"], input[name="opcion-envio-rec"]').forEach(r => r.checked = false);
+  ['opt-seguimiento','opt-solo-reporte','opt-no-enviar-norec','opt-enviar-reporte-rec','opt-no-enviar-rec'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) { el.style.borderColor='var(--border2)'; el.style.background='var(--card2)'; }
+  });
+  if(resultado === 'no') {
+    if(cardOpcion) cardOpcion.style.display = 'block';
+    if(cardInfo)   cardInfo.style.display   = 'none';
+  } else if(resultado === 'si') {
+    if(cardOpcion) cardOpcion.style.display = 'none';
+    if(cardInfo)   cardInfo.style.display   = 'block';
+  } else {
+    // Cancelado: ocultar todo el card
+    const cardCorreos = document.getElementById('card-correos-destino');
+    if(cardCorreos) cardCorreos.style.display = 'none';
+    if(cardOpcion) cardOpcion.style.display = 'none';
+    if(cardInfo)   cardInfo.style.display   = 'none';
+  }
 }
 
 function resetForm() {
