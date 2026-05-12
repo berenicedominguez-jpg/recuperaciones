@@ -3807,7 +3807,7 @@ function cerrarModalCancelado() {
 }
 
 async function confirmarCancelado() {
-  const tipoUnidad   = document.getElementById('modal-cancel-tipo-unidad')?.value.trim();
+  const tipoUnidad   = document.getElementById('modal-cancel-tipo-unidad')?.value || '';
   const autoriza     = document.getElementById('modal-cancel-autoriza')?.value;
   const motivo       = document.getElementById('modal-cancel-motivo')?.value.trim();
 
@@ -6225,7 +6225,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="form-group">
           <label class="req">Tipo de unidad</label>
-          <input type="text" id="modal-cancel-tipo-unidad" placeholder="Ej. TRACTOCAMIÓN, CAMIONETA, SEDAN..." />
+          <select id="modal-cancel-tipo-unidad">
+            <option value="">Seleccionar...</option>
+            <option>PARTICULAR</option>
+            <option>SERVICIOS</option>
+            <option>CARGA</option>
+          </select>
         </div>
         <div class="form-group">
           <label class="req">Quién autoriza</label>
