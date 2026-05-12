@@ -4402,7 +4402,7 @@ async function cerrarCaso(folio, resultado) {
   }
 
   // Aplicar lógica de tipo de evento para mostrar/ocultar paneles correctos
-  onTipoEventoChange(tipoEvento);
+  setTimeout(() => onTipoEventoChange(tipoEvento), 50);
 
   window.scrollTo(0, 0);
 }
