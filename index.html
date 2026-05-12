@@ -2765,8 +2765,8 @@ async function registrarEnProceso() {
     coordenadas:    document.getElementById('f-coords')?.value||'—',
     ultima_senal:   document.getElementById('f-ultima-senal')?.value||'—',
     folio_911:      document.getElementById('f-folio911-step1')?.value||'—',
-    plataforma:     document.getElementById('f-plataforma')?.value||'—',
-    esn:            document.getElementById('f-esn')?.value||'—',
+    plataforma:     esCredito ? (document.getElementById('f-plataforma-credito')?.value || document.getElementById('f-plataforma')?.value||'—') : (document.getElementById('f-plataforma')?.value||'—'),
+    esn:            esCredito ? (document.getElementById('f-esn-credito')?.value || document.getElementById('f-esn')?.value||'—') : (document.getElementById('f-esn')?.value||'—'),
     nick:           esCredito ? (document.getElementById('f-credito-tk')?.value||'—') : (document.getElementById('f-nick')?.value||'—'),
     ultima_senal:   document.getElementById('f-ultima-senal')?.value||'—',
     // Campos adicionales para buildPayload completo
@@ -4002,11 +4002,24 @@ function renderCasos(data) {
       <td style="padding:12px 20px;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           ${c.recuperado ? `
-          <span style="font-size:11px;color:#059669;font-weight:600;">✓ Recuperada</span>
+          <span style="font-size:11px;color:#059669;font-weight:600;">${c.tipoEvento==='RECUPERACIÓN DE CRÉDITO'?'✓ Exitosa':'✓ Recuperada'}</span>
           ` : c.estado === 'En seguimiento' ? `
           <button onclick="confirmarRecuperada('${c.folio}')"
             style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#d1fae5;color:#065f46;">
             ✓ Recuperada
+          </button>
+          ` : c.tipoEvento === 'RECUPERACIÓN DE CRÉDITO' ? `
+          <button onclick="cerrarCaso('${c.folio}','RECUPERADA')"
+            style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#d1fae5;color:#065f46;">
+            ✓ Exitosa
+          </button>
+          <button onclick="cerrarCaso('${c.folio}','NO RECUPERADA')"
+            style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#fee2e2;color:#991b1b;">
+            ✗ No exitosa
+          </button>
+          <button onclick="cerrarCaso('${c.folio}','CANCELADO')"
+            style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#f1f5f9;color:#475569;">
+            Cancelado
           </button>
           ` : `
           <button onclick="cerrarCaso('${c.folio}','RECUPERADA')"
@@ -4367,12 +4380,26 @@ async function cerrarCaso(folio, resultado) {
   const cardDatosExtra = document.getElementById('card-datos-extra-credito');
   if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
 
-  // Activar resultado — mostrar panel correcto y ocultar botones de selección
-  selectRecuperacion(recuperadoSelected);
-
-  // Ocultar los 3 botones de selección — el resultado ya está definido
-  const selectorGrid = document.querySelector('#panel-resultado-normal > div:first-child');
-  if(selectorGrid) selectorGrid.style.display = 'none';
+  // Mostrar panel resultado correcto según tipo
+  const panelCredito = document.getElementById('panel-resultado-credito');
+  const panelNormal  = document.getElementById('panel-resultado-normal');
+  if(esCredito) {
+    if(panelCredito) panelCredito.style.display = 'block';
+    if(panelNormal)  panelNormal.style.display  = 'none';
+    // Para crédito el resultado viene del campo resultado del caso
+    const creditoVal = (resultado === 'RECUPERADA') ? 'exitoso' : 'no-exitoso';
+    selectRecuperacionCredito(creditoVal);
+    // Ocultar botones de selección de crédito — ya está definido
+    const selectorGridCred = document.querySelector('#panel-resultado-credito > div:first-child');
+    if(selectorGridCred) selectorGridCred.style.display = 'none';
+  } else {
+    if(panelCredito) panelCredito.style.display = 'none';
+    if(panelNormal)  panelNormal.style.display  = 'block';
+    selectRecuperacion(recuperadoSelected);
+    // Ocultar los 3 botones de selección — el resultado ya está definido
+    const selectorGrid = document.querySelector('#panel-resultado-normal > div:first-child');
+    if(selectorGrid) selectorGrid.style.display = 'none';
+  }
 
   window.scrollTo(0, 0);
 }
