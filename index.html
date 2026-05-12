@@ -790,6 +790,10 @@
                 <label class="req">Razón social</label>
                 <input type="text" id="f-credito-razon" placeholder="Ej. NACIONAL MONTE DE PIEDAD" />
               </div>
+              <div class="form-group">
+                <label class="req">TK</label>
+                <input type="text" id="f-credito-tk" placeholder="Ej. 72936" />
+              </div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
               <div class="form-group">
@@ -833,7 +837,7 @@
                 <input type="text" id="f-credito-localidad" placeholder="Ej. YUC, México" />
               </div>
             </div>
-            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;">
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;">
               <div class="form-group">
                 <label class="req">Lugar de resguardo</label>
                 <input type="text" id="f-credito-resguardo" placeholder="Dirección del resguardo" />
@@ -842,29 +846,9 @@
                 <label class="req">Gestor asignado</label>
                 <input type="text" id="f-credito-gestor" placeholder="Nombre del gestor" />
               </div>
-            </div>
-            <!-- Plataforma + ESN + TK + Empresa para crédito -->
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;">
               <div class="form-group">
-                <label class="req">Plataforma</label>
-                <select id="f-plataforma-credito" onchange="document.getElementById('f-plataforma').value=this.value;autoDetectEmpresa(this.value);">
-                  <option value="">Seleccionar...</option>
-                  <option>TECNOMETRICS</option><option>UTRAX</option><option>FT VISION</option>
-                  <option>RECUPERAMOVIL</option><option>EASYTRACK</option><option>SFLEET</option>
-                  <option>TRAFFILOG</option><option>INBURSA</option><option>OTRO PROVEEDOR</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="req">ESN (equipo GPS)</label>
-                <input type="text" id="f-esn-credito" placeholder="No. de serie del equipo" oninput="document.getElementById('f-esn').value=this.value" />
-              </div>
-              <div class="form-group">
-                <label class="req">TK / Nick en plataforma</label>
-                <input type="text" id="f-credito-tk" placeholder="Ej. 72936" oninput="document.getElementById('f-nick').value=this.value" />
-              </div>
-              <div class="form-group">
-                <label>Empresa que atiende</label>
-                <input type="text" id="f-empresa-credito" readonly placeholder="Se detecta por plataforma" style="background:#f0f5fc;color:var(--muted2);cursor:not-allowed;" />
+                <label class="req">Correo del cliente</label>
+                <input type="email" id="f-credito-correo" placeholder="correo@cliente.com" />
               </div>
             </div>
           </div>
@@ -1523,54 +1507,6 @@
                 <div><div style="font-size:13px;font-weight:600;">Ticket Zoho Desk</div><div id="check-desk-status" style="font-size:11px;color:var(--muted);">—</div></div>
               </div>
               <div id="check-desk-icon" style="font-size:18px;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ===== ENVÍO DE CORREOS ===== -->
-        <div class="card" style="margin-bottom:16px;" id="card-correos-destino">
-          <div class="card-header"><div class="card-title">📧 Envío de correos</div></div>
-          <div class="card-body">
-            <div class="form-group" style="margin-bottom:14px;">
-              <label style="font-size:12px;font-weight:600;margin-bottom:6px;display:block;">Correos destino</label>
-              <div id="correos-tags" style="display:flex;flex-wrap:wrap;gap:6px;min-height:36px;padding:6px 10px;border:1px solid var(--border2);border-radius:var(--radius-sm);background:var(--card2);cursor:text;" onclick="document.getElementById('correo-input-tag').focus()"></div>
-              <div style="display:flex;gap:8px;margin-top:6px;">
-                <input type="email" id="correo-input-tag" placeholder="correo@ejemplo.com y presiona Enter"
-                  style="flex:1;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:12px;outline:none;"
-                  onkeydown="handleCorreoTag(event)" />
-                <button type="button" class="btn btn-ghost btn-sm" onclick="agregarCorreoTag()">+ Agregar</button>
-              </div>
-              <div style="font-size:11px;color:var(--muted);margin-top:4px;">Presiona Enter o coma para agregar cada correo</div>
-            </div>
-            <div id="card-opcion-envio" style="display:none;">
-              <label style="font-size:12px;font-weight:600;margin-bottom:8px;display:block;">¿Qué deseas enviar?</label>
-              <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <label id="opt-seguimiento" onclick="selectOpcionEnvio('seguimiento')" style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
-                  <input type="radio" name="opcion-envio" value="seguimiento" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
-                  <div><div style="font-size:12px;font-weight:600;">📨 Seguimiento 48hrs + Reporte</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">6 correos automáticos cada 8hrs más el reporte PDF</div></div>
-                </label>
-                <label id="opt-solo-reporte" onclick="selectOpcionEnvio('reporte')" style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
-                  <input type="radio" name="opcion-envio" value="reporte" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
-                  <div><div style="font-size:12px;font-weight:600;">📄 Solo reporte PDF</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Envía únicamente el reporte sin seguimiento automático</div></div>
-                </label>
-                <label id="opt-no-enviar-norec" onclick="selectOpcionEnvio('ninguno')" style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
-                  <input type="radio" name="opcion-envio" value="ninguno" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
-                  <div><div style="font-size:12px;font-weight:600;">🚫 No enviar</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Finalizar sin enviar correos</div></div>
-                </label>
-              </div>
-            </div>
-            <div id="card-solo-reporte-info" style="display:none;">
-              <label style="font-size:12px;font-weight:600;margin-bottom:8px;display:block;">¿Deseas enviar el reporte PDF?</label>
-              <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <label id="opt-enviar-reporte-rec" onclick="selectOpcionEnvio('reporte')" style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
-                  <input type="radio" name="opcion-envio-rec" value="reporte" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
-                  <div><div style="font-size:12px;font-weight:600;">📄 Enviar reporte PDF</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Envía el reporte de recuperación al cliente</div></div>
-                </label>
-                <label id="opt-no-enviar-rec" onclick="selectOpcionEnvio('ninguno')" style="flex:1;min-width:160px;display:flex;align-items:flex-start;gap:10px;padding:12px;border:2px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;background:var(--card2);">
-                  <input type="radio" name="opcion-envio-rec" value="ninguno" style="accent-color:var(--accent);margin-top:2px;flex-shrink:0;">
-                  <div><div style="font-size:12px;font-weight:600;">🚫 No enviar</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Finalizar sin enviar correos</div></div>
-                </label>
-              </div>
             </div>
           </div>
         </div>
@@ -2564,10 +2500,7 @@ function syncParsedToForm() {
   // Crédito
   const esCredito = document.getElementById('f-tipo-evento')?.value === 'RECUPERACIÓN DE CRÉDITO';
   if(esCredito) {
-    if(pd('fp-credito-tk')) {
-      setF('f-credito-tk', pd('fp-credito-tk'));
-      setF('f-nick', pd('fp-credito-tk'));
-    }
+    if(pd('fp-credito-tk'))           setF('f-credito-tk',           pd('fp-credito-tk'));
     if(pd('fp-credito-razon') || pd('fp-razon'))
       setF('f-credito-razon', pd('fp-credito-razon') || pd('fp-razon'));
     if(pd('fp-marca'))                setF('f-marca-credito',        pd('fp-marca'));
@@ -2765,8 +2698,8 @@ async function registrarEnProceso() {
     coordenadas:    document.getElementById('f-coords')?.value||'—',
     ultima_senal:   document.getElementById('f-ultima-senal')?.value||'—',
     folio_911:      document.getElementById('f-folio911-step1')?.value||'—',
-    plataforma:     esCredito ? (document.getElementById('f-plataforma-credito')?.value || document.getElementById('f-plataforma')?.value||'—') : (document.getElementById('f-plataforma')?.value||'—'),
-    esn:            esCredito ? (document.getElementById('f-esn-credito')?.value || document.getElementById('f-esn')?.value||'—') : (document.getElementById('f-esn')?.value||'—'),
+    plataforma:     document.getElementById('f-plataforma')?.value||'—',
+    esn:            document.getElementById('f-esn')?.value||'—',
     nick:           esCredito ? (document.getElementById('f-credito-tk')?.value||'—') : (document.getElementById('f-nick')?.value||'—'),
     ultima_senal:   document.getElementById('f-ultima-senal')?.value||'—',
     // Campos adicionales para buildPayload completo
@@ -2779,10 +2712,6 @@ async function registrarEnProceso() {
     hora_robo_raw:  document.getElementById('f-hora-robo')?.value||'',
     hora_robo_ampm: document.getElementById('f-hora-robo-ampm')?.value||'AM',
     folio911:       document.getElementById('f-folio911-step1')?.value||'—',
-    nombre_cliente: document.getElementById('f-credito-nombre')?.value||'—',
-    motivo_credito: document.getElementById('f-credito-motivo')?.value||'—',
-    fecha_inicio:   document.getElementById('f-credito-fecha-inicio')?.value||'—',
-    fecha_fin:      document.getElementById('f-credito-fecha-fin')?.value||'—',
   };
 
   // Guardar folio_temp provisional — se reemplaza con el consecutivo que devuelve n8n
@@ -2813,21 +2742,7 @@ async function registrarEnProceso() {
     ? payload.tipo_alerta
     : 'N/A';
 
-  const esCredito_slack = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
-  const mensaje = esCredito_slack ? [
-    `🏦 *RECUPERACIÓN DE CRÉDITO — ${cliente} — ${plataforma}*`,
-    `━━━━━━━━━━━━━━━━━━━`,
-    `🔑 *TK:* ${nick} | Placas: ${placas}`,
-    `🔢 *ESN:* ${esn}`,
-    ``,
-    `👤 *Cliente:* ${payload.nombre_cliente || '—'}`,
-    `📋 *Motivo:* ${payload.motivo_credito || '—'}`,
-    `📅 *Inicio seguimiento:* ${payload.fecha_inicio || '—'}`,
-    `📅 *Fin seguimiento:* ${payload.fecha_fin || '—'}`,
-    ``,
-    `👮 *Monitorista:* ${monitorista}`,
-    `━━━━━━━━━━━━━━━━━━━`,
-  ].join('\n') : [
+  const mensaje = [
     `🚨 *${tipoEvento} — ${cliente} — ${plataforma}*`,
     `━━━━━━━━━━━━━━━━━━━`,
     `🚛 *Unidad:* ${nick} | Placas: ${placas}`,
@@ -2977,6 +2892,7 @@ async function nextStep(from) {
       if(!validarCampo('f-credito-localidad', 'Localidad de gestión')) return;
       if(!validarCampo('f-credito-resguardo', 'Lugar de resguardo')) return;
       if(!validarCampo('f-credito-gestor', 'Gestor asignado')) return;
+      if(!validarCampo('f-credito-correo', 'Correo del cliente')) return;
     } else {
       if(!validarCampo('f-cliente', 'Razón social / Cliente')) return;
       if(!validarCampo('f-marca', 'Marca')) return;
@@ -3027,16 +2943,9 @@ async function nextStep(from) {
     // Este bloque ya no se usa (fusionado en from===1), pero se mantiene por compatibilidad
   }
   if(from===3) {
+    if(!recuperadoSelected) { notify('Indica el resultado del evento','warning'); return; }
     const tipoEvento3 = document.getElementById('f-tipo-evento')?.value || '';
     const esCredito3 = tipoEvento3 === 'RECUPERACIÓN DE CRÉDITO';
-    if(esCredito3) {
-      const panelConclusion = document.getElementById('panel-conclusion-credito');
-      if(!panelConclusion || panelConclusion.style.display === 'none') {
-        notify('Indica si la recuperación fue exitosa o no exitosa', 'warning'); return;
-      }
-    } else {
-      if(!recuperadoSelected) { notify('Indica el resultado del evento','warning'); return; }
-    }
     const esAbuso3   = tipoEvento3 === 'ABUSO DE CONFIANZA';
     const esRobo3    = tipoEvento3 === 'ROBO';
 
@@ -3160,7 +3069,6 @@ async function nextStep(from) {
     document.getElementById('form-step-3').style.display='none';
     const conf = document.getElementById('form-step-4-confirm');
     if(conf) conf.style.display='block';
-    mostrarOpcionesCorreo(recuperadoSelected);
     markStep(2,'done');
     const icons = {si:'✅', no:'🔎', cancel:'🚫'};
     const titles = {si:'Unidad recuperada', no:'No recuperada', cancel:'Cancelado'};
@@ -3333,16 +3241,6 @@ async function registerEvento() {
   ].join('\n');
 
   // ── sheetData según tipo de resultado ──
-  const escenarioLabels = {
-    corrralon:'Remitida a corralón / depósito', cliente:'Cliente recoge directamente',
-    mp:'Puesta a disposición del MP', 'no-fisica':'Localizada pero no recuperada físicamente',
-    extranjero:'Localizada en el extranjero', otro:'Otro'
-  };
-  const estatusCompleto = resultado === 'si'
-    ? ('RECUPERADA' + (escenario ? ' — ' + (escenarioLabels[escenario] || escenario) : ''))
-    : resultado === 'no' ? 'NO RECUPERADA'
-    : resultado === 'cancel' ? 'CANCELADO'
-    : resultadoLabel;
   let sheetData = {};
 
   if(esCredito) {
@@ -3739,146 +3637,6 @@ async function registerEvento() {
   });
 }
 
-// ===== CORREOS DESTINO TAGS =====
-let _correosDestino = [];
-let _opcionEnvio = 'ninguno';
-
-function handleCorreoTag(e) {
-  if(e.key === 'Enter' || e.key === ',') { e.preventDefault(); agregarCorreoTag(); }
-}
-function agregarCorreoTag() {
-  const input = document.getElementById('correo-input-tag');
-  if(!input) return;
-  const val = input.value.trim().replace(/,/g,'');
-  if(!val) return;
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { input.style.borderColor='var(--danger)'; return; }
-  if(_correosDestino.includes(val)) { input.value=''; return; }
-  _correosDestino.push(val);
-  input.value=''; input.style.borderColor='var(--border2)';
-  renderCorreosTags();
-}
-function eliminarCorreoTag(correo) {
-  _correosDestino = _correosDestino.filter(c => c !== correo);
-  renderCorreosTags();
-}
-function renderCorreosTags() {
-  const wrap = document.getElementById('correos-tags');
-  if(!wrap) return;
-  wrap.innerHTML = _correosDestino.map(c => `<span style="display:inline-flex;align-items:center;gap:4px;background:#e8f0fe;color:#1e40af;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;">${c}<button onclick="eliminarCorreoTag('${c}')" style="background:none;border:none;color:#1e40af;cursor:pointer;font-size:12px;padding:0;line-height:1;">✕</button></span>`).join('');
-}
-function selectOpcionEnvio(opcion) {
-  _opcionEnvio = opcion;
-  const ids = ['opt-seguimiento','opt-solo-reporte','opt-no-enviar-norec','opt-enviar-reporte-rec','opt-no-enviar-rec'];
-  ids.forEach(id => { const el=document.getElementById(id); if(el){el.style.borderColor='var(--border2)';el.style.background='var(--card2)';} });
-  const cardInfo = document.getElementById('card-solo-reporte-info');
-  const esRec = cardInfo && cardInfo.style.display !== 'none';
-  const activeId = esRec ? (opcion==='reporte' ? 'opt-enviar-reporte-rec' : 'opt-no-enviar-rec') : (opcion==='seguimiento' ? 'opt-seguimiento' : opcion==='reporte' ? 'opt-solo-reporte' : 'opt-no-enviar-norec');
-  const el = document.getElementById(activeId);
-  if(el){el.style.borderColor='var(--accent)';el.style.background='#eef4ff';}
-}
-function mostrarOpcionesCorreo(resultado) {
-  const cardOpcion = document.getElementById('card-opcion-envio');
-  const cardInfo   = document.getElementById('card-solo-reporte-info');
-  const cardCorreos = document.getElementById('card-correos-destino');
-  _correosDestino = []; _opcionEnvio = 'ninguno';
-  renderCorreosTags();
-  document.querySelectorAll('input[name="opcion-envio"],input[name="opcion-envio-rec"]').forEach(r=>r.checked=false);
-  ['opt-seguimiento','opt-solo-reporte','opt-no-enviar-norec','opt-enviar-reporte-rec','opt-no-enviar-rec'].forEach(id=>{
-    const el=document.getElementById(id); if(el){el.style.borderColor='var(--border2)';el.style.background='var(--card2)';}
-  });
-  if(resultado === 'no') {
-    if(cardCorreos) cardCorreos.style.display='block';
-    if(cardOpcion) cardOpcion.style.display='block';
-    if(cardInfo)   cardInfo.style.display='none';
-  } else if(resultado === 'si') {
-    if(cardCorreos) cardCorreos.style.display='block';
-    if(cardOpcion) cardOpcion.style.display='none';
-    if(cardInfo)   cardInfo.style.display='block';
-  } else {
-    if(cardCorreos) cardCorreos.style.display='none';
-  }
-}
-
-
-// ===== MODAL CANCELADO =====
-function cerrarModalCancelado() {
-  const modal = document.getElementById('modal-cancelado');
-  if(modal) modal.style.display = 'none';
-}
-
-async function confirmarCancelado() {
-  const tipoUnidad   = document.getElementById('modal-cancel-tipo-unidad')?.value || '';
-  const autoriza     = document.getElementById('modal-cancel-autoriza')?.value;
-  const motivo       = document.getElementById('modal-cancel-motivo')?.value.trim();
-
-  if(!tipoUnidad) { notify('Indica el tipo de unidad','warning'); return; }
-  if(!autoriza)   { notify('Indica quién autoriza','warning'); return; }
-  if(!motivo)     { notify('Indica el motivo de cancelación','warning'); return; }
-
-  const caso        = window._casoActivo;
-  const folio       = window._folioTemp;
-  const monitorista = document.getElementById('f-monitorista')?.value || caso.monitorista || '—';
-  const ahora       = new Date();
-  const pad         = n => String(n).padStart(2,'0');
-  const fechaAtencion = `${pad(ahora.getDate())}/${pad(ahora.getMonth()+1)}/${ahora.getFullYear()} ${pad(ahora.getHours())}:${pad(ahora.getMinutes())}`;
-  const meses       = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
-  const mes         = meses[ahora.getMonth()];
-  const hora        = ahora.getHours();
-  const horarioReporte = hora>=7&&hora<14 ? 'MATUTINO 07:00HRS - 14:00HRS' : hora>=14&&hora<20 ? 'VESPERTINO 14:00HRS - 20:00HRS' : 'NOCTURNO 20:00HRS - 07:00HRS';
-
-  const sheetData = {
-    'MES':                                              mes,
-    'TIPO DE EVENTO':                                   caso.tipoEvento,
-    'FOLIO':                                            folio,
-    'NOMBRE CLIENTE':                                   caso.cliente,
-    'NICK UNIDAD':                                      caso.nick,
-    'TIPO UNIDAD':                                      tipoUnidad,
-    'PLATAFORMA':                                       caso.plataforma,
-    'ESN/ID':                                           caso.esn,
-    'BLOQUEO':                                          caso.paroMotor || '—',
-    'COORDENADAS':                                      caso.coordenadas || '—',
-    'FECHA Y HORA DEL ROBO':                            caso.fechaRobo || '—',
-    'HORARIO REPORTE':                                  horarioReporte,
-    'FECHA Y HORA DEL REPORTE AL CENTRO DE MONITOREO': caso.fechaReporte || fechaAtencion,
-    'REPORTE DE ROBO':                                  '—',
-    'QUIÉN RECIBE EL REPORTE':                          monitorista,
-    'QUIÉN AUTORIZA':                                   autoriza,
-    'MOTIVO':                                           motivo,
-    'FECHA':                                            `${pad(ahora.getDate())}/${pad(ahora.getMonth()+1)}/${ahora.getFullYear()}`,
-  };
-
-  const btn = document.getElementById('btn-confirmar-cancelado');
-  if(btn) { btn.disabled = true; btn.textContent = 'Procesando...'; }
-
-  try {
-    const res = await fetch('https://ain8n.numaris.com/webhook/finalizar-caso', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        resultado: 'CANCELADO',
-        tipoEvento: caso.tipoEvento,
-        folio,
-        sheetData,
-        monitorista,
-      })
-    });
-
-    if(res.ok) {
-      cerrarModalCancelado();
-      // Eliminar de la lista local
-      casos = casos.filter(c => c.folio !== folio);
-      renderCasos(casos);
-      notify('Caso cancelado correctamente ✓', 'success');
-    } else {
-      notify('Error al cancelar — revisa n8n', 'error');
-    }
-  } catch(e) {
-    notify('Error de conexión: ' + e.message, 'error');
-  } finally {
-    if(btn) { btn.disabled = false; btn.textContent = 'Confirmar cancelación'; }
-  }
-}
-
 function resetForm() {
   origenSelected=null; recuperadoSelected=null; currentStep=1;
   window._folioTemp = null;
@@ -4082,24 +3840,11 @@ function renderCasos(data) {
       <td style="padding:12px 20px;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           ${c.recuperado ? `
-          <span style="font-size:11px;color:#059669;font-weight:600;">${c.tipoEvento==='RECUPERACIÓN DE CRÉDITO'?'✓ Exitosa':'✓ Recuperada'}</span>
+          <span style="font-size:11px;color:#059669;font-weight:600;">✓ Recuperada</span>
           ` : c.estado === 'En seguimiento' ? `
           <button onclick="confirmarRecuperada('${c.folio}')"
             style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#d1fae5;color:#065f46;">
             ✓ Recuperada
-          </button>
-          ` : c.tipoEvento === 'RECUPERACIÓN DE CRÉDITO' ? `
-          <button onclick="cerrarCaso('${c.folio}','RECUPERADA')"
-            style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#d1fae5;color:#065f46;">
-            ✓ Exitosa
-          </button>
-          <button onclick="cerrarCaso('${c.folio}','NO RECUPERADA')"
-            style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#fee2e2;color:#991b1b;">
-            ✗ No exitosa
-          </button>
-          <button onclick="cerrarCaso('${c.folio}','CANCELADO')"
-            style="padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:#f1f5f9;color:#475569;">
-            Cancelado
           </button>
           ` : `
           <button onclick="cerrarCaso('${c.folio}','RECUPERADA')"
@@ -4311,23 +4056,6 @@ async function cerrarCaso(folio, resultado) {
   const caso = casos.find(c => c.folio === folio);
   if(!caso) return;
 
-  // Para cancelado → modal pequeño, no formulario completo
-  if(resultado === 'CANCELADO') {
-    window._folioTemp = folio;
-    window._casoActivo = caso;
-    // Resetear campos del modal
-    document.getElementById('modal-cancel-tipo-unidad').value = '';
-    document.getElementById('modal-cancel-autoriza').value = '';
-    document.getElementById('modal-cancel-motivo').value = '';
-    // Info del caso
-    const info = document.getElementById('modal-cancel-folio-info');
-    if(info) info.textContent = `Folio: ${folio} · ${caso.cliente} · ${caso.nick} · ${caso.tipoEvento}`;
-    // Mostrar modal
-    const modal = document.getElementById('modal-cancelado');
-    if(modal) { modal.style.display = 'flex'; }
-    return;
-  }
-
   const mapResultado = {'RECUPERADA':'si', 'NO RECUPERADA':'no', 'CANCELADO':'cancel'};
   recuperadoSelected = mapResultado[resultado];
   window._folioTemp = folio;
@@ -4477,29 +4205,12 @@ async function cerrarCaso(folio, resultado) {
   const cardDatosExtra = document.getElementById('card-datos-extra-credito');
   if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
 
-  // Mostrar panel resultado correcto según tipo
-  const panelCredito = document.getElementById('panel-resultado-credito');
-  const panelNormal  = document.getElementById('panel-resultado-normal');
-  if(esCredito) {
-    if(panelCredito) panelCredito.style.display = 'block';
-    if(panelNormal)  panelNormal.style.display  = 'none';
-    // Para crédito el resultado viene del campo resultado del caso
-    const creditoVal = (resultado === 'RECUPERADA') ? 'exitoso' : 'no-exitoso';
-    selectRecuperacionCredito(creditoVal);
-    // Ocultar botones de selección de crédito — ya está definido
-    const selectorGridCred = document.querySelector('#panel-resultado-credito > div:first-child');
-    if(selectorGridCred) selectorGridCred.style.display = 'none';
-  } else {
-    if(panelCredito) panelCredito.style.display = 'none';
-    if(panelNormal)  panelNormal.style.display  = 'block';
-    selectRecuperacion(recuperadoSelected);
-    // Ocultar los 3 botones de selección — el resultado ya está definido
-    const selectorGrid = document.querySelector('#panel-resultado-normal > div:first-child');
-    if(selectorGrid) selectorGrid.style.display = 'none';
-  }
+  // Activar resultado — mostrar panel correcto y ocultar botones de selección
+  selectRecuperacion(recuperadoSelected);
 
-  // Aplicar lógica de tipo de evento para mostrar/ocultar paneles correctos
-  setTimeout(() => onTipoEventoChange(tipoEvento), 50);
+  // Ocultar los 3 botones de selección — el resultado ya está definido
+  const selectorGrid = document.querySelector('#panel-resultado-normal > div:first-child');
+  if(selectorGrid) selectorGrid.style.display = 'none';
 
   window.scrollTo(0, 0);
 }
@@ -4631,50 +4342,7 @@ function filtrarHistorico(busqueda) {
 
 // ===== REPORTE HISTÓRICO =====
 
-async function renderSeguimiento() {
-  const list = document.getElementById('seguimiento-list');
-  const prog = document.getElementById('correos-programados');
-  if(list) list.innerHTML = '<div class="empty"><div class="empty-icon" style="font-size:24px;">⏳</div><p>Cargando casos...</p></div>';
-  let activos = [];
-  try {
-    const res = await fetch('https://ain8n.numaris.com/webhook/leer-seguimiento', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
-    const data = await res.json();
-    activos = (data.casos || []).filter(c => c.FOLIO);
-  } catch(e) {
-    if(list) list.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><p>Error al cargar casos</p></div>';
-    return;
-  }
-  const ETIQUETAS = ['Notificación inicial','Actualización 8hrs','Actualización 16hrs','Actualización 24hrs','Solicitud carpeta investigación','Cierre de protocolo'];
-  const OFFSETS_H = [0,8,16,24,32,48];
-  if(!activos.length) {
-    if(list) list.innerHTML = '<div class="empty"><div class="empty-icon">✓</div><p>Sin casos en seguimiento activo</p></div>';
-    if(prog) prog.innerHTML = '<div class="empty"><div class="empty-icon">📧</div><p>Sin correos programados</p></div>';
-    return;
-  }
-  const ahora = Date.now();
-  const fmtFecha = ts => { const d=new Date(ts); const hoy=new Date(); hoy.setHours(0,0,0,0); const diff=Math.floor((d-hoy)/86400000); const base=diff===0?'Hoy':diff===1?'Mañana':d.toLocaleDateString('es-MX',{day:'2-digit',month:'short'}); return base+' '+d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:true}); };
-  const parseFecha = str => { if(!str) return null; const [fecha,hora] = str.split(' '); if(!fecha) return null; const [d,m,y] = fecha.split('/'); return new Date(`${y}-${m}-${d}T${hora||'00:00:00'}`).getTime(); };
-  if(list) list.innerHTML = activos.map(c => {
-    const inicio = parseFecha(c.FECHA_INICIO)||ahora;
-    const horario = OFFSETS_H.map(h=>inicio+h*3600000);
-    const enviados = parseInt(c.CORREOS_ENVIADOS||0);
-    const pct = Math.round((enviados/6)*100);
-    const siguiente = horario.find((t,i)=>i>=enviados&&ahora<t);
-    return `<div style="padding:14px 0;border-bottom:1px solid var(--border);">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;"><div style="font-weight:600;font-size:13px;">${c.CLIENTE||'—'}</div><span class="badge badge-amber">${c.FOLIO}</span></div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">${c.NICK||'—'} · ${c.MONITORISTA||'—'}</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Inicio: ${c.FECHA_INICIO||'—'}</div>
-      <div style="display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">${horario.map((t,i)=>{const sent=i<enviados;const next=!sent&&(i===0||ahora>=horario[i-1]);const cls=sent?'sent':next?'next':'pending';return `<div class="correo-slot ${cls}" title="${ETIQUETAS[i]} — ${fmtFecha(t)}">${sent?'✓':i+1}</div>`;}).join('')}<span style="font-size:11px;color:var(--muted);margin-left:4px;">${enviados}/6 enviados</span></div>
-      <div class="progress-wrap" style="margin-bottom:6px;"><div class="progress-bar" style="width:${pct}%;"></div></div>
-      ${siguiente?`<div style="font-size:11px;color:var(--accent);">⏰ Próximo: ${fmtFecha(siguiente)}</div>`:enviados>=6?`<div style="font-size:11px;color:var(--success);">✅ Protocolo completado</div>`:''}
-    </div>`;
-  }).join('');
-  const proximos = activos.flatMap(c=>{const inicio=parseFecha(c.FECHA_INICIO)||ahora;const enviados=parseInt(c.CORREOS_ENVIADOS||0);return OFFSETS_H.map((h,i)=>({t:inicio+h*3600000,label:ETIQUETAS[i],folio:c.FOLIO,enviado:i<enviados}));}).sort((a,b)=>a.t-b.t);
-  if(prog) prog.innerHTML = `<div style="font-size:11px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Programación automática (n8n)</div>${proximos.map(p=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);"><div style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${p.enviado?'var(--success)':'var(--accent)'}"></div><div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:500;color:var(--text);">${p.label}</div><div style="font-size:11px;color:var(--muted);">${p.folio} · ${fmtFecha(p.t)}</div></div><span class="badge ${p.enviado?'badge-green':'badge-amber'}">${p.enviado?'Enviado':'Pendiente'}</span></div>`).join('')}`;
-  setTimeout(renderSeguimiento,60000);
-}
-// OLD renderSeguimiento replaced — dummy to avoid reference errors
-function _old_renderSeguimiento() {
+function renderSeguimiento() {
   const activos = casos.filter(c => c.estado === 'En seguimiento' && c.total === 6);
   const list = document.getElementById('seguimiento-list');
   const prog = document.getElementById('correos-programados');
@@ -5995,8 +5663,6 @@ function autoDetectEmpresa(plataforma) {
   const empresa = map[plataforma] || '';
   const el = document.getElementById('f-empresa-atiende');
   if(el) el.value = empresa;
-  const elCred = document.getElementById('f-empresa-credito');
-  if(elCred) elCred.value = empresa;
   // Mostrar campos INBURSA solo si aplica
   const camposInbursa = document.getElementById('campos-inbursa');
   if(camposInbursa) camposInbursa.style.display = plataforma === 'INBURSA' ? 'block' : 'none';
@@ -6214,44 +5880,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
   cargarCasosDesdeSheets();
 });
 </script>
-  <!-- ===== MODAL CANCELADO ===== -->
-  <div id="modal-cancelado" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center;">
-    <div style="background:var(--card);border-radius:var(--radius);padding:28px;width:100%;max-width:480px;box-shadow:0 8px 32px rgba(0,0,0,0.18);margin:16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-        <div style="font-size:15px;font-weight:700;color:var(--text);">🚫 Cancelar caso</div>
-        <button onclick="cerrarModalCancelado()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);">✕</button>
-      </div>
-      <div id="modal-cancel-folio-info" style="font-size:12px;color:var(--muted);margin-bottom:16px;padding:8px 12px;background:var(--card2);border-radius:var(--radius-sm);"></div>
-      <div style="display:flex;flex-direction:column;gap:14px;">
-        <div class="form-group">
-          <label class="req">Tipo de unidad</label>
-          <select id="modal-cancel-tipo-unidad">
-            <option value="">Seleccionar...</option>
-            <option>PARTICULAR</option>
-            <option>SERVICIOS</option>
-            <option>CARGA</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="req">Quién autoriza</label>
-          <select id="modal-cancel-autoriza">
-            <option value="">Seleccionar...</option>
-            <option>JOSELYNE CONTRERAS</option>
-            <option>OSCAR ALDAY</option>
-            <option>RAFAEL MARTINEZ</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="req">Motivo de cancelación</label>
-          <input type="text" id="modal-cancel-motivo" placeholder="Razón del cancelamiento" />
-        </div>
-      </div>
-      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
-        <button class="btn btn-ghost" onclick="cerrarModalCancelado()">← Cancelar</button>
-        <button class="btn btn-danger" onclick="confirmarCancelado()" id="btn-confirmar-cancelado">Confirmar cancelación</button>
-      </div>
-    </div>
-  </div>
-
 </body>
 </html>
