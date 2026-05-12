@@ -4401,6 +4401,9 @@ async function cerrarCaso(folio, resultado) {
     if(selectorGrid) selectorGrid.style.display = 'none';
   }
 
+  // Aplicar lógica de tipo de evento para mostrar/ocultar paneles correctos
+  onTipoEventoChange(tipoEvento);
+
   window.scrollTo(0, 0);
 }
 
