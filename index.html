@@ -846,30 +846,9 @@
                 <label class="req">Gestor asignado</label>
                 <input type="text" id="f-credito-gestor" placeholder="Nombre del gestor" />
               </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px;">
               <div class="form-group">
-                <label class="req">Plataforma</label>
-                <select id="f-plataforma-credito" onchange="autoDetectEmpresaCredito(this.value)">
-                  <option value="">Seleccionar...</option>
-                  <option>TECNOMETRICS</option>
-                  <option>UTRAX</option>
-                  <option>FT VISION</option>
-                  <option>RECUPERAMOVIL</option>
-                  <option>EASYTRACK</option>
-                  <option>SFLEET</option>
-                  <option>TRAFFILOG</option>
-                  <option>INBURSA</option>
-                  <option>OTRO PROVEEDOR</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="req">ESN (equipo GPS)</label>
-                <input type="text" id="f-esn-credito" placeholder="No. de serie del equipo" />
-              </div>
-              <div class="form-group">
-                <label>Empresa que atiende</label>
-                <input type="text" id="f-empresa-atiende-credito" readonly placeholder="Se detecta por plataforma" style="background:#f0f5fc;color:var(--muted2);cursor:not-allowed;" />
+                <label class="req">Correo del cliente</label>
+                <input type="email" id="f-credito-correo" placeholder="correo@cliente.com" />
               </div>
             </div>
           </div>
@@ -945,7 +924,7 @@
                   <option>CARGA</option>
                 </select>
               </div>
-              <div class="form-group" id="campo-costo-unidad">
+              <div class="form-group">
                 <label class="req">Costo estimado de la unidad</label>
                 <input type="text" id="f-costo" placeholder="Ej. $1,500,000 MXN" />
               </div>
@@ -954,11 +933,11 @@
         </div>
 
         <!-- ── Card 3 — Datos extras del robo ── -->
-        <div class="card" id="card-datos-extras-robo" style="margin-bottom:14px;">
+        <div class="card" style="margin-bottom:14px;">
           <div class="card-header"><div class="card-title">Datos extras del robo</div></div>
           <div class="card-body">
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
-              <div class="form-group" id="campo-estado-rep">
+              <div class="form-group">
                 <label class="req">Estado de la República</label>
                 <select id="f-estado-rep">
                   <option value="">Seleccionar...</option>
@@ -989,7 +968,7 @@
                   <option>1 semana o más</option>
                 </select>
               </div>
-              <div class="form-group" id="campo-tiempo-predenuncia">
+              <div class="form-group">
                 <label class="req">Tiempo en dar predenuncia</label>
                 <select id="f-tiempo-predenuncia">
                   <option value="">Seleccionar...</option>
@@ -1005,7 +984,7 @@
                 </select>
               </div>
             </div>
-            <div class="form-group" id="campo-autoridades">
+            <div class="form-group">
               <label style="margin-bottom:8px;display:block;">Autoridades contactadas <span style="color:var(--danger);font-weight:700;">*</span></label>
               <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
                 <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;font-weight:400;user-select:none;">
@@ -1106,9 +1085,6 @@
         <div class="card" id="card-datos-extra-credito" style="margin-bottom:14px;display:none;">
           <div class="card-header"><div class="card-title">Datos extra del evento</div></div>
           <div class="card-body">
-            <!-- Campos hidden para valores del paso 1 accesibles en paso 3 -->
-            <input type="hidden" id="f-credito-fecha-fin-hidden" />
-            <input type="hidden" id="f-credito-fecha-inicio-hidden" />
 
             <!-- Ubicación y coordenadas -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;">
@@ -1190,13 +1166,13 @@
         </div>
 
         <!-- ── Resultado ── -->
-        <div class="card" id="card-resultado" style="margin-bottom:14px;">
+        <div class="card" style="margin-bottom:14px;">
           <div class="card-header"><div class="card-title">Resultado</div></div>
           <div class="card-body">
 
             <!-- Panel resultado para CRÉDITO -->
             <div id="panel-resultado-credito" style="display:none;margin-bottom:16px;">
-              <div id="selector-grid-credito" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
                 <div id="rec-credito-exitoso" onclick="selectRecuperacionCredito('exitoso')" style="border:2px solid var(--border2);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all 0.15s;text-align:center;">
                   <div style="font-size:24px;margin-bottom:6px;">✅</div>
                   <div style="font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--success);">Recuperación exitosa</div>
@@ -1508,7 +1484,7 @@
               </div>
               <div id="check-enproceso-icon" style="font-size:18px;"></div>
             </div>
-            <div id="row-drive" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
               <div style="display:flex;align-items:center;gap:12px;">
                 <div style="font-size:20px;">📁</div>
                 <div><div style="font-size:13px;font-weight:600;">Crear carpeta Drive</div><div id="check-drive-status" style="font-size:11px;color:var(--muted);">—</div></div>
@@ -1518,14 +1494,14 @@
                 <div id="check-drive-icon" style="font-size:18px;"></div>
               </div>
             </div>
-            <div id="row-pdf" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);">
               <div style="display:flex;align-items:center;gap:12px;">
                 <div style="font-size:20px;">📄</div>
                 <div><div style="font-size:13px;font-weight:600;">Reporte PDF</div><div id="check-pdf-status" style="font-size:11px;color:var(--muted);">—</div></div>
               </div>
               <div id="check-pdf-icon" style="font-size:18px;"></div>
             </div>
-            <div id="row-desk" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;">
               <div style="display:flex;align-items:center;gap:12px;">
                 <div style="font-size:20px;">🎫</div>
                 <div><div style="font-size:13px;font-weight:600;">Ticket Zoho Desk</div><div id="check-desk-status" style="font-size:11px;color:var(--muted);">—</div></div>
@@ -2615,32 +2591,6 @@ function selectRecuperacion(v) {
   document.getElementById('panel-si').style.display      = v==='si'     ? 'block' : 'none';
   document.getElementById('panel-no').style.display      = v==='no'     ? 'block' : 'none';
   document.getElementById('panel-cancel').style.display  = v==='cancel' ? 'block' : 'none';
-
-  // Ocultar/mostrar secciones según CANCELADO
-  const esCancel = v === 'cancel';
-
-  // Persona que reporta — ocultar completo en cancelado
-  const cardPersona = document.getElementById('card-persona-reporta');
-  if(cardPersona) cardPersona.style.display = esCancel ? 'none' : 'block';
-
-  // Ocultar panel resultado crédito cuando es cancelado
-  const panelCredito = document.getElementById('panel-resultado-credito');
-  if(panelCredito && esCancel) panelCredito.style.display = 'none';
-
-  // Datos de la unidad — solo dejar Tipo de unidad (ocultar Costo estimado)
-  const cardUnidad = document.getElementById('card-unidad-plataforma');
-  if(cardUnidad) cardUnidad.style.display = 'block';
-  const campoCosto = document.getElementById('campo-costo-unidad');
-  if(campoCosto) campoCosto.style.display = esCancel ? 'none' : 'block';
-
-  // Datos extras del robo — solo dejar Tiempo en reportar (ocultar Estado, Predenuncia, Autoridades, extras)
-  const cardExtras = document.getElementById('card-datos-extras-robo');
-  if(cardExtras) cardExtras.style.display = 'block';
-  ['campo-estado-rep','campo-tiempo-predenuncia','campo-autoridades','campos-inbursa','campos-abuso-desc'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.style.display = esCancel ? 'none' : (id === 'campos-inbursa' || id === 'campos-abuso-desc' ? el.style.display : 'block');
-  });
-
   toggleCamposAbuso(v);
   // Auto-llenar quién recibe con el monitorista
   if(v === 'cancel') {
@@ -2742,14 +2692,14 @@ async function registrarEnProceso() {
     color:          document.getElementById('f-color')?.value||'—',
     placas:         esCredito ? (document.getElementById('f-placas-credito')?.value||'—') : (document.getElementById('f-placas')?.value||'—'),
     serie:          document.getElementById('f-serie')?.value||'—',
-    fecha_robo:     (esCredito ? document.getElementById('f-credito-fecha-inicio')?.value : document.getElementById('f-fecha-robo')?.value)||'—',
-    hora_robo:      esCredito ? '00:00' : (document.getElementById('f-hora-robo')?.value||'—'),
+    fecha_robo:     document.getElementById('f-fecha-robo')?.value||'—',
+    hora_robo:      document.getElementById('f-hora-robo')?.value||'—',
     lugar:          document.getElementById('f-lugar')?.value||'—',
     coordenadas:    document.getElementById('f-coords')?.value||'—',
     ultima_senal:   document.getElementById('f-ultima-senal')?.value||'—',
     folio_911:      document.getElementById('f-folio911-step1')?.value||'—',
-    plataforma:     (esCredito ? document.getElementById('f-plataforma-credito')?.value : document.getElementById('f-plataforma')?.value)||'—',
-    esn:            (esCredito ? document.getElementById('f-esn-credito')?.value : document.getElementById('f-esn')?.value)||'—',
+    plataforma:     document.getElementById('f-plataforma')?.value||'—',
+    esn:            document.getElementById('f-esn')?.value||'—',
     nick:           esCredito ? (document.getElementById('f-credito-tk')?.value||'—') : (document.getElementById('f-nick')?.value||'—'),
     ultima_senal:   document.getElementById('f-ultima-senal')?.value||'—',
     // Campos adicionales para buildPayload completo
@@ -2758,18 +2708,10 @@ async function registrarEnProceso() {
     estado_rep:     document.getElementById('f-estado-rep')?.value||'—',
     tipo_alerta_raw:tiposAlerta.join(', ') || 'N/A',
     paro_motor_val: (document.querySelector('input[name="paro-motor"]:checked')?.value||''),
-    fecha_robo_raw: (esCredito ? document.getElementById('f-credito-fecha-inicio')?.value : document.getElementById('f-fecha-robo')?.value)||'',
-    hora_robo_raw:  esCredito ? '00:00' : (document.getElementById('f-hora-robo')?.value||''),
+    fecha_robo_raw: document.getElementById('f-fecha-robo')?.value||'',
+    hora_robo_raw:  document.getElementById('f-hora-robo')?.value||'',
     hora_robo_ampm: document.getElementById('f-hora-robo-ampm')?.value||'AM',
     folio911:       document.getElementById('f-folio911-step1')?.value||'—',
-    // Campos exclusivos de CRÉDITO
-    credito_nombre:       esCredito ? (document.getElementById('f-credito-nombre')?.value||'—')       : '—',
-    credito_motivo:       esCredito ? (document.getElementById('f-credito-motivo')?.value||'—')       : '—',
-    credito_fecha_inicio: esCredito ? (document.getElementById('f-credito-fecha-inicio')?.value||'—') : '—',
-    credito_fecha_fin:    esCredito ? (document.getElementById('f-credito-fecha-fin')?.value||'—')    : '—',
-    credito_localidad:    esCredito ? (document.getElementById('f-credito-localidad')?.value||'—')    : '—',
-    credito_resguardo:    esCredito ? (document.getElementById('f-credito-resguardo')?.value||'—')    : '—',
-    credito_gestor:       esCredito ? (document.getElementById('f-credito-gestor')?.value||'—')       : '—',
   };
 
   // Guardar folio_temp provisional — se reemplaza con el consecutivo que devuelve n8n
@@ -2800,20 +2742,7 @@ async function registrarEnProceso() {
     ? payload.tipo_alerta
     : 'N/A';
 
-  const mensaje = esCredito ? [
-    `🏦 *RECUPERACIÓN DE CRÉDITO — ${payload.cliente} — ${plataforma}*`,
-    `━━━━━━━━━━━━━━━━━━━`,
-    `🔑 *TK:* ${nick} | Placas: ${placas}`,
-    `🔢 *ESN:* ${esn}`,
-    ``,
-    `📋 *Motivo:* ${payload.credito_motivo || '—'}`,
-    `📅 *Inicio seguimiento:* ${fechaRoboFmt}`,
-    `📅 *Fin seguimiento:* ${payload.credito_fecha_fin || '—'}`,
-    `📍 *Localidad:* ${payload.credito_localidad || '—'}`,
-    ``,
-    `👮 *Monitorista:* ${monitorista}`,
-    `━━━━━━━━━━━━━━━━━━━`,
-  ].join('\n') : [
+  const mensaje = [
     `🚨 *${tipoEvento} — ${cliente} — ${plataforma}*`,
     `━━━━━━━━━━━━━━━━━━━`,
     `🚛 *Unidad:* ${nick} | Placas: ${placas}`,
@@ -2833,7 +2762,6 @@ async function registrarEnProceso() {
   payload.mensaje = mensaje;
 
   // Llamadas en paralelo: Sheets (registrar-en-proceso) + Slack (test-wa)
-
   const [resSheets, resSlack] = await Promise.allSettled([
     fetch('https://ain8n.numaris.com/webhook/registrar-en-proceso', {
       method: 'POST',
@@ -2905,14 +2833,7 @@ async function registrarEnProceso() {
     total:         0,
     recuperado:    false,
     hora:          new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'}),
-    enProceso:     true,
-    creditoNombre:       payload.credito_nombre       || '—',
-    creditoMotivo:       payload.credito_motivo       || '—',
-    creditoFechaInicio:  payload.credito_fecha_inicio || '—',
-    creditoFechaFin:     payload.credito_fecha_fin    || '—',
-    creditoLocalidad:    payload.credito_localidad    || '—',
-    creditoResguardo:    payload.credito_resguardo    || '—',
-    creditoGestor:       payload.credito_gestor       || '—',
+    enProceso:     true
   });
 }
 
@@ -3012,7 +2933,7 @@ async function nextStep(from) {
     }
     if(btn) { btn.disabled = false; btn.textContent = 'Registrar →'; }
     // Redirigir a Casos activos y actualizar tabla
-
+    console.log('casos array after registrar:', JSON.stringify(casos));
     const navCasos = document.querySelector('[onclick*="casos"]');
     showPage('casos', navCasos);
     renderCasos(casos);
@@ -3023,29 +2944,6 @@ async function nextStep(from) {
   }
   if(from===3) {
     if(!recuperadoSelected) { notify('Indica el resultado del evento','warning'); return; }
-
-    // ── CANCELADO: solo validar sus 3 campos ──
-    if(recuperadoSelected === 'cancel') {
-      if(!validarCampo('f-tipo-unidad',     'Tipo de unidad')) return;
-      if(!validarCampo('f-tiempo-reporte',  'Tiempo en reportar el robo')) return;
-      if(!validarCampo('f-cancel-autoriza', 'Quién autoriza')) return;
-      if(!validarCampo('f-cancel-motivo',   'Motivo de cancelación')) return;
-      if(!validarCampo('f-cancel-fecha',    'Fecha de cancelación')) return;
-      // Pasar directo a confirmación
-      document.getElementById('form-step-3').style.display='none';
-      const conf = document.getElementById('form-step-4-confirm');
-      if(conf) conf.style.display='block';
-      markStep(2,'done');
-      document.getElementById('confirm-icon').textContent = '🚫';
-      document.getElementById('confirm-title').textContent = 'Cancelado';
-      document.getElementById('folio-valor').textContent = '—';
-      _lastPayload = null; _lastFolio = null; _lastCarpetaId = null;
-      ['wa','sheets','drive','pdf','folio'].forEach(id => setCheck(id, '', '—'));
-      // Ocultar filas que no aplican para cancelado
-      ['row-drive','row-pdf','row-desk'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
-      return;
-    }
-
     const tipoEvento3 = document.getElementById('f-tipo-evento')?.value || '';
     const esCredito3 = tipoEvento3 === 'RECUPERACIÓN DE CRÉDITO';
     const esAbuso3   = tipoEvento3 === 'ABUSO DE CONFIANZA';
@@ -3232,12 +3130,23 @@ const FOLIO_PREFIJOS = {
 async function registerEvento() {
   const resultado   = recuperadoSelected;
   if(!resultado) { notify('Indica el resultado del evento', 'warning'); return; }
-  const tipoEvento  = document.getElementById('f-tipo-evento')?.value || window._casoActivo?.tipoEvento || '—';
-  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO' || tipoEvento === 'RECUPERACION DE CREDITO';
+  const tipoEvento  = document.getElementById('f-tipo-evento')?.value     || '—';
+  const esCredito = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
   // Todas las validaciones del paso 3 ya se hicieron en nextStep(from===3)
 
   const empresa     = document.getElementById('f-empresa-atiende')?.value || window._casoActivo?.empresa    || '';
-  let horaRobo    = esCredito ? '00:00' : (document.getElementById('f-hora-robo')?.value || window._casoActivo?.horaRoboRaw || '—');
+  console.log('buildPayload _casoActivo:', window._casoActivo ? JSON.stringify({fecha: window._casoActivo.fechaReporte, fechaRobo: window._casoActivo.fechaRoboRaw, horaRobo: window._casoActivo.horaRoboRaw, anio: window._casoActivo.anio}) : 'NULL');
+  const cliente     = document.getElementById('f-cliente')?.value         || window._casoActivo?.cliente    || '—';
+  const placas      = document.getElementById('f-placas')?.value          || window._casoActivo?.placas     || '—';
+  const nick        = document.getElementById('f-nick')?.value            || window._casoActivo?.nick       || '—';
+  const esn         = document.getElementById('f-esn')?.value             || window._casoActivo?.esn        || '—';
+  const plataforma  = document.getElementById('f-plataforma')?.value      || window._casoActivo?.plataforma || '—';
+  const lugar       = document.getElementById('f-lugar')?.value           || window._casoActivo?.lugar      || '—';
+  const fechaRoboRaw = document.getElementById('f-fecha-robo')?.value || window._casoActivo?.fechaRoboRaw || '—';
+  const fechaRobo = fechaRoboRaw !== '—' && fechaRoboRaw.includes('-') 
+    ? fechaRoboRaw.split('-').reverse().join('/') 
+    : (fechaRoboRaw !== '—' ? fechaRoboRaw : (window._casoActivo?.fechaRobo?.split(' ')[0] || '—'));
+  let horaRobo    = document.getElementById('f-hora-robo')?.value       || window._casoActivo?.horaRoboRaw  || '—';
   if(horaRobo && horaRobo !== '—') horaRobo = horaRobo.replace(/\s*(AM|PM|HRS\.?).*/i,'').trim();
   const folio911    = document.getElementById('f-folio911-step1')?.value  || window._casoActivo?.folio911     || '—';
   const monitorista = document.getElementById('f-monitorista')?.value     || window._casoActivo?.monitorista  || '—';
@@ -3344,23 +3253,13 @@ async function registerEvento() {
     const creditoPlacas     = document.getElementById('f-placas-credito')?.value || '—';
     const creditoNombre     = document.getElementById('f-credito-nombre')?.value || '—';
     const creditoMotivo     = document.getElementById('f-credito-motivo')?.value || '—';
-    const creditoFechaInicio = document.getElementById('f-credito-fecha-inicio-hidden')?.value
-      || document.getElementById('f-credito-fecha-inicio')?.value
-      || window._casoActivo?.creditoFechaInicio
-      || window._casoActivo?.fechaRoboRaw
-      || '—';
-    const creditoFechaFin = document.getElementById('f-credito-fecha-fin-hidden')?.value
-      || document.getElementById('f-credito-fecha-fin')?.value
-      || window._creditoFechaFin
-      || window._casoActivo?.creditoFechaFin
-      || '—';
-    const creditoCoordenadas = document.getElementById('f-credito-coordenadas')?.value
-      || window._creditoCoordenadas
-      || '—';
+    const creditoFechaInicio = document.getElementById('f-credito-fecha-inicio')?.value || '—';
+    const creditoFechaFin   = document.getElementById('f-credito-fecha-fin')?.value || '—';
     const creditoLocalidad  = document.getElementById('f-credito-localidad')?.value || '—';
     const creditoResguardo  = document.getElementById('f-credito-resguardo')?.value || '—';
     const creditoGestor     = document.getElementById('f-credito-gestor')?.value || '—';
     const creditoUbicacion  = document.getElementById('f-credito-ubicacion')?.value || '—';
+    const creditoCoordenadas = document.getElementById('f-credito-coordenadas')?.value || '—';
     const creditoFechaRec   = document.getElementById('f-credito-fecha-rec')?.value || '—';
     const creditoEstatus    = creditoExitoso ? 'RECUPERACIÓN EXITOSA' : 'NO EXITOSA';
 
@@ -3377,7 +3276,7 @@ async function registerEvento() {
       'ESN/ID':                           esn,
       'MOTIVO':                           creditoMotivo,
       'ESTATUS':                          creditoEstatus,
-      'COORDENADAS (REPORTADAS A AUTORIDADES)': creditoCoordenadas,
+      'COORDENADAS (REPORTADAS A AUTORIDADES)': document.getElementById('f-credito-coordenadas')?.value || coordenadas,
       'UBICACIÓN':                        creditoUbicacion,
       'FOLIO PRE-DENUNCIA':               '—',
       'FECHA Y HORA DEL ROBO':            creditoFechaInicio,
@@ -3652,9 +3551,8 @@ async function registerEvento() {
 
     // 4. Zoho Desk
     // Recuperados (cualquier tipo): siempre sube ticket
-    // No recuperados: sube ticket excepto si empresa es TECNOCONTROL VEHICULAR o SMART TRACKER
-    const empresasSinDesk = ['TECNOCONTROL VEHICULAR', 'SMART TRACKER'];
-    const aplicaDesk = resultado === 'si' || (resultado === 'no' && !empresasSinDesk.includes(empresa));
+    // No recuperados: solo si empresa es EASYTRACK
+    const aplicaDesk = resultado === 'si' || (resultado === 'no' && empresa === 'EASYTRACK');
     if(aplicaDesk) {
       setCheck('desk', 'pending', 'Creando ticket...');
       try {
@@ -4155,7 +4053,6 @@ function searchCasos(q) {
 }
 
 async function cerrarCaso(folio, resultado) {
-  try {
   const caso = casos.find(c => c.folio === folio);
   if(!caso) return;
 
@@ -4163,63 +4060,34 @@ async function cerrarCaso(folio, resultado) {
   recuperadoSelected = mapResultado[resultado];
   window._folioTemp = folio;
   window._casoActivo = caso;
-  document.getElementById('page-title').textContent = 'Cierre de caso';
-  currentStep = 2;
+  console.log('_casoActivo completo:', JSON.stringify(caso));
 
   // Mover form-step-3 y form-step-4-confirm a page-cierre
   const step3 = document.getElementById('form-step-3');
   const step4 = document.getElementById('form-step-4-confirm');
   const container = document.getElementById('cierre-form-container');
-  if(step3 && container) { container.appendChild(step3); step3.style.display = 'block'; }
-  if(step4 && container) { container.appendChild(step4); step4.style.display = 'none'; }
+  if(step3 && container) {
+    container.appendChild(step3);
+    step3.style.display = 'block';
+  }
+  if(step4 && container) {
+    container.appendChild(step4);
+    step4.style.display = 'none';
+  }
 
   // Navegar a page-cierre
   document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
   const pageCierre = document.getElementById('page-cierre');
-  if(pageCierre) { pageCierre.style.display = 'block'; pageCierre.classList.add('active'); }
+  if(pageCierre) { pageCierre.classList.add('active'); pageCierre.style.display = 'block'; }
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-title').textContent = 'Cierre de caso';
+  currentStep = 2;
 
   // Inyectar TODOS los datos del caso en los campos del formulario
   const setVal = (id, val) => { const el = document.getElementById(id); if(el && val && val !== '—') el.value = val; };
   setVal('f-tipo-evento',    caso.tipoEvento);
   setVal('f-cliente',        caso.cliente);
   setVal('f-nick',           caso.nick || caso.unidad);
-  setVal('f-credito-tk',     caso.nick || caso.unidad);
-  setVal('f-plataforma-credito', caso.plataforma);
-  setVal('f-esn-credito',        caso.esn);
-  setVal('f-empresa-atiende-credito', caso.empresa || '');
-  // Campos exclusivos de crédito
-  setVal('f-credito-nombre',       caso.creditoNombre      || caso.credito_nombre);
-  setVal('f-credito-motivo',       caso.creditoMotivo      || caso.credito_motivo);
-  setVal('f-credito-fecha-inicio', caso.creditoFechaInicio || caso.credito_fecha_inicio || caso.fechaRoboRaw);
-  setVal('f-credito-fecha-fin',    caso.creditoFechaFin    || caso.credito_fecha_fin);
-  // Guardar en variable global para acceso confiable en registerEvento
-  window._creditoFechaFin = caso.creditoFechaFin || caso.credito_fecha_fin || '';
-  // Llenar campos hidden en paso 3 para acceso confiable en registerEvento
-  const elFechaFinH = document.getElementById('f-credito-fecha-fin-hidden');
-  if(elFechaFinH) elFechaFinH.value = window._creditoFechaFin;
-  const elFechaInicioH = document.getElementById('f-credito-fecha-inicio-hidden');
-  if(elFechaInicioH) elFechaInicioH.value = caso.creditoFechaInicio || caso.credito_fecha_inicio || caso.fechaRoboRaw || '';
-  // Forzar asignación directa si setVal no lo hizo (valor '—' bloqueado)
-  const elFechaInicio = document.getElementById('f-credito-fecha-inicio');
-  const elFechaFin    = document.getElementById('f-credito-fecha-fin');
-  if(elFechaInicio && !elFechaInicio.value) {
-    const v = caso.creditoFechaInicio || caso.credito_fecha_inicio || caso.fechaRoboRaw || '';
-    if(v && v !== '—') elFechaInicio.value = v;
-  }
-  if(elFechaFin && !elFechaFin.value) {
-    const v = caso.creditoFechaFin || caso.credito_fecha_fin || '';
-    if(v && v !== '—') elFechaFin.value = v;
-  }
-  setVal('f-credito-localidad',    caso.creditoLocalidad   || caso.credito_localidad);
-  setVal('f-credito-resguardo',    caso.creditoResguardo   || caso.credito_resguardo);
-  setVal('f-credito-gestor',       caso.creditoGestor      || caso.credito_gestor);
-  // Pre-llenar coordenadas de crédito desde _casoActivo
-  const elCreditoCoords = document.getElementById('f-credito-coordenadas');
-  if(elCreditoCoords && !elCreditoCoords.value) {
-    const v = caso.coordenadas || '';
-    if(v && v !== '—') elCreditoCoords.value = v;
-  }
-  window._creditoCoordenadas = caso.coordenadas && caso.coordenadas !== '—' ? caso.coordenadas : '';
   setVal('f-placas',         caso.placas);
   setVal('f-esn',            caso.esn);
   setVal('f-plataforma',     caso.plataforma);
@@ -4337,44 +4205,14 @@ async function cerrarCaso(folio, resultado) {
   const cardDatosExtra = document.getElementById('card-datos-extra-credito');
   if(cardDatosExtra) cardDatosExtra.style.display = esCredito ? 'block' : 'none';
 
-  // Activar visibilidad correcta según tipo de evento (escenario, paneles crédito, etc.)
-  onTipoEventoChange(caso.tipoEvento || '');
-
-  // Si es crédito, activar el panel de conclusión según resultado
-  if((caso.tipoEvento || '').includes('CRÉDITO')) {
-    const creditoVal = recuperadoSelected === 'si' ? 'exitoso' : 'no-exitoso';
-    selectRecuperacionCredito(creditoVal);
-  }
-
   // Activar resultado — mostrar panel correcto y ocultar botones de selección
   selectRecuperacion(recuperadoSelected);
 
-  // Ocultar los botones de selección — el resultado ya está definido
+  // Ocultar los 3 botones de selección — el resultado ya está definido
   const selectorGrid = document.querySelector('#panel-resultado-normal > div:first-child');
   if(selectorGrid) selectorGrid.style.display = 'none';
-  const selectorGridCredito = document.getElementById('selector-grid-credito');
-  if(selectorGridCredito) selectorGridCredito.style.display = 'none';
-
-  // Si es CANCELADO: forzar visibilidad exacta independientemente del tipo de evento
-  if(recuperadoSelected === 'cancel') {
-    // Ocultar: persona, costo, estado, predenuncia, autoridades, inbursa, abuso, credito extra
-    ['card-persona-reporta','card-datos-extra-credito','panel-resultado-credito'].forEach(id => {
-      const el = document.getElementById(id); if(el) el.style.display = 'none';
-    });
-    ['campo-costo-unidad','campo-estado-rep','campo-tiempo-predenuncia','campo-autoridades','campos-inbursa','campos-abuso-desc'].forEach(id => {
-      const el = document.getElementById(id); if(el) el.style.display = 'none';
-    });
-    // Mostrar solo: unidad (con solo tipo), extras del robo (con solo tiempo reporte), resultado
-    ['card-unidad-plataforma','card-datos-extras-robo','card-resultado'].forEach(id => {
-      const el = document.getElementById(id); if(el) el.style.display = 'block';
-    });
-  }
 
   window.scrollTo(0, 0);
-  } catch(e) {
-    console.error('cerrarCaso error:', e);
-    alert('Error al abrir cierre: ' + e.message);
-  }
 }
 
 function irAlCierre(folio) {
@@ -5464,32 +5302,6 @@ async function finalizarTodo() {
   const cardEvidencias = document.getElementById('card-evidencias');
   const btnEvidencias = document.getElementById('btn-subir-evidencias');
 
-  // ── CANCELADO: solo Folio, Sheets y Eliminar de EN PROCESO ──
-  if(recuperadoSelected === 'cancel') {
-    // 1. Folio
-    await probarFolio();
-    if(document.getElementById('check-folio-icon')?.textContent !== '✅') {
-      notify('Error al obtener folio — proceso detenido', 'warning');
-      if(btn) { btn.disabled = false; btn.textContent = 'Reintentar'; }
-      return;
-    }
-    // 2. Registrar en hoja
-    await probarSheets();
-    if(document.getElementById('check-sheets-icon')?.textContent !== '✅') {
-      notify('Error al registrar en Sheets — proceso detenido', 'warning');
-      if(btn) { btn.disabled = false; btn.textContent = 'Reintentar'; }
-      return;
-    }
-    // 3. Eliminar de EN PROCESO
-    await eliminarEnProceso();
-    // Completado
-    if(btn) { btn.disabled = true; btn.textContent = '✓ Completado'; btn.style.background = 'var(--success)'; }
-    notify('Caso cancelado registrado correctamente ✓', 'success');
-    return;
-  }
-
-  // ── RECUPERADA / NO RECUPERADA: flujo completo ──
-
   // 1. Folio
   await probarFolio();
   if(document.getElementById('check-folio-icon')?.textContent !== '✅') {
@@ -5530,16 +5342,8 @@ async function finalizarTodo() {
     return;
   }
 
-  // 6. Ticket Zoho Desk
-  // Recuperados: siempre | No recuperados: excepto TECNOCONTROL VEHICULAR y SMART TRACKER
-  const empresaActiva = document.getElementById('f-empresa-atiende')?.value || window._casoActivo?.empresa || '';
-  const empresasSinDesk = ['TECNOCONTROL VEHICULAR', 'SMART TRACKER'];
-  const aplicaDeskFinal = recuperadoSelected === 'si' || (recuperadoSelected === 'no' && !empresasSinDesk.includes(empresaActiva));
-  if(aplicaDeskFinal) {
-    await probarDesk();
-  } else {
-    setCheck('desk', 'ok', 'No aplica');
-  }
+  // 6. Ticket Zoho Desk (solo después de que PDF esté listo)
+  await probarDesk();
 
   // Completado
   if(btn) { btn.disabled = true; btn.textContent = '✓ Completado'; btn.style.background = 'var(--success)'; }
@@ -5862,23 +5666,6 @@ function autoDetectEmpresa(plataforma) {
   // Mostrar campos INBURSA solo si aplica
   const camposInbursa = document.getElementById('campos-inbursa');
   if(camposInbursa) camposInbursa.style.display = plataforma === 'INBURSA' ? 'block' : 'none';
-}
-
-function autoDetectEmpresaCredito(plataforma) {
-  const map = {
-    'TECNOMETRICS':    'TECNOCONTROL VEHICULAR',
-    'UTRAX':           'TECNOCONTROL VEHICULAR',
-    'FT VISION':       'TECNOCONTROL VEHICULAR',
-    'OTRO PROVEEDOR':  'TECNOCONTROL VEHICULAR',
-    'RECUPERAMOVIL':   'SMART TRACKER',
-    'EASYTRACK':       'EASYTRACK',
-    'SFLEET':          'SFLEET',
-    'TRAFFILOG':       'TRAFFILOG',
-    'INBURSA':         'INBURSA',
-  };
-  const empresa = map[plataforma] || '';
-  const el = document.getElementById('f-empresa-atiende-credito');
-  if(el) el.value = empresa;
 }
 
 // ===== RESUMEN CRÉDITO =====
