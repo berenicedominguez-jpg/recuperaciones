@@ -2950,7 +2950,7 @@ async function nextStep(from) {
     // Para crédito: ocultar persona que reporta en paso de cierre
     const esCredito1 = tipoEvento === 'RECUPERACIÓN DE CRÉDITO';
     const cardPersona = document.getElementById('card-persona-reporta');
-    if(cardPersona) cardPersona.style.display = esCredito1 ? 'none' : 'block';
+    if(cardPersona) cardPersona.style.display = esCredito1 ? 'none' : 'block'; // cancelado handled by selectRecuperacion
     const campoNick = document.getElementById('campo-nick-alias');
     if(campoNick) campoNick.style.display = esCredito1 ? 'none' : 'block';
     const cardDatosExtra = document.getElementById('card-datos-extra-credito');
@@ -4363,8 +4363,8 @@ async function cerrarCaso(folio, resultado) {
   // Activar visibilidad correcta según tipo de evento (escenario, paneles crédito, etc.)
   onTipoEventoChange(caso.tipoEvento || '');
 
-  // Si es crédito, activar el panel de conclusión según resultado
-  if((caso.tipoEvento || '').includes('CRÉDITO')) {
+  // Si es crédito Y NO es cancelado, activar el panel de conclusión según resultado
+  if((caso.tipoEvento || '').includes('CRÉDITO') && recuperadoSelected !== 'cancel') {
     const creditoVal = recuperadoSelected === 'si' ? 'exitoso' : 'no-exitoso';
     selectRecuperacionCredito(creditoVal);
   }
@@ -4380,6 +4380,11 @@ async function cerrarCaso(folio, resultado) {
 
   // Si es CANCELADO: forzar visibilidad exacta independientemente del tipo de evento
   if(recuperadoSelected === 'cancel') {
+    // Mostrar panel-resultado-normal para que panel-cancel sea visible
+    const pNormal = document.getElementById('panel-resultado-normal');
+    if(pNormal) pNormal.style.display = 'block';
+    const pCredito = document.getElementById('panel-resultado-credito');
+    if(pCredito) pCredito.style.display = 'none';
     // Ocultar: persona, costo, estado, predenuncia, autoridades, inbursa, abuso, credito extra
     ['card-persona-reporta','card-datos-extra-credito','panel-resultado-credito'].forEach(id => {
       const el = document.getElementById(id); if(el) el.style.display = 'none';
@@ -5819,7 +5824,7 @@ function onTipoEventoChange(val) {
 
   // Ocultar Persona que reporta el robo para CRÉDITO
   const cardPersonaReporta = document.getElementById('card-persona-reporta');
-  if(cardPersonaReporta) cardPersonaReporta.style.display = esCredito ? 'none' : 'block';
+  if(cardPersonaReporta) cardPersonaReporta.style.display = esCredito ? 'none' : 'block'; // cancelado handled separately
 
   // Mostrar/ocultar caja (solo ROBO)
   if(cardCaja) cardCaja.style.display = (val === 'ROBO') ? 'block' : 'none';
