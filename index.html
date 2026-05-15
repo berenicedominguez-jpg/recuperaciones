@@ -2616,6 +2616,12 @@ function selectRecuperacion(v) {
   document.getElementById('panel-no').style.display      = v==='no'     ? 'block' : 'none';
   document.getElementById('panel-cancel').style.display  = v==='cancel' ? 'block' : 'none';
 
+  // Ocultar card-resultado si es No recuperado y ROBO (panel vacío)
+  const tipoEv = window._tipoEventoActivo || window._casoActivo?.tipoEvento || document.getElementById('f-tipo-evento')?.value || '';
+  const esRoboNoRec = v === 'no' && tipoEv.toUpperCase().includes('ROBO');
+  const cardRes = document.getElementById('card-resultado');
+  if(cardRes) cardRes.style.display = esRoboNoRec ? 'none' : 'block';
+
   // Ocultar/mostrar secciones según CANCELADO
   const esCancel = v === 'cancel';
 
