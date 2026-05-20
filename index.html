@@ -1530,7 +1530,33 @@
         <input type="hidden" id="f-coords-hidden" />
         <div id="wa-confirm-status" style="display:none;"></div>
         <div id="correo-status" style="display:none;"></div>
-        <button class="btn btn-primary" onclick="resetForm()" style="width:100%;">+ Registrar nuevo evento</button>
+
+        <!-- Card de correos — visible solo cuando PDF listo y es ROBO -->
+        <div id="card-correos" style="display:none;margin-bottom:16px;" class="card">
+          <div class="card-header">
+            <div class="card-title">✉️ Envío de correos</div>
+            <span id="correo-tipo-label" style="font-size:11px;color:var(--muted);"></span>
+          </div>
+          <div class="card-body">
+            <div class="form-group" style="margin-bottom:12px;">
+              <label>Destinatarios <span style="font-size:11px;color:var(--muted);">(un correo por línea)</span></label>
+              <textarea id="f-correos-destinatarios" style="min-height:80px;font-family:var(--font-mono);font-size:12px;" placeholder="correo1@ejemplo.com&#10;correo2@ejemplo.com"></textarea>
+            </div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">
+              CC: joselyne.contreras@numaris.com, oscar.alday@numaris.com, berenice.dominguez@numaris.com
+            </div>
+            <!-- Recuperado: 1 botón -->
+            <div id="correo-btn-recuperado" style="display:none;">
+              <button class="btn btn-primary" style="width:100%;" onclick="enviarCorreoCierre()">📧 Enviar correo de cierre</button>
+            </div>
+            <!-- No recuperado: botón seguimiento -->
+            <div id="correo-btn-no-recuperado" style="display:none;">
+              <button class="btn btn-primary" style="width:100%;margin-bottom:8px;" onclick="iniciarSeguimientoCorreo()">📧 Iniciar seguimiento por correo (6 correos + cierre)</button>
+            </div>
+            <div id="correo-envio-status" style="font-size:12px;color:var(--muted);margin-top:8px;text-align:center;"></div>
+          </div>
+        </div>
+
       </div>
 
     </div><!-- /max-width wrapper -->
@@ -1588,17 +1614,16 @@
 
   <!-- ===== SEGUIMIENTO ===== -->
   <div class="page" id="page-seguimiento">
-    <div class="two-col">
+    <div>
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Casos en seguimiento activo</div>
-          <span class="badge badge-amber">2 activos</span>
+          <div class="card-title">Seguimiento activo</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="badge badge-amber" id="seguimiento-count">0 activos</span>
+            <button onclick="actualizarSeguimiento()" id="btn-actualizar-seg" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);color:var(--color-text-secondary);cursor:pointer;">↻ Actualizar</button>
+          </div>
         </div>
         <div class="card-body" id="seguimiento-list"></div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">Programación de correos</div></div>
-        <div class="card-body" id="correos-programados"></div>
       </div>
     </div>
   </div>
@@ -3703,7 +3728,7 @@ async function registerEvento() {
     estadoMx: estadoRep,
     tipoEvento,
     registradoEn: esRoboNoRec2 ? ahoraReg : null,
-    horarioCorreos: esRoboNoRec2 ? [0,8,16,24,32,48].map(h=>ahoraReg+h*3600000) : []
+    horarioCorreos: esRoboNoRec2 ? [0,9,18,27,36,45].map(h=>ahoraReg+h*3600000) : []
   });
 }
 
@@ -3774,7 +3799,7 @@ async function cargarCasosDesdeSheets() {
     // Lanzar las 3 peticiones en paralelo
     const [resProceso, resSeguimiento, resRecuperados] = await Promise.allSettled([
       fetch('https://ain8n.numaris.com/webhook/obtener-en-proceso'),
-      fetch('https://ain8n.numaris.com/webhook/obtener-seguimiento'),
+      fetch('https://ain8n.numaris.com/webhook/leer-seguimiento', {method:'POST'}),
       fetch('https://ain8n.numaris.com/webhook/obtener-recuperados')
     ]);
 
@@ -3782,7 +3807,7 @@ async function cargarCasosDesdeSheets() {
 
     // ── EN PROCESO ──
     if(resProceso.status === 'fulfilled' && resProceso.value.ok) {
-      const data = await resProceso.value.json();
+      let data; try { data = await resProceso.value.json(); } catch(e) { data = []; }
       if(Array.isArray(data)) {
         data.forEach(c => casos.push({
           folio:        c.folio       || c.FOLIO_TEMP   || '—',
@@ -3832,35 +3857,45 @@ async function cargarCasosDesdeSheets() {
     }
 
     // ── NO RECUPERADOS (Seguimiento) ──
+    window._casosSeguimiento = [];
     if(resSeguimiento.status === 'fulfilled' && resSeguimiento.value.ok) {
-      const raw = await resSeguimiento.value.json();
-      const data = Array.isArray(raw) ? raw : [raw];
+      let raw; try { raw = await resSeguimiento.value.json(); } catch(e) { raw = []; }
+      const data = Array.isArray(raw) ? raw : Array.isArray(raw.casos) ? raw.casos : [raw];
       data.forEach(c => {
         if(!c.FOLIO && !c.folio) return; // saltar filas vacías
-        casos.push({
-          folio:        c.FOLIO        || '—',
-          cliente:      c['NOMBRE CLIENTE'] || '—',
-          unidad:       c['NICK UNIDAD']    || '—',
-          nick:         c['NICK UNIDAD']    || '—',
-          tipoEvento:   c['TIPO DE EVENTO'] || '—',
-          fechaRobo:    c['FECHA Y HORA DEL ROBO'] || '—',
-          monitorista:  c['NOMBRE']          || '—',
-          esn:          c['ESN/ID ']         || c['ESN/ID'] || '—',
-          plataforma:   c['PLATAFORMA']      || '—',
-          coordenadas:  c['COORDENADAS (REPORTADAS A AUTORIDADES)'] || '—',
-          folio911:     c['FOLIO PRE-DENUNCIA'] || '—',
-          estadoRep:    c['ESTADO DE LA REPUBLICA DEL REPORTE'] || '—',
-          fechaReporte: c['FECHA Y HORA DEL REPORTE AL CENTRO DE MONITOREO'] || '',
-          estado:       'En seguimiento',
-          recuperado:   false,
-          enProceso:    false
-        });
+        // Parse FECHA_INICIO en formato dd/mm/yyyy, hh:mm:ss
+        let fechaInicio = Date.now();
+        if(c.FECHA_INICIO) {
+          const parts = c.FECHA_INICIO.match(/(\d+)\/(\d+)\/(\d+),?\s*(\d+):(\d+):(\d+)/);
+          if(parts) {
+            fechaInicio = new Date(parts[3], parts[2]-1, parts[1], parts[4], parts[5], parts[6]).getTime();
+          }
+        }
+        const correosSent = parseInt(c.CORREOS_ENVIADOS) || 0;
+        const caso = {
+          folio:         c.FOLIO         || c.folio        || '—',
+          cliente:       c.CLIENTE       || '—',
+          unidad:        c.UNIDAD        || c.NICK         || '—',
+          nick:          c.NICK          || c.UNIDAD       || '—',
+          monitorista:   c.MONITORISTA   || '—',
+          placas:        c.PLACAS        || '—',
+          fechaInicio:   c.FECHA_INICIO  || '—',
+          correos:       correosSent,
+          total:         6,
+          horarioCorreos: [0,9,18,27,36,45].map(h => fechaInicio + h*3600000),
+          estado:        'En seguimiento',
+          recuperado:    false,
+          enProceso:     false
+        };
+        casos.push(caso);
+        window._casosSeguimiento.push(caso);
       });
     }
 
     // ── RECUPERADOS ──
     if(resRecuperados.status === 'fulfilled' && resRecuperados.value.ok) {
-      const raw = await resRecuperados.value.json();
+      let raw2; try { raw2 = await resRecuperados.value.json(); } catch(e) { raw2 = []; }
+      const raw = raw2;
       const data = Array.isArray(raw) ? raw : [raw];
       data.forEach(c => {
         if(!c.FOLIO && !c.folio) return; // saltar filas vacías
@@ -3887,9 +3922,11 @@ async function cargarCasosDesdeSheets() {
     }
 
     renderCasos(casos);
+    renderSeguimiento();
   } catch(e) {
     console.error('Error cargando casos:', e);
     renderCasos(casos);
+    renderSeguimiento();
   }
 }
 
@@ -4428,7 +4465,7 @@ async function renderHistorico() {
   try {
     const [resRec, resNoRec] = await Promise.allSettled([
       fetch('https://ain8n.numaris.com/webhook/obtener-recuperados'),
-      fetch('https://ain8n.numaris.com/webhook/obtener-seguimiento')
+      fetch('https://ain8n.numaris.com/webhook/obtener-no-recuperadas')
     ]);
     _histData = [];
     if(resRec.status === 'fulfilled' && resRec.value.ok) {
@@ -4492,6 +4529,7 @@ function filtrarHistorico(busqueda) {
           background:${c.recuperado?'#ccfbf1':'#fee2e2'};color:${c.recuperado?'#0f766e':'#b91c1c'};">
           ${c.recuperado?'✓ Recuperada':'✗ No recuperada'}
         </span>
+        ${!c.recuperado ? `<button onclick="marcarRecuperada('${c.folio}')" style="margin-left:8px;font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid #5DCAA5;background:#E1F5EE;color:#0F6E56;cursor:pointer;">✓ Recuperar</button>` : ''}
       </td>
     </tr>`).join('')
   : '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted);">Sin registros</td></tr>';
@@ -4499,19 +4537,62 @@ function filtrarHistorico(busqueda) {
 
 // ===== REPORTE HISTÓRICO =====
 
+function marcarRecuperada(folio) {
+  if(!confirm('¿Marcar el caso ' + folio + ' como recuperado? Se moverá a la hoja de unidades recuperadas con la fecha de hoy.')) return;
+  fetch('https://ain8n.numaris.com/webhook/recuperar-desde-seguimiento', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ folio })
+  }).then(r => r.json()).then(d => {
+    if(d.ok) {
+      alert('Caso ' + folio + ' marcado como recuperado.');
+      renderHistorico();
+    } else {
+      alert('Error al marcar como recuperado.');
+    }
+  }).catch(() => alert('Error de conexión.'));
+}
+
+function detenerSeguimiento(folio) {
+  if(!confirm('¿Detener el seguimiento del caso ' + folio + '? Se cancelarán los correos pendientes y se eliminará de seguimiento activo.')) return;
+  fetch('https://ain8n.numaris.com/webhook/cancelar-seguimiento', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ folio })
+  }).then(r => r.json()).then(d => {
+    if(d.ok) {
+      alert('Seguimiento detenido correctamente.');
+      actualizarSeguimiento();
+    } else {
+      alert('Error al detener el seguimiento.');
+    }
+  }).catch(() => alert('Error de conexión.'));
+}
+
+function actualizarSeguimiento() {
+  const btn = document.getElementById('btn-actualizar-seg');
+  if(btn) { btn.textContent = '↻ Actualizando...'; btn.disabled = true; }
+  window._casosSeguimiento = [];
+  cargarCasosDesdeSheets().then(() => {
+    if(btn) { btn.textContent = '↻ Actualizar'; btn.disabled = false; }
+  });
+}
+
 function renderSeguimiento() {
-  const activos = casos.filter(c => c.estado === 'En seguimiento' && c.total === 6);
+  const activos = (window._casosSeguimiento || []);
+  const counter = document.getElementById('seguimiento-count');
+  if(counter) counter.textContent = activos.length + ' activos';
   const list = document.getElementById('seguimiento-list');
-  const prog = document.getElementById('correos-programados');
   const ahora = Date.now();
 
   const ETIQUETAS = [
     'Notificación inicial',
-    'Actualización 8hrs',
-    'Actualización 16hrs',
-    'Actualización 24hrs',
-    'Solicitud carpeta investigación',
-    'Cierre de protocolo'
+    'Autoridades en sitio',
+    'Unidad boletinada',
+    'Última posición COMANDOS',
+    'Carpeta de investigación',
+    'Cierre de seguimiento',
+    'Reporte final (PDF)'
   ];
 
   const fmtFecha = ts => {
@@ -4524,59 +4605,70 @@ function renderSeguimiento() {
 
   if(!activos.length) {
     if(list) list.innerHTML = '<div class="empty"><div class="empty-icon">✓</div><p>Sin casos en seguimiento activo</p></div>';
-    if(prog) prog.innerHTML = '<div class="empty"><div class="empty-icon">📧</div><p>Sin correos programados</p></div>';
     return;
   }
 
   if(list) list.innerHTML = activos.map(c => {
-    const enviados = (c.horarioCorreos || []).filter(t => ahora >= t).length;
+    const enviados = c.correos || 0;
     const pct = Math.round((enviados / 6) * 100);
-    const siguiente = (c.horarioCorreos || []).find(t => ahora < t);
+    // horario: 6 correos + reporte 1 min después del último
+    const horario7 = [...(c.horarioCorreos||[])];
+    if(horario7.length === 6) horario7.push(horario7[5] + 60000);
+    const siguiente = horario7.find((t,i) => i >= enviados);
+    const siguienteLabel = ETIQUETAS[enviados] || '';
+
+    const slotStyle = (i) => {
+      if(i < enviados) return 'background:#EAF3DE;color:#3B6D11;border:none';
+      if(i === 6) return 'background:#FAEEDA;color:#854F0B;border:1.5px dashed #EF9F27';
+      if(i === enviados) return 'background:#E6F1FB;color:#185FA5;border:1.5px solid #378ADD';
+      return 'background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-secondary)';
+    };
+
+    const slots = horario7.map((t,i) => {
+      const label = i < enviados ? '✓' : i === 6 ? 'PDF' : (i+1);
+      const title = ETIQUETAS[i] + (i >= enviados ? ' — ' + fmtFecha(t) : ' — Enviado');
+      return `<div title="${title}" style="width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;cursor:default;${slotStyle(i)}">${label}</div>`;
+    }).join('');
+
+    const horarioReporte = horario7.length === 7 ? horario7[6] : null;
+    const fechaReporte = horarioReporte ? (() => {
+      const d = new Date(horarioReporte);
+      const hoy = new Date(); hoy.setHours(0,0,0,0);
+      const manana = new Date(hoy); manana.setDate(manana.getDate()+1);
+      const base = d < new Date(hoy.getTime()+86400000) ? 'Hoy' : d < new Date(hoy.getTime()+172800000) ? 'Mañana' : d.toLocaleDateString('es-MX',{weekday:'long',day:'2-digit',month:'short'});
+      return base + ' a las 9:00 a.m.';
+    })() : 'día siguiente a las 9:00 a.m.';
+    const reportePendiente = enviados >= 6
+      ? `<div style="font-size:11px;color:#854F0B;margin-top:4px;background:#FAEEDA;padding:4px 10px;border-radius:6px;display:inline-block"><i class="ti ti-file-text" style="font-size:12px;vertical-align:-1px;margin-right:4px"></i>Reporte final PDF — se enviará el ${fechaReporte}</div>`
+      : '';
+
     return `
-      <div style="padding:14px 0;border-bottom:1px solid var(--border);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-          <div style="font-weight:600;font-size:13px;">${c.cliente}</div>
-          <span class="badge badge-amber">${c.folio}</span>
+      <div style="display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:14px 0;border-bottom:0.5px solid var(--color-border-tertiary);">
+        <div style="text-align:center;min-width:36px">
+          <div style="font-size:22px;font-weight:500;color:${enviados>=6?'#639922':enviados>0?'#EF9F27':'var(--color-text-secondary)'}">${enviados}</div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">/ 6</div>
         </div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${c.unidad} · ${c.estadoMx||'—'}</div>
-        <div style="display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap;">
-          ${(c.horarioCorreos||[]).map((t,i) => {
-            const sent = ahora >= t;
-            const next = !sent && (i===0 || ahora >= c.horarioCorreos[i-1]);
-            const cls  = sent ? 'sent' : next ? 'next' : 'pending';
-            return `<div class="correo-slot ${cls}" title="${ETIQUETAS[i]} — ${fmtFecha(t)}">${sent?'✓':i+1}</div>`;
-          }).join('')}
-          <span style="font-size:11px;color:var(--muted);margin-left:4px;">${enviados}/6 enviados</span>
+        <div>
+          <div style="display:flex;gap:8px;align-items:center;margin-bottom:3px">
+            <span style="font-weight:500;font-size:13px;color:var(--color-text-primary)">${c.nick||c.unidad||'—'} · ${c.cliente||'—'}</span>
+            <span style="background:#FAEEDA;color:#854F0B;font-size:11px;padding:2px 8px;border-radius:20px">${c.folio}</span>
+            <button onclick="detenerSeguimiento('${c.folio}')" style="font-size:11px;padding:2px 10px;border-radius:20px;border:1px solid #F09595;background:#FCEBEB;color:#A32D2D;cursor:pointer;margin-left:auto">⏹ Detener</button>
+          </div>
+          <div style="font-size:12px;color:var(--color-text-secondary)">Monitorista: ${c.monitorista||'—'} · Inicio: ${c.fechaInicio||'—'}</div>
+          <div style="display:flex;gap:4px;margin-top:8px;flex-wrap:wrap">${slots}</div>
+          ${reportePendiente}
         </div>
-        <div class="progress-wrap" style="margin-bottom:6px;">
-          <div class="progress-bar" style="width:${pct}%;"></div>
+        <div style="text-align:right;min-width:120px">
+          ${enviados < 6 && siguiente ? `
+            <div style="font-size:11px;color:var(--color-text-secondary)">Próximo</div>
+            <div style="font-size:12px;font-weight:500;color:#185FA5">${fmtFecha(siguiente)}</div>
+            <div style="font-size:11px;color:var(--color-text-secondary)">${siguienteLabel}</div>
+          ` : enviados === 6 ? `
+            <div style="font-size:12px;font-weight:500;color:#3B6D11"><i class="ti ti-check" style="font-size:13px;vertical-align:-1px"></i> 6/6 completado</div>
+          ` : ''}
         </div>
-        ${siguiente
-          ? `<div style="font-size:11px;color:var(--accent);">⏰ Próximo: ${fmtFecha(siguiente)}</div>`
-          : enviados===6
-            ? `<div style="font-size:11px;color:var(--success);">✅ Protocolo completado</div>`
-            : ''}
       </div>`;
   }).join('');
-
-  // Panel derecho: todos los correos de todos los casos ordenados
-  const proximos = activos.flatMap(c =>
-    (c.horarioCorreos||[]).map((t,i) => ({
-      t, label: ETIQUETAS[i], folio: c.folio, enviado: ahora >= t
-    }))
-  ).sort((a,b) => a.t - b.t);
-
-  if(prog) prog.innerHTML = `
-    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;">Programación automática (n8n)</div>
-    ${proximos.map(p => `
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
-        <div style="width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${p.enviado?'var(--success)':'var(--accent)'}"></div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:12px;font-weight:500;color:var(--text);">${p.label}</div>
-          <div style="font-size:11px;color:var(--muted);">${p.folio} · ${fmtFecha(p.t)}</div>
-        </div>
-        <span class="badge ${p.enviado?'badge-green':'badge-amber'}">${p.enviado?'Enviado':'Pendiente'}</span>
-      </div>`).join('')}`;
 
   setTimeout(renderSeguimiento, 60000);
 }
@@ -4623,7 +4715,97 @@ function notify(msg, type='info') {
 }
 
 function generarReporte() { notify('Generando reporte PDF...','info'); setTimeout(()=>notify('Reporte subido a Zoho CRM y Drive','success'),1500); }
-function enviarResultados() { notify('Enviando correo con reportes adjuntos...','info'); setTimeout(()=>notify('Correo enviado desde Zoho CRM','success'),1200); }
+function mostrarCardCorreos() {
+  const tipoEv = window._tipoEventoActivo || window._casoActivo?.tipoEvento || document.getElementById('f-tipo-evento')?.value || '';
+  const esRobo = tipoEv.toUpperCase().includes('ROBO');
+  if(!esRobo) return; // Solo para ROBO
+
+  const card = document.getElementById('card-correos');
+  if(!card) return;
+  card.style.display = 'block';
+
+  const esRec = recuperadoSelected === 'si';
+  document.getElementById('correo-tipo-label').textContent = esRec ? 'Recuperado — 1 correo de cierre' : 'No recuperado — 6 correos de seguimiento + cierre';
+  document.getElementById('correo-btn-recuperado').style.display    = esRec ? 'block' : 'none';
+  document.getElementById('correo-btn-no-recuperado').style.display = esRec ? 'none' : 'block';
+}
+
+async function enviarCorreoCierre() {
+  const destinatarios = (document.getElementById('f-correos-destinatarios')?.value || '').trim();
+  if(!destinatarios) { notify('Agrega al menos un destinatario', 'warning'); return; }
+  const status = document.getElementById('correo-envio-status');
+  if(status) status.textContent = 'Enviando correo de cierre...';
+  const p = buildPayload();
+  try {
+    const res = await fetch('https://ain8n.numaris.com/webhook/test-correo', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        tipo: 'cierre',
+        resultado: recuperadoSelected === 'si' ? 'RECUPERADA' : 'NO RECUPERADA',
+        folio: window._lastFolio || '—',
+        cliente: window._casoActivo?.cliente || '—',
+        nick: window._casoActivo?.nick || '—',
+        placas: window._casoActivo?.placas || '—',
+        destinatarios: destinatarios.split('\n').map(e => e.trim()).filter(Boolean),
+        cc: ['joselyne.contreras@numaris.com','oscar.alday@numaris.com','berenice.dominguez@numaris.com'],
+        pdfId: window._lastPdfId || '',
+        pdfUrl: window._lastPdfUrl || '',
+        datos: {
+          fechaRobo:    window._casoActivo?.fechaRoboRaw || '—',
+          ultima_senal: window._casoActivo?.ultimaSenal  || '—',
+          lugar:        window._casoActivo?.lugar        || '—',
+          monitorista:  window._casoActivo?.monitorista  || '—',
+          nick:         window._casoActivo?.nick         || '—',
+          placas:       window._casoActivo?.placas       || '—',
+          folio:        window._lastFolio                || '—',
+          cliente:      window._casoActivo?.cliente      || '—',
+        }
+      })
+    });
+    if(status) status.textContent = res.ok ? '✅ Correo de cierre enviado' : '❌ Error al enviar';
+  } catch(e) {
+    if(status) status.textContent = '❌ ' + e.message;
+  }
+}
+
+async function iniciarSeguimientoCorreo() {
+  const destinatarios = (document.getElementById('f-correos-destinatarios')?.value || '').trim();
+  if(!destinatarios) { notify('Agrega al menos un destinatario', 'warning'); return; }
+  const status = document.getElementById('correo-envio-status');
+  if(status) status.textContent = 'Iniciando seguimiento...';
+  try {
+    const res = await fetch('https://ain8n.numaris.com/webhook/test-correo', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        tipo: 'seguimiento',
+        resultado: 'NO RECUPERADA',
+        folio: window._lastFolio || '—',
+        cliente: window._casoActivo?.cliente || '—',
+        nick: window._casoActivo?.nick || '—',
+        placas: window._casoActivo?.placas || '—',
+        destinatarios: destinatarios.split('\n').map(e => e.trim()).filter(Boolean),
+        cc: ['joselyne.contreras@numaris.com','oscar.alday@numaris.com','berenice.dominguez@numaris.com'],
+        pdfId: window._lastPdfId || '',
+        pdfUrl: window._lastPdfUrl || '',
+        datos: {
+          fechaRobo:    window._casoActivo?.fechaRoboRaw || '—',
+          ultima_senal: window._casoActivo?.ultimaSenal  || '—',
+          lugar:        window._casoActivo?.lugar        || '—',
+          monitorista:  window._casoActivo?.monitorista  || '—',
+          nick:         window._casoActivo?.nick         || '—',
+          placas:       window._casoActivo?.placas       || '—',
+          folio:        window._lastFolio                || '—',
+          cliente:      window._casoActivo?.cliente      || '—',
+        }
+      })
+    });
+    if(status) status.textContent = res.ok ? '✅ Seguimiento iniciado (6 correos programados + cierre)' : '❌ Error al iniciar';
+  } catch(e) {
+    if(status) status.textContent = '❌ ' + e.message;
+  }
+}
+
+
 function exportSheets() { notify('Exportando a Google Sheets...','info'); setTimeout(()=>notify('Datos sincronizados en Sheets','success'),1000); }
 
 // ===== DATOS PARA REPORTE =====
@@ -5246,6 +5428,7 @@ async function probarPDF() {
       if(data.pdfId) window._lastPdfId = data.pdfId;
       if(data.pdfUrl) window._lastPdfUrl = data.pdfUrl;
       setCheck('pdf', 'ok', 'PDF generado: ' + (data.pdfNombre || 'reporte.pdf'));
+      mostrarCardCorreos();
     } else setCheck('pdf', 'error', 'Error ' + res.status);
   } catch(e) { setCheck('pdf', 'error', e.message); }
 }
