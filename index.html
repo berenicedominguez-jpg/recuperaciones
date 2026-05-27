@@ -1635,6 +1635,10 @@
         <div class="stat-label">Total recuperadas</div>
         <div class="stat-value" id="hist-total-rec" style="color:var(--success)">—</div>
         <div class="stat-sub">Historial completo</div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+          <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Valor recuperado estimado</div>
+          <div id="hist-costo-total" style="font-family:var(--font-head);font-size:15px;font-weight:700;color:var(--success)">—</div>
+        </div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Total no recuperadas</div>
@@ -4469,12 +4473,27 @@ async function renderHistorico() {
       fetch('https://ain8n.numaris.com/webhook/obtener-no-recuperadas')
     ]);
     _histData = [];
+    let costoTotal = 0;
+    const _foliosVistos = new Set();
     if(resRec.status === 'fulfilled' && resRec.value.ok) {
       const raw = await resRec.value.json();
       (Array.isArray(raw) ? raw : [raw]).forEach(c => {
         if(!c.FOLIO) return;
+        if(!_foliosVistos.has(c.FOLIO)) {
+          _foliosVistos.add(c.FOLIO);
+          const costoKey = Object.keys(c).find(k => k.trim().toUpperCase().replace(/\s+/g,' ') === 'COSTO ESTIMADO') || '';
+          const costoStr = costoKey ? c[costoKey] : (c['COSTO ESTIMADO'] || c['COSTO'] || '');
+          if(costoStr && String(costoStr).trim() && String(costoStr).trim() !== '—') {
+            const cleaned = String(costoStr).replace(/\$/g,'').replace(/´/g,'').replace(/,/g,'').replace(/[^0-9.]/g,'').trim();
+            const num = parseFloat(cleaned);
+            if(!isNaN(num) && num > 0) { costoTotal += num; console.log('REC SUMA:', c.FOLIO, costoStr, '->', num, '| acum:', costoTotal); }
+          }
+        } else {
+          console.log('REC DUPLICADO IGNORADO:', c.FOLIO);
+        }
         _histData.push({ folio:c.FOLIO, cliente:c['NOMBRE CLIENTE']||'—', unidad:c['NICK UNIDAD']||'—', tipo:c['TIPO DE EVENTO']||'—', fechaRobo:c['FECHA Y HORA DEL ROBO']||'—', monitorista:c['NOMBRE']||'—', mes:c['MES']||'—', recuperado:true });
       });
+      console.log('TOTAL RECUPERADAS COSTO:', costoTotal, '| Folios únicos:', _foliosVistos.size);
     }
     if(resNoRec.status === 'fulfilled' && resNoRec.value.ok) {
       const raw = await resNoRec.value.json();
@@ -4490,6 +4509,13 @@ async function renderHistorico() {
     if(el('hist-total-rec'))   el('hist-total-rec').textContent   = totalRec;
     if(el('hist-total-norec')) el('hist-total-norec').textContent = totalNoRec;
     if(el('hist-tasa'))        el('hist-tasa').textContent        = total > 0 ? Math.round((totalRec/total)*100)+'%' : '—';
+    if(el('hist-costo-total')) {
+      if(costoTotal > 0) {
+        el('hist-costo-total').textContent = '$' + costoTotal.toLocaleString('es-MX', {minimumFractionDigits:0, maximumFractionDigits:0}) + ' MXN';
+      } else {
+        el('hist-costo-total').textContent = 'Sin datos';
+      }
+    }
     filtrarHistorico();
   } catch(e) {
     if(tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--danger);">Error: ${e.message}</td></tr>`;
