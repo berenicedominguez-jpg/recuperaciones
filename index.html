@@ -4656,8 +4656,8 @@ function renderSeguimiento() {
       return `<div title="${title}" style="width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;cursor:default;${slotStyle(i)}">${label}</div>`;
     }).join('');
 
-    const horarioReporte = horario7.length === 7 ? horario7[6] : null;
-    const fechaReporte = horarioReporte ? (() => {
+      const horarioReporte = horario7.length === 7 ? horario7[6] : null;
+      const fechaReporte = 'las 9:00 a.m.';
       const d = new Date(horarioReporte);
       const hoy = new Date(); hoy.setHours(0,0,0,0);
       const manana = new Date(hoy); manana.setDate(manana.getDate()+1);
