@@ -4657,7 +4657,7 @@ function renderSeguimiento() {
     }).join('');
 
     const horarioReporte = horario7.length === 7 ? horario7[6] : null;
-    const fechaReporte = 'las 9:00 a.m.';
+    const fechaReporte = ' 9:00 a.m.';
     const reportePendiente = enviados >= 6
       ? `<div style="font-size:11px;color:#854F0B;margin-top:4px;background:#FAEEDA;padding:4px 10px;border-radius:6px;display:inline-block"><i class="ti ti-file-text" style="font-size:12px;vertical-align:-1px;margin-right:4px"></i>Reporte final PDF — se enviará ${fechaReporte}</div>`
       : '';
